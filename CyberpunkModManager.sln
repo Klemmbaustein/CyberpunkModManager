@@ -4,8 +4,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.10.34902.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcxproj", "{1811E30D-4830-4886-A153-C814EBD9B41C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{416A552C-5E38-4044-BEE8-80C23B42886F} = {416A552C-5E38-4044-BEE8-80C23B42886F}
+		{6446F095-E554-4F27-923A-5F795248AC93} = {6446F095-E554-4F27-923A-5F795248AC93}
+		{99324208-6A16-49B7-B98B-15B1935810B0} = {99324208-6A16-49B7-B98B-15B1935810B0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModManagerLib", "ModManagerLib\ModManagerLib.vcxproj", "{6446F095-E554-4F27-923A-5F795248AC93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{B0721565-2BC6-4D2B-A7D9-09AE180855A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KlemmUI", "Dependencies\KlemmUI\KlemmUI.vcxproj", "{99324208-6A16-49B7-B98B-15B1935810B0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KlemmUIMarkup", "Dependencies\KlemmUI\Markup\MarkupLib\MarkupLib.vcxproj", "{7BB8A60A-D204-4306-8170-A8A0AA641186}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarkupHeaderTool", "Dependencies\KlemmUI\Markup\MarkupHeaderTool\MarkupHeaderTool.vcxproj", "{416A552C-5E38-4044-BEE8-80C23B42886F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BB8A60A-D204-4306-8170-A8A0AA641186} = {7BB8A60A-D204-4306-8170-A8A0AA641186}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE48A05F-2F2B-4832-A4A5-868C3BE75BF5}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Setup.ps1 = Setup.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,9 +53,38 @@ Global
 		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x64.Build.0 = Release|x64
 		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x86.ActiveCfg = Release|Win32
 		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x86.Build.0 = Release|Win32
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x64.ActiveCfg = Debug|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x64.Build.0 = Debug|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x86.ActiveCfg = Debug|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x86.Build.0 = Debug|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Release|x64.ActiveCfg = Release|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Release|x64.Build.0 = Release|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Release|x86.ActiveCfg = Release|x64
+		{99324208-6A16-49B7-B98B-15B1935810B0}.Release|x86.Build.0 = Release|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Debug|x64.ActiveCfg = Debug|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Debug|x64.Build.0 = Debug|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Debug|x86.ActiveCfg = Debug|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Debug|x86.Build.0 = Debug|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Release|x64.ActiveCfg = Release|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Release|x64.Build.0 = Release|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Release|x86.ActiveCfg = Release|x64
+		{7BB8A60A-D204-4306-8170-A8A0AA641186}.Release|x86.Build.0 = Release|x64
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Debug|x64.ActiveCfg = Debug|x64
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Debug|x64.Build.0 = Debug|x64
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Debug|x86.ActiveCfg = Debug|Win32
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Debug|x86.Build.0 = Debug|Win32
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Release|x64.ActiveCfg = Release|x64
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Release|x64.Build.0 = Release|x64
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Release|x86.ActiveCfg = Release|Win32
+		{416A552C-5E38-4044-BEE8-80C23B42886F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{99324208-6A16-49B7-B98B-15B1935810B0} = {B0721565-2BC6-4D2B-A7D9-09AE180855A3}
+		{7BB8A60A-D204-4306-8170-A8A0AA641186} = {B0721565-2BC6-4D2B-A7D9-09AE180855A3}
+		{416A552C-5E38-4044-BEE8-80C23B42886F} = {B0721565-2BC6-4D2B-A7D9-09AE180855A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C65DFDF1-2440-48F7-89FF-D2496F7F49DE}

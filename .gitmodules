@@ -1,0 +1,9 @@
+[submodule "Dependencies/KlemmUI"]
+	path = Dependencies/KlemmUI
+	url = https://github.com/Klemmbaustein/KlemmUI
+[submodule "Dependencies/curl"]
+	path = Dependencies/curl
+	url = https://github.com/curl/curl.git
+[submodule "Dependencies/json"]
+	path = Dependencies/json
+	url = https://github.com/nlohmann/json.git
