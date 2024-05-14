@@ -7,3 +7,6 @@
 [submodule "Dependencies/json"]
 	path = Dependencies/json
 	url = https://github.com/nlohmann/json.git
+[submodule "Dependencies/libwebp"]
+	path = Dependencies/libwebp
+	url = https://github.com/webmproject/libwebp.git

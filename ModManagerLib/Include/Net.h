@@ -5,7 +5,7 @@
 namespace Net
 {
 	std::string Get(std::string Url, std::atomic<float>* Progress = nullptr, float ProgressFraction = 1);
-	std::string GetFile(std::string Url, std::string OutPath, std::atomic<float>* Progress = nullptr, float ProgressFraction = 1);
+	void GetFile(std::string Url, std::string OutPath, std::atomic<float>* Progress = nullptr, float ProgressFraction = 1);
 
 	void SetAPIKey(std::string NewKey);
 	

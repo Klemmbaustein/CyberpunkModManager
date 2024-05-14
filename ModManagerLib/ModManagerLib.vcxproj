@@ -142,8 +142,10 @@
     <ClInclude Include="Include\FileUtil.h" />
     <ClInclude Include="Include\Net.h" />
     <ClInclude Include="Include\NexusModsAPI.h" />
+    <ClInclude Include="Include\StrUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\StrUtil.cpp" />
     <ClCompile Include="Source\FileUtil.cpp" />
     <ClCompile Include="Source\Net.cpp" />
     <ClCompile Include="Source\NexusModsAPI.cpp" />

@@ -24,6 +24,9 @@
     <ClInclude Include="Include\FileUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\StrUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NexusModsAPI.cpp">
@@ -33,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\FileUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StrUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

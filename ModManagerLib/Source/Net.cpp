@@ -77,10 +77,25 @@ std::string Net::Get(std::string Url, std::atomic<float>* Progress, float Progre
 		ProgressFract = ProgressFraction;
 	}
 	ProgressVal = Progress;
-	DownloadInternal(Url, { Headers, }, StringWrite, &OutString);
+	DownloadInternal(Url, { Headers, }, (void*)&StringWrite, &OutString);
 	ProgressVal = nullptr;
 
 	return OutString;
+}
+
+void Net::GetFile(std::string Url, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
+{
+	std::ofstream OutStream = std::ofstream(OutPath, std::ios::binary);
+	OutStream.exceptions(std::ios::failbit | std::ios::badbit);
+
+	if (Progress)
+	{
+		StartProgress = *Progress;
+		ProgressFract = ProgressFraction;
+	}
+	ProgressVal = Progress;
+	DownloadInternal(Url, { Headers, }, (void*)&FileWrite, &OutStream);
+	OutStream.close();
 }
 
 void Net::SetAPIKey(std::string NewKey)

@@ -1,0 +1,92 @@
+element ModHeader
+{
+	var Name = "Trending";
+	orientation = vertical;
+	tryFill = true;
+
+	child UIText
+	{
+		text = Name;
+		size = 15px;
+		padding = 5px;
+		downPadding = 0px;
+		color = (1);
+	}
+
+	child UIBackground
+	{
+		minSize = 2px;
+		tryFill = true;
+		padding = 4px;
+		color = (0.6, 0, 0.1);
+	}
+}
+
+element ModEntry
+{
+	var Name;
+	var Description;
+	var Info;
+
+	child UIButton button
+	{
+		color = 0.1;
+		borderType = border;
+		borderSize = 2px;
+		borderColor = (0.6, 0.0, 0.1);
+		minSize = (200, 0)px;
+		padding = 4px;
+		orientation = vertical;
+		horizontalAlign = centered;
+		child UIBackground imageBackground
+		{
+			color = 0.05;
+			size = (196, 112)px;
+			padding = 2px;
+			allAlign = centered;
+			child UIText imageText
+			{
+				text = "Loading";
+				size = 15px;
+				color = 1;
+			}
+		}
+
+		child UIBox
+		{
+			orientation = vertical;
+			size = (200, 180)px;
+			child UIText
+			{
+				padding = 4px;
+				text = Name;
+				size = 11px;
+				wrap = 380px;
+			}
+			child UIText
+			{
+				leftPadding = 4px;
+				text = Description;
+				size = 9px;
+				color = 0.9;
+				wrap = 370px;
+			}
+		}
+		child UIBackground
+		{
+			minSize = (0, 30)px;
+			tryFill = true;
+			padding = 2px;
+			color = 0.05;
+			verticalAlign = centered;
+			child UIText infoText
+			{
+				leftPadding = 4px;
+				text = Info;
+				size = 9px;
+				color = 0.7;
+				wrap = 370px;
+			}
+		}
+	}
+}
