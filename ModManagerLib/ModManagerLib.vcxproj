@@ -110,7 +110,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CURL_STATICLIB;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -126,7 +126,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CURL_STATICLIB;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -140,11 +140,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\FileUtil.h" />
+    <ClInclude Include="Include\Game.h" />
+    <ClInclude Include="Include\ModInfo.h" />
     <ClInclude Include="Include\Net.h" />
     <ClInclude Include="Include\NexusModsAPI.h" />
     <ClInclude Include="Include\StrUtil.h" />
+    <ClInclude Include="Include\Archive.h" />
+    <ClInclude Include="Source\miniz\miniz.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ModInfo.cpp" />
+    <ClCompile Include="Source\Archive.cpp" />
+    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\miniz\miniz.cpp" />
     <ClCompile Include="Source\StrUtil.cpp" />
     <ClCompile Include="Source\FileUtil.cpp" />
     <ClCompile Include="Source\Net.cpp" />

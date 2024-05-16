@@ -3,7 +3,12 @@
 
 namespace Windows
 {
+	void SetWorkingDirectory();
 	void Open(std::string Path);
+	bool IsProcessRunning(std::string Name);
+	std::string GetCurrentProcessName();
 
-	void ShowDialogBox(std::string Content);
+	void ErrorBox(std::string Content);
+
+	void RegisterSelfAsUriHandler();
 }

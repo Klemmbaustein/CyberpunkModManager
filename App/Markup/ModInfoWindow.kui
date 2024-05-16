@@ -35,6 +35,30 @@ element ModInfoHeader
 	}
 }
 
+element ModInfoButton
+{
+	var Image;
+	var Text;
+	padding = 5px;
+	child UIButton button
+	{
+		allAlign = centered;
+		color = (0.6, 0.1, 0.1);
+		child UIBackground
+		{
+			image = Image;
+			size = 15px;
+			padding = 5px;
+		}
+		child UIText
+		{
+			text = Text;
+			size = 12px;
+			padding = 5px;
+		}
+	}
+}
+
 element ModInfoWindowElement
 {
 	orientation = vertical;
@@ -44,11 +68,22 @@ element ModInfoWindowElement
 	{
 	}
 
+	child UIBox actionBox
+	{
+		padding = 5px;
+	}
+
 	child UIBackground
 	{
-		size = 1px;
+		size = 2px;
 		color = (0.6, 0, 0.1);
 		tryFill = true;
 	}
 
+	child UIBox descriptionBox
+	{
+		tryFill = true;
+		orientation = vertical;
+		padding = 5px;
+	}
 }

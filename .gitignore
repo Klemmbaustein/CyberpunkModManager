@@ -365,3 +365,6 @@ FodyWeavers.xsd
 App/app/saved/*
 *.dll
 /App/app/temp/images
+/App/app/temp
+/App/app/profiles
+/App/App.exe

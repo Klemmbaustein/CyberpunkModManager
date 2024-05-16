@@ -33,15 +33,32 @@ NexusModsAPI::ModInfo NexusModsAPI::ModInfo::GetModFromID(int ID)
 		std::cout << Response.dump() << std::endl;
 		return ModInfo();
 	}
-
 	ModInfo NewMod = ModInfo{
 		.Name = Response.at("name"),
 		.Description = Response.at("description"),
-		.Summary = StrUtil::Replace(Response.at("summary"), "<br />", "\n"),
+		.Summary = StrUtil::Replace(StrUtil::Replace(Response.at("summary"), "\n", ""), "<br />", "\n"),
+		.ImageUrl = Response.at("picture_url"),
 		.ModID = Response.at("mod_id"),
 	};
 
 	return NewMod;
+}
+
+std::string NexusModsAPI::ModInfo::ModFile::DownloadLink(int ModID, int FileID, std::string Token, std::string Expires)
+{
+	json ResponseJson = json::parse(Net::Get(SourceUrl
+		+ "/games/"
+		+ GameDomainName
+		+ "/mods/"
+		+ std::to_string(ModID)
+		+ "/files/"
+		+ std::to_string(FileID)
+		+ "/download_link.json?key="
+		+ Token
+		+ "&expires="
+		+ Expires));
+
+	return ResponseJson[0].at("URI");
 }
 
 std::vector<NexusModsAPI::ModInfo::ModFile> NexusModsAPI::ModInfo::GetFiles() const
@@ -70,20 +87,6 @@ std::vector<NexusModsAPI::ModInfo::ModFile> NexusModsAPI::ModInfo::GetFiles() co
 std::string NexusModsAPI::ModInfo::GetImagePath() const
 {
 	return "app/temp/images/" + Name + ".webp";
-}
-
-std::string NexusModsAPI::ModInfo::ModFile::DownloadLink()
-{
-	json ResponseJson = json::parse(Net::Get(SourceUrl
-		+ "/games/"
-		+ GameDomainName
-		+ "/mods/"
-		+ std::to_string(Mod->ModID)
-		+ "/files/"
-		+ std::to_string(FileID)
-		+ "/download_link.json"));
-	
-	return std::string();
 }
 
 std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
@@ -117,19 +120,17 @@ std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
 
 			if (i.at("contains_adult_content"))
 			{
-				continue;
+				//continue;
 			}
 
 			if (!i.contains("name"))
 			{
-				std::cout << i.dump() << std::endl;
 				continue;
 			}
-
 			ModInfo NewMod = ModInfo{
 				.Name = i.at("name"),
-				.Description = i.at("description"),
-				.Summary = StrUtil::Replace(i.at("summary"), "<br />", "\n"),
+				.Description = StrUtil::Replace(StrUtil::Replace(i.at("description"), "\n", ""), "<br />", "\n"),
+				.Summary = StrUtil::Replace(StrUtil::Replace(i.at("summary"), "\n", ""), "<br />", "\n"),
 				.ImageUrl = i.at("picture_url"),
 				.ModID = i.at("mod_id"),
 				.Downloads = i.at("mod_downloads"),

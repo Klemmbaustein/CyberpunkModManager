@@ -26,7 +26,7 @@ namespace NexusModsAPI
 			ModInfo* Mod = nullptr;
 			int FileID = 0;
 
-			std::string DownloadLink();
+			static std::string DownloadLink(int ModID, int FileID, std::string Token, std::string Expires);
 		};
 		std::vector<ModFile> GetFiles() const;
 		std::string GetImagePath() const;

@@ -1,7 +1,16 @@
 #include "Net.h"
 #include <fstream>
 #include <vector>
-#include <curl/curl.h> 
+#include <curl/curl.h>
+#include "StrUtil.h"
+#include <iostream>
+
+#if _WIN32
+#pragma comment(lib, "Wtsapi32.lib")
+#pragma comment(lib, "wldap32.lib")
+#pragma comment(lib, "crypt32.lib")
+#pragma comment(lib, "Ws2_32.lib")
+#endif
 
 namespace Net
 {
@@ -47,6 +56,7 @@ static size_t StringWrite(uint8_t* ptr, size_t size, size_t nmemb, std::string* 
 
 static void DownloadInternal(std::string Url, std::vector<std::string> Headers, void* WriteFunction, void* WriteData)
 {
+	Url = StrUtil::Replace(Url, " ", "%20");
 	CURL* CurlHandle = curl_easy_init();
 	curl_slist* CurlHeaders = NULL;
 	for (const std::string& Header : Headers)
@@ -94,7 +104,8 @@ void Net::GetFile(std::string Url, std::string OutPath, std::atomic<float>* Prog
 		ProgressFract = ProgressFraction;
 	}
 	ProgressVal = Progress;
-	DownloadInternal(Url, { Headers, }, (void*)&FileWrite, &OutStream);
+	std::cout << "'" << Url << "'" << std::endl;
+	DownloadInternal(Url, {}, (void*)&FileWrite, &OutStream);
 	OutStream.close();
 }
 
@@ -102,11 +113,11 @@ void Net::SetAPIKey(std::string NewKey)
 {
 	if (Headers.size() <= 1)
 	{
-		Headers.push_back("apiKey: " + NewKey);
+		Headers.push_back("apiKey:" + NewKey);
 	}
 	else
 	{
-		Headers.push_back("apiKey: " + NewKey);
+		Headers.push_back("apiKey:" + NewKey);
 	}
 	IsActive = true;
 }
