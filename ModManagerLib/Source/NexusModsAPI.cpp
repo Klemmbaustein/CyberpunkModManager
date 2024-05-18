@@ -31,9 +31,14 @@ NexusModsAPI::ModInfo NexusModsAPI::ModInfo::GetModFromID(int ID)
 
 	if (!Response.contains("name"))
 	{
-		std::cout << Response.dump() << std::endl;
 		return ModInfo();
 	}
+
+	if (Response.at("picture_url").is_null())
+	{
+		Response.at("picture_url") = std::string();
+	}
+
 	ModInfo NewMod = ModInfo{
 		.Name = Response.at("name"),
 		.Description = StrUtil::Replace(StrUtil::Replace(Response.at("description"), "\n", ""), "<br />", "\n"),

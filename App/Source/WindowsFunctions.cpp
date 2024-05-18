@@ -161,12 +161,6 @@ void Windows::RegisterSelfAsUriHandler()
 	auto uid = geteuid();
 	auto pw = getpwuid(uid);
 	std::string DesktopFilePath = std::string(pw->pw_dir) + "/.local/share/applications/CyberpunkModManager.desktop";
-
-	if (std::filesystem::exists(DesktopFilePath))
-	{
-		return;
-	}
-
 	std::ofstream DesktopFile = std::ofstream(DesktopFilePath);
 
 	std::string FileContent = FileUtil::ReadFile("app/CyberpunkModManager.desktop");

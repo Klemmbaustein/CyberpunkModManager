@@ -72,7 +72,6 @@ std::string Game::SearchForGame()
 		}
 		if (!std::filesystem::exists(BufferString + "/archive"))
 		{
-			std::cout << "NOT EXIST FOUND: " << BufferString << std::endl;
 			continue;
 		}
 
