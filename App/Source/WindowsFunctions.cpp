@@ -114,7 +114,7 @@ void Windows::RegisterSelfAsUriHandler()
 	RegCloseKey(NxmKey);
 	RegCloseKey(CommandKey);
 }
-//#else
+#else
 #include "StrUtil.h"
 #include "FileUtil.h"
 #include <fstream>
