@@ -78,6 +78,9 @@
     <IncludePath>$(ProjectDir)Include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\curl\include;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)lib\$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -157,6 +160,9 @@
     <ClCompile Include="Source\FileUtil.cpp" />
     <ClCompile Include="Source\Net.cpp" />
     <ClCompile Include="Source\NexusModsAPI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

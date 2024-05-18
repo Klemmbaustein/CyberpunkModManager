@@ -368,3 +368,5 @@ App/app/saved/*
 /App/app/temp
 /App/app/profiles
 /App/App.exe
+/App/CMakeBuild
+/App/ReleaseBuild

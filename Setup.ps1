@@ -14,7 +14,7 @@ msbuild.exe lib/libcurl_static.vcxproj /p:Configuration=Debug /p:Platform=x64
 
 # Dependencies/libwebp
 cd ../../libwebp
-cmake -S . -B Build/ -DCMA
+cmake -S . -B Build/
 # Dependencies/libwebp/Build
 cd Build/
 msbuild.exe webp.vcxproj /p:Configuration=Release /p:Platform=x64

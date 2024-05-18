@@ -1,6 +1,7 @@
 #include "InstalledModsTab.h"
 #include "ModInfo.h"
 #include "../../WindowsFunctions.h"
+#include <mutex>
 
 static InstalledModsTab* CurrentInstalledTab = nullptr;
 
@@ -11,8 +12,10 @@ static void OnButtonClicked(int Index)
 
 InstalledModsTab::InstalledModsTab()
 {
+	IconFile = "storage.png";
 	CurrentInstalledTab = this;
 	OnButtonClickedFunction = &OnButtonClicked;
+	LoadMainPage();
 }
 
 void InstalledModsTab::LoadSections()
@@ -28,6 +31,8 @@ void InstalledModsTab::LoadSections()
 				.Name = i.Name,
 				.Summary = i.Description,
 				.ImageUrl = i.ImagePath,
+				.InfoString = i.Enabled ? "Enabled" : "Disabled",
+				.InfoColor = i.Enabled ? NexusModsAPI::ModInfo::Green : NexusModsAPI::ModInfo::Red,
 				.ModID = i.ModID,
 			});
 	}

@@ -11,6 +11,8 @@ class ModInfoWindow : public Popup
 	bool HasInfo = false;
 	void LoadInfo();
 	static thread_local ModInfoWindow* CurrentWindow;
+	KlemmUI::UIBox* ActionsBox = nullptr;
+	void GenerateActionButtons(KlemmUI::UIBox* Parent, const NexusModsAPI::ModInfo& Mod);
 public:
 	Vector2ui GetWindowResolution() override;
 	

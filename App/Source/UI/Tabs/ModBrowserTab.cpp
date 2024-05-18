@@ -8,48 +8,26 @@
 #include <filesystem>
 
 #include "StrUtil.h"
-#include "Net.h"
-#include "../ModInfoWindow.h"
-
-#include "../../Markup/ModEntry.hpp"
-#include "../../Markup/ModHeader.hpp"
-#include "../../BackgroundTask.h"
-#include "../../Webp.h"
 using namespace KlemmUI;
 
+static ModBrowserTab* CurrentBrowserTab = nullptr;
 
-void ModBrowserTab::LoadMainPageAsync()
+static void OnButtonClicked(int Index)
 {
-
-}
-
-
-static void LoadModImages()
-{
+	CurrentBrowserTab->OpenModFromIndex(Index);
 }
 
 ModBrowserTab::ModBrowserTab()
 {
+	IconFile = "search_web.png";
+	CurrentBrowserTab = this;
+	OnButtonClickedFunction = &OnButtonClicked;
+	LoadMainPage();
 }
 
-
-void ModBrowserTab::LoadMainPage()
+void ModBrowserTab::LoadSections()
 {
-}
-
-void ModBrowserTab::GenerateSection(ModsSection Section, size_t& Index)
-{
-}
-
-void ModBrowserTab::UpdateImages()
-{
-
-}
-
-void ModBrowserTab::Update()
-{
-}
-
-void ModBrowserTab::OnResized()
-{
+	LoadSection(NexusModsAPI::GetMods("trending"), "Trending");
+	LoadSection(NexusModsAPI::GetMods("latest_updated"), "Last Updated");
+	LoadSection(NexusModsAPI::GetMods("latest_added"), "Last Added");
 }

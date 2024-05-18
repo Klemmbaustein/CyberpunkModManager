@@ -1,16 +1,16 @@
-#if _WIN32
 #include "WindowsFunctions.h"
+#include <iostream>
+#include <filesystem>
+#if _WIN32
 #include <Windows.h>
 #include <wtsapi32.h>
-#include <filesystem>
 #include <StrUtil.h>
-#include <iostream>
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
 processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-std::wstring GetExecutableDir()
+static std::wstring GetExecutableDir()
 {
 	wchar_t Path[MAX_PATH];
 	GetModuleFileNameW(NULL, Path, MAX_PATH);
@@ -94,12 +94,12 @@ void Windows::RegisterSelfAsUriHandler()
 		return;
 	}
 	RegStatus = RegSetValueExW(NxmKey, L"URL Protocol", 0, REG_SZ, (BYTE*)L"", 1);
-	RegStatus = RegCreateKeyW(NxmKey, L"shell\\open\\command", &CommandKey);
 	if (RegStatus)
 	{
 		ErrorMessageFromStatus(RegStatus);
 		return;
 	}
+	RegStatus = RegCreateKeyW(NxmKey, L"shell\\open\\command", &CommandKey);
 	if (RegStatus)
 	{
 		ErrorMessageFromStatus(RegStatus);
@@ -114,4 +114,104 @@ void Windows::RegisterSelfAsUriHandler()
 	RegCloseKey(NxmKey);
 	RegCloseKey(CommandKey);
 }
+#else
+#include "StrUtil.h"
+#include "FileUtil.h"
+#include <fstream>
+#include <cstring>
+#include <unistd.h>
+
+
+static std::string GetProcessName(int pid)
+{
+	FILE* SelfLinkCommand = popen(("readlink /proc/" + std::to_string(pid) + "/exe").c_str(), "r");
+
+	while (!feof(SelfLinkCommand))
+	{
+		char ExecutableBuffer[8000];
+		size_t Read = fread(ExecutableBuffer, 1, sizeof(ExecutableBuffer) - 1, SelfLinkCommand);
+		ExecutableBuffer[Read] = 0;
+		if (Read > 0 && ExecutableBuffer[Read - 1] == '\n')
+		{
+			ExecutableBuffer[Read - 1] = 0;
+		}
+		return ExecutableBuffer;
+	}
+	pclose(SelfLinkCommand);
+	return "";
+}
+
+void Windows::SetWorkingDirectory()
+{
+	std::string PathString = GetProcessName(getpid());
+
+	PathString = PathString.substr(0, PathString.find_last_of("/\\"));
+
+	if (!std::filesystem::is_directory(PathString + "/app"))
+	{
+		// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
+		PathString.append("/../");
+	}
+	std::cout << PathString << std::endl;
+	std::filesystem::current_path(PathString);
+}
+
+void Windows::RegisterSelfAsUriHandler()
+{
+	std::cout << GetCurrentProcessName();
+	std::string DesktopFilePath = "/home/jan/.local/share/applications/CyberpunkModManager.desktop";
+
+	if (std::filesystem::exists(DesktopFilePath))
+	{
+		return;
+	}
+
+	std::ofstream DesktopFile = std::ofstream(DesktopFilePath);
+	DesktopFile.exceptions(std::ios::failbit | std::ios::badbit);
+
+	std::string FileContent = FileUtil::ReadFile("app/CyberpunkModManager.desktop");
+	std::cout << FileContent << std::endl;
+	std::cout << StrUtil::Replace(FileContent, "$appPath", GetCurrentProcessName()) << std::endl;
+
+	DesktopFile << StrUtil::Replace(FileContent, "$appPath", GetCurrentProcessName());
+	DesktopFile.close();
+
+	system(("xdg-mime default CyberpunkModManager.desktop x-scheme-handler/nxm"));
+}
+
+void Windows::ErrorBox(std::string Content)
+{
+	system(("zenity --error --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
+}
+
+bool Windows::IsProcessRunning(std::string Name)
+{
+	std::string CurrentName = GetCurrentProcessName();
+	for (auto& i : std::filesystem::directory_iterator("/proc"))
+	{
+		std::string FileNameString = i.path().filename().string();
+		if (strspn(FileNameString.c_str(), "0123456789") == FileNameString.size())
+		{
+			int pid = std::stoi(FileNameString);
+
+			if (pid != getpid() && GetProcessName(pid) == CurrentName)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+std::string Windows::GetCurrentProcessName()
+{
+	return GetProcessName(getpid());
+}
+
+void Windows::Open(std::string Path)
+{
+	system(Path.c_str());
+}
+
 #endif

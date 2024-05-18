@@ -5,6 +5,11 @@
 class AppTab
 {
 public:
+
+	static size_t SelectedTab;
+
+	std::string IconFile;
+
 	AppTab(std::string Name);
 	virtual ~AppTab();
 
@@ -29,4 +34,19 @@ public:
 		}
 		return nullptr;
 	}
+
+	template<typename T>
+	static std::vector<T*> GetTabsOfType()
+	{
+		std::vector<T*> Tabs;
+		for (AppTab* i : AllTabs)
+		{
+			if (dynamic_cast<T*>(i))
+			{
+				Tabs.push_back(static_cast<T*>(i));
+			}
+		}
+		return Tabs;
+	}
+
 };

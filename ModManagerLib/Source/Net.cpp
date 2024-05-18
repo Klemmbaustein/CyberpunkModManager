@@ -104,7 +104,6 @@ void Net::GetFile(std::string Url, std::string OutPath, std::atomic<float>* Prog
 		ProgressFract = ProgressFraction;
 	}
 	ProgressVal = Progress;
-	std::cout << "'" << Url << "'" << std::endl;
 	DownloadInternal(Url, {}, (void*)&FileWrite, &OutStream);
 	OutStream.close();
 }
@@ -117,7 +116,7 @@ void Net::SetAPIKey(std::string NewKey)
 	}
 	else
 	{
-		Headers.push_back("apiKey:" + NewKey);
+		Headers[1] = ("apiKey:" + NewKey);
 	}
 	IsActive = true;
 }

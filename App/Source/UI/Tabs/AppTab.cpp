@@ -3,10 +3,11 @@
 using namespace KlemmUI;
 
 std::vector<AppTab*> AppTab::AllTabs;
+size_t AppTab::SelectedTab = 0;
 
 AppTab::AppTab(std::string Name)
 {
-	TabBackground = new UIBackground(false, -1, 0.2f, 2);
+	TabBackground = new UIBackground(false, -1, 0.15f, 2);
 	AllTabs.push_back(this);
 }
 
@@ -35,8 +36,10 @@ void AppTab::ResizeAll()
 void AppTab::UpdateAll()
 {
 	Vector2f SiteBarSize = UIBox::PixelSizeToScreenSize(Vector2f(80, 0), Window::GetActiveWindow());
+	size_t TabIndex = 0;
 	for (AppTab* Tab : AllTabs)
 	{
+		Tab->TabBackground->IsVisible = SelectedTab == TabIndex++;
 		Tab->TabBackground->SetPosition(Vector2f(-1) + SiteBarSize);
 		Tab->TabBackground->SetMinSize(Vector2f(2) - SiteBarSize);
 		Tab->TabBackground->SetMaxSize(Vector2f(2) - SiteBarSize);

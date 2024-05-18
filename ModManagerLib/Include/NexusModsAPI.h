@@ -12,6 +12,14 @@ namespace NexusModsAPI
 		std::string Description;
 		std::string Summary;
 		std::string ImageUrl;
+		std::string InfoString;
+		enum ModInfoColor
+		{
+			Red,
+			Green,
+			Grey,
+		};
+		ModInfoColor InfoColor = Grey;
 		uint8_t* ImageBuffer = nullptr;
 		int ImageWidth = 0, ImageHeight = 0;
 		int ModID = 0;
@@ -32,10 +40,16 @@ namespace NexusModsAPI
 		std::string GetImagePath() const;
 	};
 
+	bool GetIsLoggedIn();
+
 	extern std::string GameDomainName;
 
 	std::vector<ModInfo> GetMods(std::string Category);
 
 	// Gets the current API key. Returns an empty string if there is none.
 	std::string GetAPIKey();
+
+	void SaveAPIKey(std::string Key);
+
+	std::string GetAPIKeyAccountName(std::string Key);
 }

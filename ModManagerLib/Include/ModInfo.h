@@ -14,6 +14,12 @@ struct ModInfo
 	static ModInfo ParseFile(std::string FilePath);
 
 	void WriteFile(std::string FilePath);
+	void Save();
 
 	static std::vector<ModInfo> GetAllInstalledMods();
+	static ModInfo GetModByName(std::string Name);
+
+	void Enable();
+	void Disable();
+	void Remove();
 };

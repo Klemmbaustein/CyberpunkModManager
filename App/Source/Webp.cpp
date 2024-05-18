@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Webp.h"
 #include "webp/decode.h"
+#include <cstring>
 #include <KlemmUI/Rendering/Texture.h>
 
 Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)

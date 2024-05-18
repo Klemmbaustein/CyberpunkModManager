@@ -1,0 +1,27 @@
+
+element SidebarElement
+{
+	minSize = (0, 2);
+	child UIBackground bg
+	{
+		tryFill = true;
+		minSize = 80px;
+		orientation = vertical;
+		color = 0.1;
+	}
+}
+
+element SidebarButton
+{
+	padding = 5px;
+	child UIButton button
+	{
+		color = (0.6, 0.1, 0.1);
+		size = 70px;
+		child UIBackground image
+		{
+			size = 70px;
+			color = 0;
+		}
+	}
+}

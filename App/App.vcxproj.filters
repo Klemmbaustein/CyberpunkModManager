@@ -57,6 +57,12 @@
     <ClCompile Include="Source\UI\Tabs\ModListTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UI\Sidebar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\SetupWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\UI\Popup.h">
@@ -98,5 +104,17 @@
     <ClInclude Include="Source\UI\Tabs\ModListTab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\UI\Sidebar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\SetupWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app\CyberpunkModManager.desktop" />
   </ItemGroup>
 </Project>

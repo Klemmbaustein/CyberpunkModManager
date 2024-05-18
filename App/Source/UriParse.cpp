@@ -4,6 +4,14 @@
 
 Uri::Uri(std::string UriString)
 {
+	if (UriString.size() >= 2
+		&& UriString[0] == '\''
+		&& UriString[UriString.size() - 1] == '\'')
+	{
+		UriString = UriString.substr(1, UriString.size() - 2);
+		std::cout << UriString << std::endl;
+	}
+
 	this->UriString = UriString;
 	size_t Colon = UriString.find_first_of(":");
 	if (Colon == std::string::npos || Colon == 0)

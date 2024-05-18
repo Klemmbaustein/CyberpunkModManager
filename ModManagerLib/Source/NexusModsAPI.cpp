@@ -5,6 +5,7 @@
 
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include <fstream>
 using namespace nlohmann;
 
 namespace NexusModsAPI
@@ -35,7 +36,7 @@ NexusModsAPI::ModInfo NexusModsAPI::ModInfo::GetModFromID(int ID)
 	}
 	ModInfo NewMod = ModInfo{
 		.Name = Response.at("name"),
-		.Description = Response.at("description"),
+		.Description = StrUtil::Replace(StrUtil::Replace(Response.at("description"), "\n", ""), "<br />", "\n"),
 		.Summary = StrUtil::Replace(StrUtil::Replace(Response.at("summary"), "\n", ""), "<br />", "\n"),
 		.ImageUrl = Response.at("picture_url"),
 		.ModID = Response.at("mod_id"),
@@ -89,6 +90,11 @@ std::string NexusModsAPI::ModInfo::GetImagePath() const
 	return "app/temp/images/" + Name + ".webp";
 }
 
+bool NexusModsAPI::GetIsLoggedIn()
+{
+	return !GetAPIKey().empty();
+}
+
 std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
 {
 	json ResponseJson = json::parse(Net::Get(SourceUrl
@@ -109,7 +115,7 @@ std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
 	{
 		std::vector<ModInfo> FoundMods;
 		int NumMods = 0;
-		for (const json& i : ResponseJson)
+		for (json& i : ResponseJson)
 		{
 			// Skip the mod if it isn't available.
 			// For some reason the API lists unavailable mods but doesn't give much info for them.
@@ -120,18 +126,25 @@ std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
 
 			if (i.at("contains_adult_content"))
 			{
-				//continue;
+				continue;
 			}
 
 			if (!i.contains("name"))
 			{
 				continue;
 			}
+
+			if (i.at("picture_url").is_null())
+			{
+				i.at("picture_url") = std::string();
+			}
+
 			ModInfo NewMod = ModInfo{
 				.Name = i.at("name"),
 				.Description = StrUtil::Replace(StrUtil::Replace(i.at("description"), "\n", ""), "<br />", "\n"),
 				.Summary = StrUtil::Replace(StrUtil::Replace(i.at("summary"), "\n", ""), "<br />", "\n"),
 				.ImageUrl = i.at("picture_url"),
+				.InfoString = "Downloads: " + std::to_string(i.at("mod_downloads").get<int>()),
 				.ModID = i.at("mod_id"),
 				.Downloads = i.at("mod_downloads"),
 			};
@@ -148,9 +161,10 @@ std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
 	return {};
 }
 
+static const std::string KeyJsonFile = "app/saved/apikey.json";
+
 std::string NexusModsAPI::GetAPIKey()
 {
-	static const std::string KeyJsonFile = "app/saved/apikey.json";
 
 	if (!std::filesystem::exists(KeyJsonFile))
 	{
@@ -164,4 +178,23 @@ std::string NexusModsAPI::GetAPIKey()
 		return "";
 	}
 	return FileJson.at("key");
+}
+
+void NexusModsAPI::SaveAPIKey(std::string Key)
+{
+	std::ofstream Out = std::ofstream(KeyJsonFile);
+	Out << json{ { "key", Key } };
+	Out.close();
+}
+
+std::string NexusModsAPI::GetAPIKeyAccountName(std::string Key)
+{
+	Net::SetAPIKey(Key);
+	json FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json"));
+	Net::SetAPIKey(GetAPIKey());
+	if (!FileJson.contains("name"))
+	{
+		return "";
+	}
+	return FileJson.at("name");
 }

@@ -14,7 +14,7 @@
 
 static std::string ModDownloadUrl;
 static int ModID;
-static void DownloadModAsync()
+static void DownloadModAsync(void*)
 {
 	std::string CurrentModUrl = ModDownloadUrl;
 	int CurrentModID = ModID;
@@ -24,35 +24,16 @@ static void DownloadModAsync()
 	auto LoadBar = Popup::CreatePopup<LoadingBar>();
 	LoadBar->ProgressValue = &Progress;
 
-	LoadBar->LoadingString = "Downloading mod...";
+	LoadBar->LoadingString = "Downloading mod: " + Mod.Name;
 	Net::GetFile(ModDownloadUrl, "app/temp/dl.zip", LoadBar->ProgressValue);
 	LoadBar->ProgressValue = nullptr;
-	LoadBar->LoadingString = "Extracting mod...";
+	LoadBar->LoadingString = "Installing mod...";
 
-	std::string ModPath = "app/profiles/test/mod_files/" + Mod.Name + "/";
-	Archive::Extract("app/temp/dl.zip", ModPath, nullptr, 0);
-
-	std::filesystem::create_directories("app/profiles/test/images/");
 	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath);
-
-	auto ModFiles = FileUtil::GetAllFilesInFolder(ModPath);
-
-	ModInfo NewMod = ModInfo{
-		.Name = Mod.Name,
-		.Description = Mod.Summary,
-		.ImagePath = ImagePath,
-		.ModID = CurrentModID,
-		.Enabled = false,
-		.Files = ModFiles,
-	};
-
-	LoadBar->LoadingString = "Saving mod information...";
-	std::filesystem::create_directories("app/profiles/test/");
-	NewMod.WriteFile("app/profiles/test/" + Mod.Name + ".json");
+	DownloadHandler::InstallZip("app/temp/dl.zip", Mod.Name, Mod.Summary, ImagePath, CurrentModID);
 	LoadBar->ShouldClose = true;
 	LoadBar->CanClose = true;
-	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 }
 
 void DownloadHandler::DownloadModUri(Uri ModUri)
@@ -100,14 +81,38 @@ void DownloadHandler::DownloadModUri(Uri ModUri)
 
 	new BackgroundTask(&DownloadModAsync);
 }
+void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image, int CurrentModID)
+{
+	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
+	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
+	std::filesystem::create_directories("app/profiles/test/images/");
+
+	auto ModFiles = FileUtil::GetAllFilesInFolder(ModPath);
+
+	ModInfo NewMod = ModInfo{
+		.Name = Name,
+		.Description = Description,
+		.ImagePath = Image,
+		.ModID = CurrentModID,
+		.Enabled = false,
+		.Files = ModFiles,
+	};
+
+	std::filesystem::create_directories("app/profiles/test/");
+	NewMod.Save();
+	NewMod.Enable();
+	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+}
+
+static std::string OpenFile;
 void DownloadHandler::CheckDownloadRequest()
 {
 	if (std::filesystem::exists("app/OpenUri"))
 	{
-		static std::string OpenFile = FileUtil::ReadFile("app/OpenUri");
+		OpenFile = FileUtil::ReadFile("app/OpenUri");
 		
-		new BackgroundTask([]() {
+		new BackgroundTask([](void*) {
 			DownloadModUri(OpenFile);
 			});
 		std::filesystem::remove("app/OpenUri");

@@ -8,21 +8,11 @@
 #include "../../Markup/ModHeader.hpp"
 #include "../../BackgroundTask.h"
 #include <StrUtil.h>
+#include <iostream>
 using namespace KlemmUI;
 
-static std::vector<ModListTab::ModsSection> LoadedMods;
-static std::mutex PageLoadMutex;
 static std::mutex ImageLoadMutex;
-static bool LoadedNewImage;
-
-static ModListTab* CurrentReloadedPage = nullptr;
-void ModListTab::LoadMainPageAsync()
-{
-	std::lock_guard Guard(PageLoadMutex);
-	LoadedMods.clear();
-
-	CurrentReloadedPage->LoadSections();
-}
+static std::mutex PageLoadMutex;
 
 static void LoadModImageWebP(NexusModsAPI::ModInfo& Mod, std::string FilePath)
 {
@@ -31,6 +21,7 @@ static void LoadModImageWebP(NexusModsAPI::ModInfo& Mod, std::string FilePath)
 		return;
 	}
 	auto Buffer = Webp::LoadBuffer(FilePath);
+	std::unique_lock Guard(ImageLoadMutex);
 	Mod.ImageBuffer = Buffer.Bytes;
 	Mod.ImageWidth = Buffer.Width;
 	Mod.ImageHeight = Buffer.Height;
@@ -52,6 +43,7 @@ void ModListTab::ShowLoadingScreen()
 	{
 		Texture::UnloadTexture(tex);
 	}
+	LoadedTextures.clear();
 }
 
 ModListTab::ModListTab()
@@ -59,8 +51,6 @@ ModListTab::ModListTab()
 {
 	ModsScrollBox = new UIScrollBox(false, 0, true);
 	TabBackground->AddChild(ModsScrollBox);
-	LoadMainPage();
-
 }
 
 void ModListTab::OpenModFromIndex(int Index)
@@ -86,7 +76,6 @@ void ModListTab::LoadImages()
 		for (auto& j : i.Mods)
 		{
 			LoadModImageWebP(j, GetModImage(j));
-			std::unique_lock Guard(ImageLoadMutex);
 			LoadedNewImage = true;
 		}
 	}
@@ -97,15 +86,37 @@ void ModListTab::LoadImages()
 void ModListTab::LoadMainPage()
 {
 	ShowLoadingScreen();
-
-	CurrentReloadedPage = this;
-	new BackgroundTask(&LoadMainPageAsync, []() {
-		new BackgroundTask([]()
+	for (auto& i : LoadedMods)
+	{
+		for (auto& j : i.Mods)
+		{
+			if (j.ImageBuffer)
 			{
-				GetTabOfType<ModListTab>()->LoadImages();
-			});
-		GetTabOfType<ModListTab>()->Generate();
-		});
+				delete[] j.ImageBuffer;
+				j.ImageBuffer = nullptr;
+			}
+		}
+	}
+
+	LoadedMods.clear();
+	new BackgroundTask([](void* Data)
+		{
+			ModListTab* Tab = static_cast<ModListTab*>(Data);
+			std::lock_guard Guard(PageLoadMutex);
+			Tab->LoadedMods.clear();
+			Tab->LoadSections();
+		},
+		
+		[](void* Data) {
+			ModListTab* Tab = static_cast<ModListTab*>(Data);
+			Tab->Generate();
+			new BackgroundTask([](void* Data)
+			{
+				ModListTab* Tab = static_cast<ModListTab*>(Data);
+				Tab->LoadImages();
+				Tab->IsLoadingList = false;
+			},nullptr, Data);
+		}, this);
 }
 
 void ModListTab::Generate()
@@ -126,7 +137,6 @@ std::string ModListTab::GetModImage(NexusModsAPI::ModInfo Mod)
 
 	if (std::filesystem::exists(ImageFile))
 	{
-		LoadModImageWebP(Mod, ImageFile);
 		return ImageFile;
 	}
 	Net::GetFile(Mod.ImageUrl, ImageFile);
@@ -134,17 +144,15 @@ std::string ModListTab::GetModImage(NexusModsAPI::ModInfo Mod)
 	return ImageFile;
 }
 
-void ModListTab::LoadPageAsync()
+static Vector3f InfoTextColors[] =
 {
-	LoadedMods.push_back(ModsSection{
-		.Title = "Trending",
-		.Mods = NexusModsAPI::GetMods("trending")
-		});
-	LoadedMods.push_back(ModsSection{
-		.Title = "Last Updated",
-		.Mods = NexusModsAPI::GetMods("latest_updated")
-		});
-}
+	// Red
+	Vector3f(1, 0, 0.1f),
+	// Green
+	Vector3f(0.1f, 1, 0.0f),
+	// Grey
+	Vector3f(0.65f),
+};
 
 void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 {
@@ -167,9 +175,10 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 		auto Entry = new ModEntry();
 		Entry->SetName(StrUtil::ShortenIfTooLong(Section.Mods[i].Name, 40));
 		Entry->SetDescription(StrUtil::ShortenIfTooLong(Section.Mods[i].Summary, 165));
-		Entry->SetInfo("Downloads: " + std::to_string(Section.Mods[i].Downloads));
+		Entry->SetInfo(Section.Mods[i].InfoString);
 		Entry->button->ButtonIndex = Index++;
 		Entry->button->OnClickedFunctionIndex = OnButtonClickedFunction;
+		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
 
 		Images.push_back(Entry->imageBackground);
 		Rows[i / ModsPerPage]->AddChild(Entry);
@@ -178,12 +187,21 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 
 void ModListTab::UpdateImages()
 {
-	std::unique_lock Guard(ImageLoadMutex);
+	std::lock_guard Guard(ImageLoadMutex);
 	size_t ImageIndex = 0;
 	for (auto& i : LoadedMods)
 	{
 		for (auto& j : i.Mods)
 		{
+			if (Images.size() <= ImageIndex)
+			{
+				if (j.ImageBuffer)
+				{
+					delete[] j.ImageBuffer;
+					j.ImageBuffer = nullptr;
+				}
+				break;
+			}
 			if (j.ImageBuffer && !Images[ImageIndex]->HasTexture())
 			{
 				unsigned int LoadedWebp = Webp::Load(Webp::WebpBuffer{
@@ -201,6 +219,7 @@ void ModListTab::UpdateImages()
 					->SetMinSize(Vector2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
 				ImageBackground->DeleteChildren();
 			}
+
 			ImageIndex++;
 		}
 	}
@@ -208,18 +227,6 @@ void ModListTab::UpdateImages()
 
 void ModListTab::LoadSections()
 {
-	LoadedMods.push_back(ModsSection{
-	.Title = "Trending",
-	.Mods = NexusModsAPI::GetMods("trending")
-		});
-	LoadedMods.push_back(ModsSection{
-		.Title = "Last Updated",
-		.Mods = NexusModsAPI::GetMods("latest_updated")
-		});
-	LoadedMods.push_back(ModsSection{
-	.Title = "Last Added",
-	.Mods = NexusModsAPI::GetMods("latest_added")
-		});
 }
 
 void ModListTab::Update()
@@ -227,20 +234,21 @@ void ModListTab::Update()
 	ModsScrollBox->SetMinSize(TabBackground->GetMinSize());
 	ModsScrollBox->SetMaxSize(TabBackground->GetMinSize());
 
-	if (ShouldReload)
+	if (ShouldReload && !IsLoadingList)
 	{
+		IsLoadingList = true;
 		ShouldReload = false;
 		LoadMainPage();
 	}
 
 	if (LoadedNewImage)
 	{
-		UpdateImages();
 		LoadedNewImage = false;
+		UpdateImages();
 	}
 }
 
 void ModListTab::OnResized()
 {
-	LoadMainPage();
+	ShouldReload = true;
 }
