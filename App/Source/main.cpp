@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 	Application::Error::SetErrorCallback([](std::string Message) {
 		Windows::ErrorBox("Internal error:\n" + Message);
 		});
-	Application::Initialize("../Dependencies/KlemmUI/Shaders");
+	Application::Initialize("app/shaders");
 
 	Net::SetAPIKey(NexusModsAPI::GetAPIKey());
 
