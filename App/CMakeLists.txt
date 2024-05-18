@@ -37,6 +37,8 @@ if (DEFINED TETHER_CI)
     add_compile_definitions(CI_BUILD=${TETHER_CI})
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
+
 target_link_libraries(App PRIVATE SDL2::SDL2)
 target_link_libraries(App PRIVATE libglew_static)
 target_link_libraries(App PRIVATE nlohmann_json::nlohmann_json)

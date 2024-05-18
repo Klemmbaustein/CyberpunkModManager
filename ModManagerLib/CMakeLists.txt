@@ -33,6 +33,8 @@ add_library(
 target_include_directories(ModManagerLib PUBLIC "Include")
 target_link_libraries(ModManagerLib PRIVATE nlohmann_json::nlohmann_json)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
+
 if (DEFINED TETHER_CI)
     add_compile_definitions(CI_BUILD=${TETHER_CI})
 endif()

@@ -126,6 +126,12 @@ static std::string GetProcessName(int pid)
 {
 	FILE* SelfLinkCommand = popen(("readlink /proc/" + std::to_string(pid) + "/exe").c_str(), "r");
 
+	if (SelfLinkCommand == nullptr)
+	{
+		std::cout << "failed to call popen() to read process name." << std::endl;
+		return "";
+	}
+
 	while (!feof(SelfLinkCommand))
 	{
 		char ExecutableBuffer[8000];
@@ -135,6 +141,7 @@ static std::string GetProcessName(int pid)
 		{
 			ExecutableBuffer[Read - 1] = 0;
 		}
+		pclose(SelfLinkCommand);
 		return ExecutableBuffer;
 	}
 	pclose(SelfLinkCommand);
@@ -177,19 +184,31 @@ void Windows::ErrorBox(std::string Content)
 
 bool Windows::IsProcessRunning(std::string Name)
 {
-	std::string CurrentName = GetCurrentProcessName();
-	for (auto& i : std::filesystem::directory_iterator("/proc"))
+	try
 	{
-		std::string FileNameString = i.path().filename().string();
-		if (strspn(FileNameString.c_str(), "0123456789") == FileNameString.size())
+		std::string CurrentName = GetCurrentProcessName();
+		for (auto& i : std::filesystem::directory_iterator("/proc"))
 		{
-			int pid = std::stoi(FileNameString);
-
-			if (pid != getpid() && GetProcessName(pid) == CurrentName)
+			if (!std::filesystem::is_directory(i))
 			{
-				return true;
+				continue;
+			}
+
+			std::string FileNameString = i.path().filename().string();
+			if (strspn(FileNameString.c_str(), "0123456789") == FileNameString.size())
+			{
+				int pid = std::stoi(FileNameString);
+
+				if (pid != getpid() && GetProcessName(pid) == CurrentName)
+				{
+					return true;
+				}
 			}
 		}
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
 	}
 	return false;
 }
