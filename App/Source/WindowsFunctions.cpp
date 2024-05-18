@@ -114,7 +114,7 @@ void Windows::RegisterSelfAsUriHandler()
 	RegCloseKey(NxmKey);
 	RegCloseKey(CommandKey);
 }
-#else
+//#else
 #include "StrUtil.h"
 #include "FileUtil.h"
 #include <fstream>
@@ -158,8 +158,11 @@ void Windows::SetWorkingDirectory()
 
 void Windows::RegisterSelfAsUriHandler()
 {
-	std::cout << GetCurrentProcessName();
-	std::string DesktopFilePath = "/home/jan/.local/share/applications/CyberpunkModManager.desktop";
+	char User[8000];
+
+	getlogin_r(User, sizeof(User));
+
+	std::string DesktopFilePath = "/home/" + std::string(User) + "/.local/share/applications/CyberpunkModManager.desktop";
 
 	if (std::filesystem::exists(DesktopFilePath))
 	{
