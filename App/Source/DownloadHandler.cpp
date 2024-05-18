@@ -24,10 +24,10 @@ static void DownloadModAsync(void*)
 	auto LoadBar = Popup::CreatePopup<LoadingBar>();
 	LoadBar->ProgressValue = &Progress;
 
-	LoadBar->LoadingString = "Downloading mod: " + Mod.Name;
+	LoadBar->SetLoadingString("Downloading mod: " + Mod.Name);
 	Net::GetFile(ModDownloadUrl, "app/temp/dl.zip", LoadBar->ProgressValue);
 	LoadBar->ProgressValue = nullptr;
-	LoadBar->LoadingString = "Installing mod...";
+	LoadBar->SetLoadingString("Installing mod...");
 
 	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath);

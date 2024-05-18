@@ -3,6 +3,13 @@
 
 using namespace KlemmUI;
 
+void LoadingBar::SetLoadingString(const std::string& NewValue)
+{
+	std::lock_guard g(PopupMutex);
+
+	LoadingString = NewValue;
+}
+
 void LoadingBar::Init()
 {
 	PopupWindow->BorderColor = Vector3f(0.6f, 0.1f, 0.1f);
@@ -30,7 +37,11 @@ void LoadingBar::Update()
 	{
 		return;
 	}
-	LoadingText->SetText(LoadingString);
+
+	std::lock_guard g(PopupMutex);
+	{
+		LoadingText->SetText(LoadingString);
+	}
 
 	if (ProgressValue)
 	{

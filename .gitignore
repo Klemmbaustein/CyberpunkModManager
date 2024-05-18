@@ -371,4 +371,4 @@ App/app/saved/*
 /App/CMakeBuild
 /App/ReleaseBuild
 /App/Build/
-*/.vscode/*
+*.vscode

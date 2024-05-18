@@ -3,9 +3,11 @@
 #include <KlemmUI/UI/UIText.h>
 #include <KlemmUI/UI/UIBackground.h>
 #include <atomic>
+#include <mutex>
 
 class LoadingBar : public Popup
 {
+	std::string LoadingString;
 public:
 
 	KlemmUI::UIBackground* LoadingBackground = nullptr;
@@ -13,7 +15,9 @@ public:
 
 	KlemmUI::UIText* LoadingText = nullptr;
 
-	std::string LoadingString;
+	std::mutex PopupMutex;
+
+	void SetLoadingString(const std::string& NewValue);
 
 	void Init() override;
 	bool HasBorder() override;

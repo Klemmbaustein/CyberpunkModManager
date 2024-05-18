@@ -113,7 +113,7 @@ void SetupWindow::GenerateAPIKeySetupPage()
 
 			new BackgroundTask([](void*) {
 				auto LoadPopup = Popup::CreatePopup<LoadingBar>();
-				LoadPopup->LoadingString = "Looking for game...";
+				LoadPopup->SetLoadingString("Looking for game...");
 
 				std::string GameLocation = Game::GetGameLocation();
 
