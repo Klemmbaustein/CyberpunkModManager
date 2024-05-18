@@ -101,6 +101,7 @@ std::string Game::GetGameLocation()
 		if (!std::filesystem::exists(GameLocation))
 		{
 			GameLocation = SearchForGame();
+			std::filesystem::create_directories("app/saved");
 			std::ofstream LocationFile = std::ofstream(GameDirFile);
 			LocationFile << GameLocation;
 			LocationFile.close();

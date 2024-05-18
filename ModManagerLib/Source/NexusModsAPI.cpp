@@ -182,6 +182,7 @@ std::string NexusModsAPI::GetAPIKey()
 
 void NexusModsAPI::SaveAPIKey(std::string Key)
 {
+	std::filesystem::create_directories("app/saved");
 	std::ofstream Out = std::ofstream(KeyJsonFile);
 	Out << json{ { "key", Key } };
 	Out.close();
