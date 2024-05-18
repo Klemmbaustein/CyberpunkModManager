@@ -11,7 +11,6 @@
 #include "Archive.h"
 #include "ModInfo.h"
 #include "UI/Tabs/InstalledModsTab.h"
-#include <stacktrace>
 
 static std::string ModDownloadUrl;
 static int ModID;
@@ -35,7 +34,6 @@ static void DownloadModAsync(void*)
 	DownloadHandler::InstallZip("app/temp/dl.zip", Mod.Name, Mod.Summary, ImagePath, CurrentModID);
 	LoadBar->ShouldClose = true;
 	LoadBar->CanClose = true;
-	std::stacktrace::current();
 }
 
 void DownloadHandler::DownloadModUri(Uri ModUri)
