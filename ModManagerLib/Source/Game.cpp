@@ -51,7 +51,7 @@ std::string Game::SearchForGOGGame()
 
 std::string Game::SearchForGame()
 {
-	FILE* FindCommand = popen("find '/mnt/c/Program Files (x86)/' -type f -name Cyberpunk2077.exe", "r");
+	FILE* FindCommand = popen("find / -type f -name Cyberpunk2077.exe", "r");
 
 	while (!feof(FindCommand))
 	{
