@@ -96,7 +96,6 @@ std::string Net::Get(std::string Url, std::atomic<float>* Progress, float Progre
 void Net::GetFile(std::string Url, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
 {
 	std::ofstream OutStream = std::ofstream(OutPath, std::ios::binary);
-	OutStream.exceptions(std::ios::failbit | std::ios::badbit);
 
 	if (Progress)
 	{

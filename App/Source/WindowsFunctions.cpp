@@ -120,7 +120,7 @@ void Windows::RegisterSelfAsUriHandler()
 #include <fstream>
 #include <cstring>
 #include <unistd.h>
-
+#include <pwd.h>
 
 static std::string GetProcessName(int pid)
 {
@@ -158,11 +158,9 @@ void Windows::SetWorkingDirectory()
 
 void Windows::RegisterSelfAsUriHandler()
 {
-	char User[8000];
-
-	getlogin_r(User, sizeof(User));
-
-	std::string DesktopFilePath = "/home/" + std::string(User) + "/.local/share/applications/CyberpunkModManager.desktop";
+	auto uid = geteuid();
+	auto pw = getpwuid(uid);
+	std::string DesktopFilePath = std::string(pw->pw_dir) + "/.local/share/applications/CyberpunkModManager.desktop";
 
 	if (std::filesystem::exists(DesktopFilePath))
 	{
@@ -170,12 +168,8 @@ void Windows::RegisterSelfAsUriHandler()
 	}
 
 	std::ofstream DesktopFile = std::ofstream(DesktopFilePath);
-	DesktopFile.exceptions(std::ios::failbit | std::ios::badbit);
 
 	std::string FileContent = FileUtil::ReadFile("app/CyberpunkModManager.desktop");
-	std::cout << FileContent << std::endl;
-	std::cout << StrUtil::Replace(FileContent, "$appPath", GetCurrentProcessName()) << std::endl;
-
 	DesktopFile << StrUtil::Replace(FileContent, "$appPath", GetCurrentProcessName());
 	DesktopFile.close();
 

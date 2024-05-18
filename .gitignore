@@ -370,3 +370,5 @@ App/app/saved/*
 /App/App.exe
 /App/CMakeBuild
 /App/ReleaseBuild
+/App/Build/
+*/.vscode/*

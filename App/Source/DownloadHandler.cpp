@@ -83,6 +83,7 @@ void DownloadHandler::DownloadModUri(Uri ModUri)
 }
 void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image, int CurrentModID)
 {
+	std::cout << "EXTRACT:" << ZipPath << std::endl;
 	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
@@ -98,10 +99,12 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 		.Enabled = false,
 		.Files = ModFiles,
 	};
+	std::cout << "EXTRACT2:" << ZipPath << std::endl;
 
 	std::filesystem::create_directories("app/profiles/test/");
 	NewMod.Save();
 	NewMod.Enable();
+	std::cout << "EXTRACT3:" << ZipPath << std::endl;
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 }
 
