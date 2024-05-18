@@ -1,5 +1,6 @@
 #include "Popup.h"
 #include "UI.h"
+#include "../Error.h"
 
 using namespace KlemmUI;
 
@@ -8,6 +9,7 @@ std::vector<Popup*> Popup::Popups;
 
 void Popup::PopupStart(Popup* p)
 {
+	Error::RegisterErrorHandler();
 	p->PopupWindow = new Window(
 		p->GetWindowTitle(),
 		p->HasBorder() ? Window::WindowFlag::None : Window::WindowFlag::Borderless | Window::WindowFlag::AlwaysOnTop,

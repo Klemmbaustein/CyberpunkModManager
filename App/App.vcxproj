@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\BackgroundTask.cpp" />
     <ClCompile Include="Source\DownloadHandler.cpp" />
+    <ClCompile Include="Source\Error.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\UI\LoadingBar.cpp" />
     <ClCompile Include="Source\UI\ModInfoWindow.cpp" />
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DownloadHandler.h" />
+    <ClInclude Include="Source\Error.h" />
     <ClInclude Include="Source\UI\LoadingBar.h" />
     <ClInclude Include="Source\UI\SetupWindow.h" />
     <ClInclude Include="Source\UI\Sidebar.h" />
@@ -160,7 +162,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>CURL_STATICLIB;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -184,7 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>CURL_STATICLIB;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>

@@ -1,5 +1,6 @@
 #include "BackgroundTask.h"
 #include <cassert>
+#include "Error.h"
 #include <iostream>
 
 thread_local BackgroundTask* BackgroundTask::ThisThreadPtr = nullptr;
@@ -36,6 +37,7 @@ void BackgroundTask::SetStatus(std::string NewStatus)
 
 void BackgroundTask::TaskRun(void (*Function)(void* Data), void* UserData, BackgroundTask* ThisTask)
 {
+	Error::RegisterErrorHandler();
 	ThisThreadPtr = ThisTask;
 	try
 	{

@@ -20,6 +20,7 @@ InstalledModsTab::InstalledModsTab()
 
 void InstalledModsTab::LoadSections()
 {
+	*((int*)nullptr) = 5;
 	auto Installed = ModInfo::GetAllInstalledMods();
 
 	std::vector<NexusModsAPI::ModInfo> NexusInstalledMods;

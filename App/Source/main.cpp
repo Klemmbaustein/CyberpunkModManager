@@ -14,6 +14,7 @@
 #include "BackgroundTask.h"
 #include "WindowsFunctions.h"
 #include "DownloadHandler.h"
+#include "Error.h"
 
 #include <iostream>
 
@@ -57,8 +58,8 @@ static void LoadUI()
 
 int main(int argc, char** argv)
 {
+	Error::RegisterErrorHandler();
 	Windows::SetWorkingDirectory();
-
 
 	Application::Error::SetErrorCallback([](std::string Message) {
 		Windows::ErrorBox("Internal error:\n" + Message);
