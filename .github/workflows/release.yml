@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: MSBuild
+name: Make Release
 
 on:
   push:
@@ -22,6 +22,9 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Init submodules
+      run: git submodule update --init --recursive
+
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: ./Setup.ps1
@@ -35,3 +38,12 @@ jobs:
     - name: Make release
       working-directory: ${{env.GITHUB_WORKSPACE}}/App
       run: ./MakeRelease.ps1
+
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v3
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        path: Release
+        name: CyberpunkModManager-Windows-${{ github.run_number }}
