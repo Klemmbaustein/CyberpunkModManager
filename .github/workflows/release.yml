@@ -19,8 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Setup VS devenv
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
 
     - name: Init submodules
       run: git submodule update --init --recursive
