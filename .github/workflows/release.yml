@@ -22,7 +22,7 @@ jobs:
     - name: Setup VS devenv
       uses: seanmiddleditch/gha-setup-vsdevenv@master
       with:
-        arch: x64
+        arch: amd64_x86
 
     - name: Init submodules
       run: git submodule update --init --recursive
