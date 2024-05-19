@@ -26,7 +26,8 @@ jobs:
 
     - name: Init submodules
       run: git submodule update --init --recursive
-
+    - name: Test ml.exe
+      run: ml.exe /?
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: ./Setup.ps1
