@@ -44,8 +44,8 @@ jobs:
       run: msbuild CyberpunkModManager.sln /p:Configuration=Release
 
     - name: Make release
-      working-directory: ${{env.GITHUB_WORKSPACE}}/App
-      run: ./MakeRelease.ps1
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: cd App && ./MakeRelease.ps1
 
     - name: Upload release artifact
       uses: actions/upload-artifact@v3
