@@ -114,9 +114,12 @@ Vector2ui ModInfoWindow::GetWindowResolution()
 void ModInfoWindow::SetModInfo(NexusModsAPI::ModInfo Info)
 {
 	std::lock_guard Guard = std::lock_guard(InfoMutex);
+
 	if (NexusModsAPI::GetIsLoggedIn() && Info.ModID != 0)
 	{
+		std::string ModImage = Info.ImageUrl;
 		LoadedInfo = NexusModsAPI::ModInfo::GetModFromID(Info.ModID);
+		LoadedInfo.ImageUrl = ModImage;
 	}
 	else
 	{

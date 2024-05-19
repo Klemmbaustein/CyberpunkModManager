@@ -1,6 +1,7 @@
 #include "FileUtil.h"
 #include <fstream>
 #include <filesystem>
+#include <iostream>
 
 std::string FileUtil::ReadFile(std::string FilePath)
 {
@@ -14,6 +15,12 @@ std::string FileUtil::ReadFile(std::string FilePath)
 std::vector<std::string> FileUtil::GetAllFilesInFolder(std::string FolderPath, std::string RelativePath)
 {
 	std::vector<std::string> ReturnValue;
+
+	if (!std::filesystem::exists(FolderPath))
+	{
+		std::cout << "Attempted to get all files in '" << FolderPath << "' but it does not exist." << std::endl;
+		return {};
+	}
 
 	for (auto& i : std::filesystem::directory_iterator(FolderPath))
 	{

@@ -92,6 +92,11 @@ std::vector<NexusModsAPI::ModInfo::ModFile> NexusModsAPI::ModInfo::GetFiles() co
 
 std::string NexusModsAPI::ModInfo::GetImagePath() const
 {
+	if (std::filesystem::exists(ImageUrl))
+	{
+		return ImageUrl;
+	}
+
 	return "app/temp/images/" + Name + ".webp";
 }
 

@@ -19,5 +19,13 @@ cmake -S . -B Build/
 cd Build/
 msbuild.exe webp.vcxproj /p:Configuration=Release /p:Platform=x64
 
+# Dependencies/7zip/CPP/7zip
+cd ../../7zip/CPP/7zip
+
+# 7zip is insane.
+nmake
+mkdir ../../../../App/app/bin -f
+cp Bundles/Alone/o/7za.exe ../../../../App/app/bin/
+
 # ./
-cd ../../..
+cd ../../../..

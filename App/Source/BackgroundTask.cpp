@@ -45,7 +45,7 @@ void BackgroundTask::TaskRun(void (*Function)(void* Data), void* UserData, Backg
 	}
 	catch (std::exception& e)
 	{
-		std::cout << e.what() << std::endl;
+		std::cout << "Background task failed: " << e.what() << std::endl;
 	}
 	ThisTask->Progress = 1;
 }

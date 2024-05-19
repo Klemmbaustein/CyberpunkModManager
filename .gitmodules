@@ -10,3 +10,6 @@
 [submodule "Dependencies/libwebp"]
 	path = Dependencies/libwebp
 	url = https://github.com/webmproject/libwebp.git
+[submodule "Dependencies/7zip"]
+	path = Dependencies/7zip
+	url = https://github.com/7zip-dev/7zip.git

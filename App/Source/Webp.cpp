@@ -2,6 +2,7 @@
 #include "Webp.h"
 #include "webp/decode.h"
 #include <cstring>
+#include <filesystem>
 #include <KlemmUI/Rendering/Texture.h>
 
 Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)
@@ -9,6 +10,11 @@ Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)
 	FILE* FilePtr;
 	uint8_t* Buffer;
 	size_t FileSize;
+
+	if (!std::filesystem::exists(FilePath))
+	{
+		return WebpBuffer();
+	}
 
 	FilePtr = fopen(FilePath.c_str(), "rb");
 	fseek(FilePtr, 0, SEEK_END);

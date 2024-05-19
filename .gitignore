@@ -372,3 +372,4 @@ App/app/saved/*
 /App/ReleaseBuild
 /App/Build/
 *.vscode
+/Dependencies/liblzma

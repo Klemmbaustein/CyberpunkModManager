@@ -25,13 +25,19 @@ static void DownloadModAsync(void*)
 	LoadBar->ProgressValue = &Progress;
 
 	LoadBar->SetLoadingString("Downloading mod: " + Mod.Name);
-	Net::GetFile(ModDownloadUrl, "app/temp/dl.zip", LoadBar->ProgressValue);
+
+
+	std::string ArchiveName = "app/temp/" + ModDownloadUrl.substr(ModDownloadUrl.find_last_of("/") + 1);
+	ArchiveName = ArchiveName.substr(0, ArchiveName.find_first_of("?"));
+	std::cout << "Downloading " << ArchiveName << std::endl;
+
+	Net::GetFile(ModDownloadUrl, ArchiveName, LoadBar->ProgressValue);
 	LoadBar->ProgressValue = nullptr;
 	LoadBar->SetLoadingString("Installing mod...");
 
 	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath);
-	DownloadHandler::InstallZip("app/temp/dl.zip", Mod.Name, Mod.Summary, ImagePath, CurrentModID);
+	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID);
 	LoadBar->ShouldClose = true;
 	LoadBar->CanClose = true;
 }
