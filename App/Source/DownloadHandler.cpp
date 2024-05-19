@@ -38,6 +38,7 @@ static void DownloadModAsync(void*)
 	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath);
 	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID);
+	std::filesystem::remove(ArchiveName);
 	LoadBar->ShouldClose = true;
 	LoadBar->CanClose = true;
 }

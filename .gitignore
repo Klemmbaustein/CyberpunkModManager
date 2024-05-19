@@ -373,3 +373,5 @@ App/app/saved/*
 /App/Build/
 *.vscode
 /Dependencies/liblzma
+*.tar.xz
+7zip-download/

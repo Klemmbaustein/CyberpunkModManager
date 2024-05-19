@@ -3,7 +3,9 @@
 #include <fstream>
 #include "miniz/miniz.h"
 #include <iostream>
+#if _WIN32
 #include <Windows.h>
+#endif
 
 void Archive::ExtractZip(std::string ArchivePath, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
 {
@@ -87,7 +89,7 @@ void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<floa
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
 #else
-	std::string Command = "app/bin/7za.exe x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
+	std::string Command = "app/bin/7zz x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
 	system((Command).c_str());
 #endif
 }
