@@ -19,14 +19,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup VS devenv for x86
-      uses: seanmiddleditch/gha-setup-vsdevenv@master
-      with:
-        arch: x86
     - name: Setup VS devenv for amd64
       uses: seanmiddleditch/gha-setup-vsdevenv@master
       with:
         arch: amd64
+
+    - name: Setup VS devenv for x86
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: x86
 
     - name: Init submodules
       run: git submodule update --init --recursive
