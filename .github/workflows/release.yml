@@ -35,7 +35,7 @@ jobs:
       run: ml64.exe /? && ml.exe /?
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./Setup.ps1
+      run: ./Setup.ps1 CI_BUILD
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
