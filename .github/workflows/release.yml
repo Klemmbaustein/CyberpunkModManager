@@ -19,15 +19,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup VS devenv
+    - name: Setup VS devenv for x86
       uses: seanmiddleditch/gha-setup-vsdevenv@master
       with:
-        arch: amd64_x86
+        arch: x86
+    - name: Setup VS devenv for amd64
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: amd64
 
     - name: Init submodules
       run: git submodule update --init --recursive
     - name: Test ml.exe
-      run: ml.exe /?
+      run: ml64.exe /? && ml.exe /?
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: ./Setup.ps1
