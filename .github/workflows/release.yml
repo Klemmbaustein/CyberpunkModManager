@@ -78,6 +78,7 @@ jobs:
         
     - name: Make release
       run: |
+        cd App/
         mkdir Release/
         cp app/ Release/app/
         cp Build/App Release/CyberpunkModManager
