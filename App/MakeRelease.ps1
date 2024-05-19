@@ -1,6 +1,8 @@
 # Copies all neccessary files into the App/Release directory.
 
-rm  -r -fo Release/
+if (Test-Path "Release") {
+   rm "Release" -r -fo
+}
 
 mkdir Release/
 cp app Release/ -r -fo
