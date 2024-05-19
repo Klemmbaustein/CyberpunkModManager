@@ -28,6 +28,7 @@ if ($args[0] -eq "CI_BUILD")
 	cd ../../..
 	Invoke-WebRequest https://www.7-zip.org/a/7z2405-extra.7z -OutFile 7zip.7z
 	7z x -y 7zip.7z -o7zipFiles/
+	mkdir -f App/app/bin
 	cp 7ZipFiles/7za.exe App/app/bin/
 	rm -r -fo 7zipFiles
 	rm 7zip.7z
