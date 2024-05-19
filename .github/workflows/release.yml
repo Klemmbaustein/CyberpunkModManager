@@ -54,3 +54,31 @@ jobs:
       with:
         path: App/Release
         name: CyberpunkModManager-Windows-${{ github.run_number }}
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Init submodules
+      run: git submodule update --init --recursive
+      
+    - name: Build App
+      run: |
+        cd App/
+        cmake -S . -B Build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake --build Build/ -j 8
+        
+    - name: Make release
+      run: |
+        mkdir Release/
+        cp app/ Release/app/
+        cp Build/App Release/CyberpunkModManager
+
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v3
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        path: App/Release
+        name: CyberpunkModManager-Linux-${{ github.run_number }}
