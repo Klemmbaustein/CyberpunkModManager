@@ -122,5 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app\CyberpunkModManager.desktop" />
+    <None Include="MakeRelease.ps1" />
   </ItemGroup>
 </Project>

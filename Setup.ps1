@@ -2,6 +2,8 @@
 cd Dependencies/KlemmUI
 ./Setup.ps1
 
+cp lib/Release/SDl2.dll ../../App
+
 # Dependencies/curl
 cd ../curl
 

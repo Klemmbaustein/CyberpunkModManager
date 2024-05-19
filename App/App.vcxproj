@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app\CyberpunkModManager.desktop" />
+    <None Include="MakeRelease.ps1" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
