@@ -80,7 +80,7 @@ jobs:
       run: |
         cd App/
         mkdir Release/
-        cp app/ Release/app/
+        cp -rf app/ Release/app/
         cp Build/App Release/CyberpunkModManager
 
     - name: Upload release artifact
