@@ -62,7 +62,13 @@ jobs:
     
     - name: Init submodules
       run: git submodule update --init --recursive
-      
+    
+    - name: Install dependencies
+      run: |
+          sudo apt autoremove --purge snapd
+          sudo apt-get install libsdl2-dev
+          sudo apt-get install libglew-dev
+
     - name: Build App
       run: |
         cd App/
