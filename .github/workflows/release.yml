@@ -52,6 +52,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        path: Release
+        path: App/Release
         name: CyberpunkModManager-Windows-${{ github.run_number }}
