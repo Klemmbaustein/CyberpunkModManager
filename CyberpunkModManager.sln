@@ -26,6 +26,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE48A05F-2F2B-4832-A4A5-868C3BE75BF5}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		LICENSE.txt = LICENSE.txt
 		Setup.ps1 = Setup.ps1
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection

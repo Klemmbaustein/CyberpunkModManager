@@ -85,6 +85,7 @@ jobs:
         cd App/
         mkdir Release/
         cp -rf app/ Release/app/
+        cp ../LICENSE.txt Release/
         cp Build/App Release/CyberpunkModManager
 
     - name: Upload release artifact
