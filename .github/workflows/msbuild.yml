@@ -33,3 +33,5 @@ jobs:
       run: msbuild CyberpunkModManager.sln /p:Configuration=Release
 
     - name: Make release
+      working-directory: ${{env.GITHUB_WORKSPACE}}/App
+      run: ./MakeRelease.ps1
