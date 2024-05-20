@@ -35,7 +35,9 @@ add_executable(
 execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies/get-7zip-linux.sh
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies
     RESULT_VARIABLE CMD_ERROR
-    OUTPUT_FILE CMD_OUTPUT)
+    OUTPUT_FILE CMD_OUTPUT
+)
+message(${CMD_ERROR})
 
 if (DEFINED TETHER_CI)
     add_compile_definitions(CI_BUILD=${TETHER_CI})

@@ -4,7 +4,7 @@
 # documentation.
 
 name: Make Release
-run-name: Creating Release
+run-name: Create Release
 
 # Creates Windows and Linux builds if there is any change on the master branch, then uploads these to GitHub.
 
@@ -110,7 +110,9 @@ jobs:
 
         cd ${{ github.workspace }}/Release/
         mv ${{env.LINUX_BUILD_NAME}} CyberpunkModManager
+        ls -R
         chmod +x CyberpunkModManager/CyberupunkModManager
+        chmod +x CyberpunkModManager/app/bin/7zz
         tar -czf ${{ github.workspace }}/${{env.LINUX_RELEASE_NAME}} CyberpunkModManager
 
     - name: List directory

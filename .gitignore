@@ -375,3 +375,4 @@ App/app/saved/*
 /Dependencies/liblzma
 *.tar.xz
 7zip-download/
+CMD_OUTPUT
