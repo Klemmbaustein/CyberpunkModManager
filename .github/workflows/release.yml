@@ -111,7 +111,7 @@ jobs:
         cd ${{ github.workspace }}/Release/
         mv ${{env.LINUX_BUILD_NAME}} CyberpunkModManager
         ls -R
-        chmod +x CyberpunkModManager/CyberupunkModManager
+        chmod +x CyberpunkModManager/CyberpunkModManager
         chmod +x CyberpunkModManager/app/bin/7zz
         tar -czf ${{ github.workspace }}/${{env.LINUX_RELEASE_NAME}} CyberpunkModManager
 
