@@ -109,7 +109,9 @@ jobs:
         zip -r ${{ github.workspace }}/${{env.WINDOWS_RELEASE_NAME}} ./*
 
         cd ${{ github.workspace }}/Release/
-        tar -czf ${{ github.workspace }}/${{env.LINUX_RELEASE_NAME}} ${{env.LINUX_BUILD_NAME}}
+        mv ${{env.LINUX_BUILD_NAME}} CyberpunkModManager
+        chmod +x CyberpunkModManager/CyberupunkModManager
+        tar -czf ${{ github.workspace }}/${{env.LINUX_RELEASE_NAME}} CyberpunkModManager
 
     - name: List directory
       run: ls -R
