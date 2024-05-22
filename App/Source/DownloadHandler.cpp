@@ -14,14 +14,27 @@
 
 static std::string ModDownloadUrl;
 static int ModID;
+static int FileID;
 static void DownloadModAsync(void*)
 {
 	std::string CurrentModUrl = ModDownloadUrl;
 	int CurrentModID = ModID;
-	auto Mod = NexusModsAPI::ModInfo::GetModFromID(CurrentModID);
+	int CurrentFileID = FileID;
+
+	auto Mod = NxmAPI::ModInfo::GetModFromID(CurrentModID);
+	auto File = NxmAPI::ModInfo::ModFile::GetFileInfo(CurrentModID, CurrentFileID);
 
 	std::atomic<float> Progress = 0;
 	auto LoadBar = Popup::CreatePopup<LoadingBar>();
+
+	while (true)
+	{
+		if (LoadBar->PopupWindow)
+		{
+			LoadBar->PopupWindow->OnResized();
+		}
+	}
+
 	LoadBar->ProgressValue = &Progress;
 
 	LoadBar->SetLoadingString("Downloading mod: " + Mod.Name);
@@ -37,7 +50,7 @@ static void DownloadModAsync(void*)
 
 	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath);
-	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID);
+	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID, CurrentFileID, File.Category);
 	std::filesystem::remove(ArchiveName);
 	LoadBar->ShouldClose = true;
 	LoadBar->CanClose = true;
@@ -78,17 +91,17 @@ void DownloadHandler::DownloadModUri(Uri ModUri)
 	}
 
 	ModID = std::stoi(ModUri.Path[1]);
-
-	ModDownloadUrl = NexusModsAPI::ModInfo::ModFile::DownloadLink(
+	FileID = std::stoi(ModUri.Path[3]);
+	ModDownloadUrl = NxmAPI::ModInfo::ModFile::DownloadLink(
 		ModID,
-		std::stoi(ModUri.Path[3]),
+		FileID,
 		ModUri.Query["key"],
 		ModUri.Query["expires"]
 	);
 
 	new BackgroundTask(&DownloadModAsync);
 }
-void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image, int CurrentModID)
+void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image, int CurrentModID, int CurrentFileID, std::string FileCategory)
 {
 	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
@@ -101,7 +114,9 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 		.Name = Name,
 		.Description = Description,
 		.ImagePath = Image,
+		.FileCategory = FileCategory,
 		.ModID = CurrentModID,
+		.FileID = CurrentFileID,
 		.Enabled = false,
 		.Files = ModFiles,
 	};

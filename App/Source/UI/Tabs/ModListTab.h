@@ -11,7 +11,8 @@ class ModListTab : public AppTab
 	bool IsLoadingList = false;
 protected:
 
-	void LoadSection(std::vector<NexusModsAPI::ModInfo> Mods, std::string Title);
+	void LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Title);
+	void ClearContent();
 	void ShowLoadingScreen();
 public:
 	bool ShouldReload = false;
@@ -28,11 +29,11 @@ public:
 	struct ModsSection
 	{
 		std::string Title;
-		std::vector<NexusModsAPI::ModInfo> Mods;
+		std::vector<NxmAPI::ModInfo> Mods;
 	};
 	std::vector<ModListTab::ModsSection> LoadedMods;
 
-	virtual std::string GetModImage(NexusModsAPI::ModInfo Mod);
+	virtual std::string GetModImage(NxmAPI::ModInfo Mod);
 
 	void GenerateSection(ModsSection Section, size_t& Index);
 	void UpdateImages();
@@ -41,5 +42,7 @@ public:
 	virtual void OnResized() override;
 
 	KlemmUI::UIScrollBox* ModsScrollBox = nullptr;
+	KlemmUI::UIBox* HeaderBox = nullptr;
+	KlemmUI::UIBox* ContentBox = nullptr;
 
 };

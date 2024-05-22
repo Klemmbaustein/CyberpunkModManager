@@ -149,6 +149,7 @@
     <ClInclude Include="Include\ModInfo.h" />
     <ClInclude Include="Include\Net.h" />
     <ClInclude Include="Include\NexusModsAPI.h" />
+    <ClInclude Include="Include\ParsePE.h" />
     <ClInclude Include="Include\StrUtil.h" />
     <ClInclude Include="Include\Archive.h" />
     <ClInclude Include="Source\miniz\miniz.h" />

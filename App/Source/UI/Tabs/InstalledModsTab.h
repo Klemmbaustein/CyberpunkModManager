@@ -7,5 +7,5 @@ public:
 	InstalledModsTab();
 
 	virtual void LoadSections() override;
-	virtual std::string GetModImage(NexusModsAPI::ModInfo Mod) override;
+	virtual std::string GetModImage(NxmAPI::ModInfo Mod) override;
 };

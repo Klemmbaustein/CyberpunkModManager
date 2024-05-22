@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace NexusModsAPI
+namespace NxmAPI
 {
 	struct ModInfo
 	{
@@ -17,6 +17,7 @@ namespace NexusModsAPI
 		{
 			Red,
 			Green,
+			Yellow,
 			Grey,
 		};
 		ModInfoColor InfoColor = Grey;
@@ -30,13 +31,17 @@ namespace NexusModsAPI
 			std::string Name;
 			std::string Description;
 			std::string Version;
+			std::string Category;
 
 			ModInfo* Mod = nullptr;
 			int FileID = 0;
 
 			static std::string DownloadLink(int ModID, int FileID, std::string Token, std::string Expires);
+
+			static ModFile GetFileInfo(int ModID, int FileID);
 		};
-		std::vector<ModFile> GetFiles() const;
+
+		std::vector<ModFile> GetFiles(std::string Category) const;
 		std::string GetImagePath() const;
 	};
 

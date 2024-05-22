@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 		});
 	Application::Initialize("app/shaders");
 
-	Net::SetAPIKey(NexusModsAPI::GetAPIKey());
+	Net::SetAPIKey(NxmAPI::GetAPIKey());
 
 	Windows::RegisterSelfAsUriHandler();
 

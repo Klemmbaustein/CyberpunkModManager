@@ -27,7 +27,7 @@ ModBrowserTab::ModBrowserTab()
 
 void ModBrowserTab::LoadSections()
 {
-	LoadSection(NexusModsAPI::GetMods("trending"), "Trending");
-	LoadSection(NexusModsAPI::GetMods("latest_updated"), "Last Updated");
-	LoadSection(NexusModsAPI::GetMods("latest_added"), "Last Added");
+	LoadSection(NxmAPI::GetMods("trending"), "Trending");
+	LoadSection(NxmAPI::GetMods("latest_updated"), "Last Updated");
+	LoadSection(NxmAPI::GetMods("latest_added"), "Last Added");
 }

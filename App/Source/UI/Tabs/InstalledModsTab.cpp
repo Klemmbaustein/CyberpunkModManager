@@ -22,25 +22,27 @@ void InstalledModsTab::LoadSections()
 {
 	auto Installed = ModInfo::GetAllInstalledMods();
 
-	std::vector<NexusModsAPI::ModInfo> NexusInstalledMods;
+	std::vector<NxmAPI::ModInfo> NexusInstalledMods;
 
 	for (auto& i : Installed)
 	{
-		NexusInstalledMods.push_back(NexusModsAPI::ModInfo
-			{
-				.Name = i.Name,
-				.Summary = i.Description,
-				.ImageUrl = i.ImagePath,
-				.InfoString = i.Enabled ? "Enabled" : "Disabled",
-				.InfoColor = i.Enabled ? NexusModsAPI::ModInfo::Green : NexusModsAPI::ModInfo::Red,
-				.ModID = i.ModID,
-			});
+		auto NewMod = NxmAPI::ModInfo
+		{
+			.Name = i.Name,
+			.Summary = i.Description,
+			.ImageUrl = i.ImagePath,
+			.InfoString = i.Enabled ? "Enabled" : "Disabled",
+			.InfoColor = i.Enabled ? NxmAPI::ModInfo::Green : NxmAPI::ModInfo::Red,
+			.ModID = i.ModID,
+		};
+
+		NexusInstalledMods.push_back(NewMod);
 	}
 
 	LoadSection(NexusInstalledMods, "Installed");
 }
 
-std::string InstalledModsTab::GetModImage(NexusModsAPI::ModInfo Mod)
+std::string InstalledModsTab::GetModImage(NxmAPI::ModInfo Mod)
 {
 	return Mod.ImageUrl;
 }

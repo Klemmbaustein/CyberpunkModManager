@@ -14,7 +14,7 @@ using namespace KlemmUI;
 static std::mutex ImageLoadMutex;
 static std::mutex PageLoadMutex;
 
-static void LoadModImageWebP(NexusModsAPI::ModInfo& Mod, std::string FilePath)
+static void LoadModImageWebP(NxmAPI::ModInfo& Mod, std::string FilePath)
 {
 	if (!std::filesystem::exists(FilePath))
 	{
@@ -27,7 +27,7 @@ static void LoadModImageWebP(NexusModsAPI::ModInfo& Mod, std::string FilePath)
 	Mod.ImageHeight = Buffer.Height;
 }
 
-void ModListTab::LoadSection(std::vector<NexusModsAPI::ModInfo> Mods, std::string Title)
+void ModListTab::LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Title)
 {
 	LoadedMods.push_back(ModsSection{
 		.Title = Title,
@@ -35,10 +35,12 @@ void ModListTab::LoadSection(std::vector<NexusModsAPI::ModInfo> Mods, std::strin
 	});
 }
 
-void ModListTab::ShowLoadingScreen()
+void ModListTab::ClearContent()
 {
 	Images.clear();
-	ModsScrollBox->DeleteChildren();
+	ContentBox->DeleteChildren();
+	ContentBox->SetVerticalAlign(UIBox::Align::Reverse);
+	ContentBox->SetHorizontalAlign(UIBox::Align::Default);
 	for (unsigned int tex : LoadedTextures)
 	{
 		Texture::UnloadTexture(tex);
@@ -46,11 +48,27 @@ void ModListTab::ShowLoadingScreen()
 	LoadedTextures.clear();
 }
 
+void ModListTab::ShowLoadingScreen()
+{
+	ClearContent();
+	
+	ContentBox->SetVerticalAlign(UIBox::Align::Centered);
+	ContentBox->SetHorizontalAlign(UIBox::Align::Centered);
+	ContentBox->AddChild((new UIText(20, 1, "Loading...", UI::Text))
+		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+		->SetPadding(0.8f));
+}
+
 ModListTab::ModListTab()
 	: AppTab("abc")
 {
 	ModsScrollBox = new UIScrollBox(false, 0, true);
-	TabBackground->AddChild(ModsScrollBox);
+
+	HeaderBox = new UIBox(true);
+	ContentBox = new UIBox(false);
+	TabBackground->AddChild(ModsScrollBox
+		->AddChild(HeaderBox)
+		->AddChild(ContentBox));
 }
 
 void ModListTab::OpenModFromIndex(int Index)
@@ -121,7 +139,7 @@ void ModListTab::LoadMainPage()
 
 void ModListTab::Generate()
 {
-	ShowLoadingScreen();
+	ClearContent();
 
 	size_t ElementIndex = 0;
 	for (auto& i : LoadedMods)
@@ -130,7 +148,7 @@ void ModListTab::Generate()
 	}
 }
 
-std::string ModListTab::GetModImage(NexusModsAPI::ModInfo Mod)
+std::string ModListTab::GetModImage(NxmAPI::ModInfo Mod)
 {
 	std::filesystem::create_directories("app/temp/images/");
 	std::string ImageFile = Mod.GetImagePath();
@@ -150,6 +168,8 @@ static Vector3f InfoTextColors[] =
 	Vector3f(1, 0, 0.1f),
 	// Green
 	Vector3f(0.1f, 1, 0.0f),
+	// Yellow
+	Vector3f(1, 1, 0.1f),
 	// Grey
 	Vector3f(0.65f),
 };
@@ -158,13 +178,13 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 {
 	auto Header = new ModHeader();
 	Header->SetName(Section.Title);
-	ModsScrollBox->AddChild(Header);
+	ContentBox->AddChild(Header);
 
 	std::vector<UIBox*> Rows;
 	for (int i = 0; i < 20; i++)
 	{
 		UIBox* Row = new UIBox(true);
-		ModsScrollBox->AddChild(Row);
+		ContentBox->AddChild(Row);
 		Rows.push_back(Row);
 	}
 

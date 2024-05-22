@@ -18,7 +18,7 @@ thread_local ModInfoWindow* ModInfoWindow::CurrentWindow = nullptr;
 void ModInfoWindow::LoadInfo()
 {
 	PopupBackground->DeleteChildren();
-	NexusModsAPI::ModInfo Mod = GetModInfo();
+	NxmAPI::ModInfo Mod = GetModInfo();
 
 	InfoElement = new ModInfoWindowElement();
 
@@ -39,7 +39,18 @@ void ModInfoWindow::LoadInfo()
 		->AddChild(InfoElement));
 }
 
-void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NexusModsAPI::ModInfo& Mod)
+static void OpenModInBrowser(const NxmAPI::ModInfo& Mod, std::string Tab = "")
+{
+	std::string Link = "https://nexusmods.com/cyberpunk2077/mods/" + std::to_string(Mod.ModID) + Tab;
+
+#if _WIN32
+	Windows::Open(Link);
+#else
+	Windows::Open("xdg-open \"" + Link + "\" &");
+#endif
+}
+
+void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::ModInfo& Mod)
 {
 	Parent->DeleteChildren();
 	ActionsBox = Parent;
@@ -53,18 +64,23 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NexusMod
 		InstallButton->SetText("Install");
 		InstallButton->button->OnClickedFunction = []() {
 			// Can't actually install anything since NexusMods is the worst thing ever.
-			std::string Link = "https://nexusmods.com/cyberpunk2077/mods/" + std::to_string(CurrentWindow->GetModInfo().ModID) + "?tab=files";
-
-#if _WIN32
-			Windows::Open(Link);
-#else
-			Windows::Open("xdg-open \"" + Link + "\" &");
-#endif
+			OpenModInBrowser(CurrentWindow->GetModInfo(), "?tab=files");
 			};
 		Parent->AddChild(InstallButton);
 	}
 	else
 	{
+		if (Mod.InfoColor == NxmAPI::ModInfo::Yellow)
+		{
+			auto* UpdateButton = new ModInfoButton();
+			UpdateButton->SetText("Update");
+			UpdateButton->button->OnClickedFunction = []() {
+				OpenModInBrowser(CurrentWindow->GetModInfo(), "?tab=files");
+				CurrentWindow->ShouldClose = true;
+				};
+			Parent->AddChild(UpdateButton);
+		}
+
 		auto* EnableButton = new ModInfoButton();
 		EnableButton->SetText(ModInf.Enabled ? "Disable" : "Enable");
 		EnableButton->button->OnClickedFunction = []() {
@@ -94,12 +110,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NexusMod
 		auto* OpenInBrowserButton = new ModInfoButton();
 		OpenInBrowserButton->SetText("Open website");
 		OpenInBrowserButton->button->OnClickedFunction = []() {
-			std::string Link = "https://nexusmods.com/cyberpunk2077/mods/" + std::to_string(CurrentWindow->GetModInfo().ModID);
-#if _WIN32
-			Windows::Open(Link);
-#else
-			Windows::Open("xdg-open \"" + Link + "\" &");
-#endif
+			OpenModInBrowser(CurrentWindow->GetModInfo());
 			};
 		Parent->AddChild(OpenInBrowserButton);
 	}
@@ -111,15 +122,17 @@ Vector2ui ModInfoWindow::GetWindowResolution()
 	return Vector2ui(800, 700);
 }
 
-void ModInfoWindow::SetModInfo(NexusModsAPI::ModInfo Info)
+void ModInfoWindow::SetModInfo(NxmAPI::ModInfo Info)
 {
 	std::lock_guard Guard = std::lock_guard(InfoMutex);
 
-	if (NexusModsAPI::GetIsLoggedIn() && Info.ModID != 0)
+	if (NxmAPI::GetIsLoggedIn() && Info.ModID != 0)
 	{
 		std::string ModImage = Info.ImageUrl;
-		LoadedInfo = NexusModsAPI::ModInfo::GetModFromID(Info.ModID);
+		auto Color = Info.InfoColor;
+		LoadedInfo = NxmAPI::ModInfo::GetModFromID(Info.ModID);
 		LoadedInfo.ImageUrl = ModImage;
+		LoadedInfo.InfoColor = Color;
 	}
 	else
 	{
@@ -128,7 +141,7 @@ void ModInfoWindow::SetModInfo(NexusModsAPI::ModInfo Info)
 	HasInfo = true;
 }
 
-NexusModsAPI::ModInfo ModInfoWindow::GetModInfo()
+NxmAPI::ModInfo ModInfoWindow::GetModInfo()
 {
 	std::lock_guard Guard = std::lock_guard(InfoMutex);
 	return LoadedInfo;

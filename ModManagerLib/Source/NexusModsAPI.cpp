@@ -8,13 +8,13 @@
 #include <fstream>
 using namespace nlohmann;
 
-namespace NexusModsAPI
+namespace NxmAPI
 {
 	std::string SourceUrl = "https://api.nexusmods.com/v1";
 	std::string GameDomainName = "cyberpunk2077";
 }
 
-NexusModsAPI::ModInfo NexusModsAPI::ModInfo::GetModFromID(int ID)
+NxmAPI::ModInfo NxmAPI::ModInfo::GetModFromID(int ID)
 {
 	json Response = json::parse(Net::Get(SourceUrl
 		+ "/games/"
@@ -50,7 +50,7 @@ NexusModsAPI::ModInfo NexusModsAPI::ModInfo::GetModFromID(int ID)
 	return NewMod;
 }
 
-std::string NexusModsAPI::ModInfo::ModFile::DownloadLink(int ModID, int FileID, std::string Token, std::string Expires)
+std::string NxmAPI::ModInfo::ModFile::DownloadLink(int ModID, int FileID, std::string Token, std::string Expires)
 {
 	json ResponseJson = json::parse(Net::Get(SourceUrl
 		+ "/games/"
@@ -67,7 +67,25 @@ std::string NexusModsAPI::ModInfo::ModFile::DownloadLink(int ModID, int FileID, 
 	return ResponseJson[0].at("URI");
 }
 
-std::vector<NexusModsAPI::ModInfo::ModFile> NexusModsAPI::ModInfo::GetFiles() const
+NxmAPI::ModInfo::ModFile NxmAPI::ModInfo::ModFile::GetFileInfo(int ModID, int FileID)
+{
+	json ResponseJson = json::parse(Net::Get(SourceUrl
+		+ "/games/"
+		+ GameDomainName
+		+ "/mods/"
+		+ std::to_string(ModID)
+		+ "/files/"
+		+ std::to_string(FileID)
+		+ ".json"));
+
+	std::cout << ResponseJson.dump() << std::endl;
+
+	return ModFile{
+		.Category = ResponseJson.at("category_name")
+	};
+}
+
+std::vector<NxmAPI::ModInfo::ModFile> NxmAPI::ModInfo::GetFiles(std::string Category) const
 {
 	json ResponseJson = json::parse(Net::Get(SourceUrl
 		+ "/games/"
@@ -78,19 +96,28 @@ std::vector<NexusModsAPI::ModInfo::ModFile> NexusModsAPI::ModInfo::GetFiles() co
 
 	std::vector<ModFile> FoundFiles;
 
-	for (const auto& i : ResponseJson.at("files"))
+	try
 	{
-		FoundFiles.push_back(ModFile{
-			.Name = i.at("name"),
-			.Description = i.at("description"),
-			.Version = i.at("version"),
-			});
+		for (const auto& i : ResponseJson.at("files"))
+		{
+			FoundFiles.push_back(ModFile{
+				.Name = i.at("name"),
+				.Description = i.at("description"),
+				.Version = i.at("version"),
+				.Category = i.at("category_name"),
+				.FileID = i.at("file_id"),
+				});
+		}
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
 	}
 
 	return FoundFiles;
 }
 
-std::string NexusModsAPI::ModInfo::GetImagePath() const
+std::string NxmAPI::ModInfo::GetImagePath() const
 {
 	if (std::filesystem::exists(ImageUrl))
 	{
@@ -100,12 +127,12 @@ std::string NexusModsAPI::ModInfo::GetImagePath() const
 	return "app/temp/images/" + Name + ".webp";
 }
 
-bool NexusModsAPI::GetIsLoggedIn()
+bool NxmAPI::GetIsLoggedIn()
 {
 	return !GetAPIKey().empty();
 }
 
-std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
+std::vector<NxmAPI::ModInfo> NxmAPI::GetMods(std::string Category)
 {
 	json ResponseJson = json::parse(Net::Get(SourceUrl
 		+ "/games/"
@@ -173,7 +200,7 @@ std::vector<NexusModsAPI::ModInfo> NexusModsAPI::GetMods(std::string Category)
 
 static const std::string KeyJsonFile = "app/saved/apikey.json";
 
-std::string NexusModsAPI::GetAPIKey()
+std::string NxmAPI::GetAPIKey()
 {
 
 	if (!std::filesystem::exists(KeyJsonFile))
@@ -190,7 +217,7 @@ std::string NexusModsAPI::GetAPIKey()
 	return FileJson.at("key");
 }
 
-void NexusModsAPI::SaveAPIKey(std::string Key)
+void NxmAPI::SaveAPIKey(std::string Key)
 {
 	std::filesystem::create_directories("app/saved");
 	std::ofstream Out = std::ofstream(KeyJsonFile);
@@ -198,7 +225,7 @@ void NexusModsAPI::SaveAPIKey(std::string Key)
 	Out.close();
 }
 
-std::string NexusModsAPI::GetAPIKeyAccountName(std::string Key)
+std::string NxmAPI::GetAPIKeyAccountName(std::string Key)
 {
 	Net::SetAPIKey(Key);
 	json FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json"));

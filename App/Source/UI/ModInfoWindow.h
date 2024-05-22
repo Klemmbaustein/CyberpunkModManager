@@ -6,20 +6,20 @@
 
 class ModInfoWindow : public Popup
 {
-	NexusModsAPI::ModInfo LoadedInfo;
+	NxmAPI::ModInfo LoadedInfo;
 	std::mutex InfoMutex;
 	bool HasInfo = false;
 	void LoadInfo();
 	static thread_local ModInfoWindow* CurrentWindow;
 	KlemmUI::UIBox* ActionsBox = nullptr;
-	void GenerateActionButtons(KlemmUI::UIBox* Parent, const NexusModsAPI::ModInfo& Mod);
+	void GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::ModInfo& Mod);
 public:
 	Vector2ui GetWindowResolution() override;
 	
 	ModInfoWindowElement* InfoElement = nullptr;
 
-	void SetModInfo(NexusModsAPI::ModInfo Info);
-	NexusModsAPI::ModInfo GetModInfo();
+	void SetModInfo(NxmAPI::ModInfo Info);
+	NxmAPI::ModInfo GetModInfo();
 
 	std::string GetWindowTitle() override;
 	void Init() override;

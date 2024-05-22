@@ -9,18 +9,19 @@
 
 using namespace nlohmann;
 
+std::map<std::string, bool> ModUpdateStatuses;
+
 ModInfo ModInfo::ParseFile(std::string FilePath)
 {
 	if (!std::filesystem::exists(FilePath))
 	{
-		std::cout << "file does not exist" << std::endl;
 		return ModInfo();
 	}
 	try
 	{
 		json FileJson = json::parse(FileUtil::ReadFile(FilePath));
 
-		return ModInfo{
+		ModInfo Info = ModInfo{
 			.Name = FileJson.at("name"),
 			.Description = FileJson.at("description"),
 			.ImagePath = FileJson.at("imagePath"),
@@ -28,8 +29,47 @@ ModInfo ModInfo::ParseFile(std::string FilePath)
 			.Enabled = FileJson.at("enabled"),
 			.Files = FileJson.at("files"),
 		};
+
+		if (FileJson.contains("fileId"))
+		{
+			Info.FileID = FileJson.at("fileId");
+		}
+		if (FileJson.contains("category"))
+		{
+			Info.FileCategory = FileJson.at("category");
+		}
+
+		if (ModUpdateStatuses.contains(Info.Name))
+		{
+			Info.RequiresUpdate = ModUpdateStatuses.at(Info.Name);
+		}
+		else
+		{
+			if (Info.ModID && Info.Enabled)
+			{
+				if (Info.FileID == 0)
+				{
+					Info.RequiresUpdate = true;
+				}
+				else
+				{
+					auto ModFiles = NxmAPI::ModInfo{
+						.ModID = Info.ModID
+					}.GetFiles(Info.FileCategory);
+					if ((ModFiles.size() && ModFiles[0].FileID != Info.FileID))
+					{
+						Info.RequiresUpdate = true;
+					}
+				}
+			}
+
+
+			ModUpdateStatuses.insert(std::pair(Info.Name, Info.RequiresUpdate));
+		}
+
+		return Info;
 	}
-	catch (json::exception)
+	catch (json::exception e)
 	{
 		return ModInfo();
 	}
@@ -44,6 +84,8 @@ void ModInfo::WriteFile(std::string FilePath)
 		{ "description", Description },
 		{ "imagePath", ImagePath },
 		{ "modId", ModID },
+		{ "fileId", FileID },
+		{ "category", FileCategory },
 		{ "files", Files },
 		{ "enabled", Enabled },
 	};

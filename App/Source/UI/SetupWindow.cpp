@@ -57,7 +57,7 @@ void SetupWindow::GenerateAccountInfo()
 {
 	InfoBox->DeleteChildren();
 
-	std::string Name = NexusModsAPI::GetAPIKeyAccountName(ApiKeyValue);
+	std::string Name = NxmAPI::GetAPIKeyAccountName(ApiKeyValue);
 
 	if (Name.empty())
 	{
@@ -96,7 +96,7 @@ void SetupWindow::GenerateAPIKeySetupPage()
 			}
 
 
-			std::string Name = NexusModsAPI::GetAPIKeyAccountName(ApiKeyValue);
+			std::string Name = NxmAPI::GetAPIKeyAccountName(ApiKeyValue);
 
 			if (Name.empty())
 			{
@@ -107,7 +107,7 @@ void SetupWindow::GenerateAPIKeySetupPage()
 			CurrentSetup->Element->content->DeleteChildren();
 			ClickedNext = true;
 
-			NexusModsAPI::SaveAPIKey(ApiKeyValue);
+			NxmAPI::SaveAPIKey(ApiKeyValue);
 			Net::SetAPIKey(ApiKeyValue);
 			AppTab::GetTabOfType<ModBrowserTab>()->ShouldReload = true;
 

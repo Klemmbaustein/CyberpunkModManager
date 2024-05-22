@@ -5,7 +5,15 @@ namespace DownloadHandler
 {
 	void DownloadModUri(Uri ModUri);
 
-	void InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image = "", int ModID = 0);
+	void InstallZip(
+		std::string ZipPath,
+		std::string Name,
+		std::string Description,
+		std::string Image = "",
+		int ModID = 0,
+		int FileID = 0,
+		std::string FileCategory = ""
+	);
 
 	void CheckDownloadRequest();
 }
