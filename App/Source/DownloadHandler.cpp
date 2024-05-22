@@ -26,15 +26,6 @@ static void DownloadModAsync(void*)
 
 	std::atomic<float> Progress = 0;
 	auto LoadBar = Popup::CreatePopup<LoadingBar>();
-
-	while (true)
-	{
-		if (LoadBar->PopupWindow)
-		{
-			LoadBar->PopupWindow->OnResized();
-		}
-	}
-
 	LoadBar->ProgressValue = &Progress;
 
 	LoadBar->SetLoadingString("Downloading mod: " + Mod.Name);
