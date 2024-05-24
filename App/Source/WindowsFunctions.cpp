@@ -68,6 +68,13 @@ void Windows::ErrorBox(std::string Content)
 	MessageBoxA(0, Content.c_str(), "Error", MB_ICONERROR);
 }
 
+bool Windows::YesNoBox(std::string Content)
+{
+	int Answer = MessageBoxA(0, Content.c_str(), "Cyberpunk Mod Manager", MB_YESNO);
+
+	return Answer == IDYES;
+}
+
 void ErrorMessageFromStatus(LSTATUS Status)
 {
 	LPWSTR OutString;
@@ -180,6 +187,11 @@ void Windows::RegisterSelfAsUriHandler()
 void Windows::ErrorBox(std::string Content)
 {
 	system(("zenity --error --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
+}
+
+bool Windows::YesNoBox(std::string Content)
+{
+	return !system(("zenity --question --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
 }
 
 bool Windows::IsProcessRunning(std::string Name)

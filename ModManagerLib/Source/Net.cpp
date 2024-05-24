@@ -18,6 +18,8 @@ namespace Net
 	bool IsActive = false;
 
 	std::vector<std::string> Headers = { "user-agent: " + UserAgent };
+
+	std::string ApiKeyHeader;
 }
 
 thread_local std::atomic<float>* ProgressVal = nullptr;
@@ -77,7 +79,7 @@ static void DownloadInternal(std::string Url, std::vector<std::string> Headers, 
 
 	curl_easy_cleanup(CurlHandle);
 }
-std::string Net::Get(std::string Url, std::atomic<float>* Progress, float ProgressFraction)
+std::string Net::Get(std::string Url, bool IncludeApiKey, std::atomic<float>* Progress, float ProgressFraction)
 {
 	std::string OutString;
 
@@ -87,13 +89,20 @@ std::string Net::Get(std::string Url, std::atomic<float>* Progress, float Progre
 		ProgressFract = ProgressFraction;
 	}
 	ProgressVal = Progress;
-	DownloadInternal(Url, { Headers, }, (void*)&StringWrite, &OutString);
+	std::vector<std::string> HeadersToSend = Headers;
+
+	if (IncludeApiKey)
+	{
+		HeadersToSend.push_back(ApiKeyHeader);
+	}
+
+	DownloadInternal(Url, HeadersToSend, (void*)&StringWrite, &OutString);
 	ProgressVal = nullptr;
 
 	return OutString;
 }
 
-void Net::GetFile(std::string Url, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
+void Net::GetFile(std::string Url, std::string OutPath, bool IncludeApiKey, std::atomic<float>* Progress, float ProgressFraction)
 {
 	std::ofstream OutStream = std::ofstream(OutPath, std::ios::binary);
 
@@ -103,20 +112,20 @@ void Net::GetFile(std::string Url, std::string OutPath, std::atomic<float>* Prog
 		ProgressFract = ProgressFraction;
 	}
 	ProgressVal = Progress;
-	DownloadInternal(Url, {}, (void*)&FileWrite, &OutStream);
+	std::vector<std::string> HeadersToSend = Headers;
+
+	if (IncludeApiKey)
+	{
+		HeadersToSend.push_back(ApiKeyHeader);
+	}
+	
+	DownloadInternal(Url, HeadersToSend, (void*)&FileWrite, &OutStream);
 	OutStream.close();
 }
 
 void Net::SetAPIKey(std::string NewKey)
 {
-	if (Headers.size() <= 1)
-	{
-		Headers.push_back("apiKey:" + NewKey);
-	}
-	else
-	{
-		Headers[1] = ("apiKey:" + NewKey);
-	}
+	ApiKeyHeader = ("apiKey:" + NewKey);
 	IsActive = true;
 }
 

@@ -40,7 +40,7 @@ static void DownloadModAsync(void*)
 	LoadBar->SetLoadingString("Installing mod...");
 
 	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
-	Net::GetFile(Mod.ImageUrl, ImagePath);
+	Net::GetFile(Mod.ImageUrl, ImagePath, true);
 	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID, CurrentFileID, File.Category);
 	std::filesystem::remove(ArchiveName);
 	LoadBar->ShouldClose = true;
@@ -94,6 +94,12 @@ void DownloadHandler::DownloadModUri(Uri ModUri)
 }
 void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image, int CurrentModID, int CurrentFileID, std::string FileCategory)
 {
+	auto PrevMod = ModInfo::GetModByName(Name);
+	if (!PrevMod.Name.empty())
+	{
+		PrevMod.Remove();
+	}
+
 	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
@@ -115,6 +121,7 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 	std::filesystem::create_directories("app/profiles/test/");
 	NewMod.Save();
 	NewMod.Enable();
+	NewMod.CheckModUpdateStatus();
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 }
 

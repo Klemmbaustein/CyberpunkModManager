@@ -45,26 +45,7 @@ ModInfo ModInfo::ParseFile(std::string FilePath)
 		}
 		else
 		{
-			if (Info.ModID && Info.Enabled)
-			{
-				if (Info.FileID == 0)
-				{
-					Info.RequiresUpdate = true;
-				}
-				else
-				{
-					auto ModFiles = NxmAPI::ModInfo{
-						.ModID = Info.ModID
-					}.GetFiles(Info.FileCategory);
-					if ((ModFiles.size() && ModFiles[0].FileID != Info.FileID))
-					{
-						Info.RequiresUpdate = true;
-					}
-				}
-			}
-
-
-			ModUpdateStatuses.insert(std::pair(Info.Name, Info.RequiresUpdate));
+			Info.CheckModUpdateStatus();
 		}
 
 		return Info;
@@ -88,12 +69,42 @@ void ModInfo::WriteFile(std::string FilePath)
 		{ "category", FileCategory },
 		{ "files", Files },
 		{ "enabled", Enabled },
-	};
+	}.dump(2);
 	Out.close();
 }
 ModInfo ModInfo::GetModByName(std::string Name)
 {
 	return ParseFile("app/profiles/test/" + Name + ".json");
+}
+
+void ModInfo::CheckModUpdateStatus()
+{
+	if (ModID && Enabled)
+	{
+		if (FileID == 0)
+		{
+			RequiresUpdate = true;
+		}
+		else
+		{
+			auto ModFiles = NxmAPI::ModInfo{
+				.ModID = ModID
+			}.GetFiles(FileCategory);
+			if ((ModFiles.size() && ModFiles[0].FileID != FileID))
+			{
+				RequiresUpdate = true;
+			}
+		}
+	}
+
+	if (ModUpdateStatuses.contains(Name))
+	{
+		ModUpdateStatuses.at(Name) = RequiresUpdate;
+	}
+	else
+	{
+		ModUpdateStatuses.insert(std::pair(Name, RequiresUpdate));
+	}
 }
 
 std::vector<ModInfo> ModInfo::GetAllInstalledMods()

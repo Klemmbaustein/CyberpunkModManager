@@ -23,5 +23,8 @@ element SidebarButton
 			size = 70px;
 			color = 0;
 		}
+
+		borderType = rounded;
+		borderSize = 5px;
 	}
 }

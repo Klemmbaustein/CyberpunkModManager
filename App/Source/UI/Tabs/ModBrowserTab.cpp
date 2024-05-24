@@ -8,6 +8,7 @@
 #include <filesystem>
 
 #include "StrUtil.h"
+#include "SettingsTab.h"
 using namespace KlemmUI;
 
 static ModBrowserTab* CurrentBrowserTab = nullptr;
@@ -27,6 +28,7 @@ ModBrowserTab::ModBrowserTab()
 
 void ModBrowserTab::LoadSections()
 {
+	NxmAPI::SetShowNSFWMods(SettingsTab::GetSetting("show_nsfw_mods", "0") == "1");
 	LoadSection(NxmAPI::GetMods("trending"), "Trending");
 	LoadSection(NxmAPI::GetMods("latest_updated"), "Last Updated");
 	LoadSection(NxmAPI::GetMods("latest_added"), "Last Added");

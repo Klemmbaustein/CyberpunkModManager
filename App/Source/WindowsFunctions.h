@@ -10,5 +10,7 @@ namespace Windows
 
 	void ErrorBox(std::string Content);
 
+	bool YesNoBox(std::string Content);
+
 	void RegisterSelfAsUriHandler();
 }

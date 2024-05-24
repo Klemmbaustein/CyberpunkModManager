@@ -12,6 +12,7 @@ namespace NxmAPI
 {
 	std::string SourceUrl = "https://api.nexusmods.com/v1";
 	std::string GameDomainName = "cyberpunk2077";
+	static bool ShowNSFWMods = false;
 }
 
 NxmAPI::ModInfo NxmAPI::ModInfo::GetModFromID(int ID)
@@ -21,7 +22,8 @@ NxmAPI::ModInfo NxmAPI::ModInfo::GetModFromID(int ID)
 		+ GameDomainName
 		+ "/mods/"
 		+ std::to_string(ID)
-		+ ".json"));
+		+ ".json",
+		true));
 	// Skip the mod if it isn't available.
 	// For some reason the API lists unavailable mods but doesn't give much info for them.
 	if (!Response.contains("available") || !Response.at("available").get<bool>())
@@ -62,7 +64,8 @@ std::string NxmAPI::ModInfo::ModFile::DownloadLink(int ModID, int FileID, std::s
 		+ "/download_link.json?key="
 		+ Token
 		+ "&expires="
-		+ Expires));
+		+ Expires,
+		true));
 
 	return ResponseJson[0].at("URI");
 }
@@ -76,9 +79,8 @@ NxmAPI::ModInfo::ModFile NxmAPI::ModInfo::ModFile::GetFileInfo(int ModID, int Fi
 		+ std::to_string(ModID)
 		+ "/files/"
 		+ std::to_string(FileID)
-		+ ".json"));
-
-	std::cout << ResponseJson.dump() << std::endl;
+		+ ".json",
+		true));
 
 	return ModFile{
 		.Category = ResponseJson.at("category_name")
@@ -92,7 +94,8 @@ std::vector<NxmAPI::ModInfo::ModFile> NxmAPI::ModInfo::GetFiles(std::string Cate
 		+ GameDomainName
 		+ "/mods/"
 		+ std::to_string(ModID)
-		+ "/files.json?category=main"));
+		+ "/files.json?category=main",
+		true));
 
 	std::vector<ModFile> FoundFiles;
 
@@ -127,6 +130,11 @@ std::string NxmAPI::ModInfo::GetImagePath() const
 	return "app/temp/images/" + Name + ".webp";
 }
 
+void NxmAPI::SetShowNSFWMods(bool NewValue)
+{
+	ShowNSFWMods = NewValue;
+}
+
 bool NxmAPI::GetIsLoggedIn()
 {
 	return !GetAPIKey().empty();
@@ -139,12 +147,13 @@ std::vector<NxmAPI::ModInfo> NxmAPI::GetMods(std::string Category)
 		+ GameDomainName
 		+ "/mods/"
 		+ Category
-		+ ".json"));
+		+ ".json",
+		true));
 
 	// Response should be an array of mods.
 	if (!ResponseJson.is_array())
 	{
-		std::cout << ResponseJson.dump() << std::endl;
+		std::cout << ResponseJson.dump(2) << std::endl;
 		return {};
 	}
 
@@ -161,7 +170,7 @@ std::vector<NxmAPI::ModInfo> NxmAPI::GetMods(std::string Category)
 				continue;
 			}
 
-			if (i.at("contains_adult_content"))
+			if (i.at("contains_adult_content") && !ShowNSFWMods)
 			{
 				continue;
 			}
@@ -221,14 +230,14 @@ void NxmAPI::SaveAPIKey(std::string Key)
 {
 	std::filesystem::create_directories("app/saved");
 	std::ofstream Out = std::ofstream(KeyJsonFile);
-	Out << json{ { "key", Key } };
+	Out << json{ { "key", Key } }.dump(2);
 	Out.close();
 }
 
 std::string NxmAPI::GetAPIKeyAccountName(std::string Key)
 {
 	Net::SetAPIKey(Key);
-	json FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json"));
+	json FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json", true));
 	Net::SetAPIKey(GetAPIKey());
 	if (!FileJson.contains("name"))
 	{

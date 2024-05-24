@@ -22,6 +22,8 @@ struct ModInfo
 	static std::vector<ModInfo> GetAllInstalledMods();
 	static ModInfo GetModByName(std::string Name);
 
+	void CheckModUpdateStatus();
+
 	void Enable();
 	void Disable();
 	void Remove();

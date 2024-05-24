@@ -40,7 +40,7 @@ jobs:
 
     - name: Build Application
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild CyberpunkModManager.sln /p:Configuration=Release
+      run: msbuild CyberpunkModManager.sln /p:Configuration=Release /p:CI_BUILD=${{ github.run_number }}
 
     - name: Make release
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -72,7 +72,7 @@ jobs:
     - name: Build Application
       run: |
         cd App/
-        cmake -S . -B Build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake -S . -B Build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCI_BUILD=${{ github.run_number }}
         cmake --build Build/ -j 8
         
     - name: Make release
@@ -124,7 +124,7 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: latest
         prerelease: false
-        title: Latest version
+        title: Build ${{ github.run_number }}
         files: |
           ${{env.WINDOWS_RELEASE_NAME}}
           ${{env.LINUX_RELEASE_NAME}}

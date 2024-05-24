@@ -1,0 +1,25 @@
+
+element CheckBox
+{
+	var Image;
+
+	child UIButton checkButton
+	{
+		borderType = rounded;
+		borderSize = 5px;
+		minSize = 22px;
+		image = Image;
+	}
+}
+
+element Separator
+{
+	orientation = vertical;
+	tryFill = true;
+	child UIBackground
+	{
+		tryFill = true;
+		color = 1;
+		minSize = 1px;
+	}
+}

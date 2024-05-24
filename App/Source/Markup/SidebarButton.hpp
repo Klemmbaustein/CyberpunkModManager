@@ -18,6 +18,9 @@ public:
 	button->SetColor(Vector3f(0.6,0.1,0.1));
 	button->SetHoveredColor(Vector3f(0.6,0.1,0.1) * 0.75f);
 	button->SetPressedColor(Vector3f(0.6,0.1,0.1) * 0.5f);
+	button->BoxBorder = KlemmUI::UIBox::BorderType::Rounded;
+	button->BorderRadius = 5;
+	button->BorderSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
 	button->SetMinSize(Vector2f(70));
 	button->SetMaxSize(Vector2f(70));
 	button->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);

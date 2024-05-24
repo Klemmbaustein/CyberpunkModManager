@@ -39,8 +39,8 @@ execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies/get-7zip-lin
 )
 message(${CMD_ERROR})
 
-if (DEFINED TETHER_CI)
-    add_compile_definitions(CI_BUILD=${TETHER_CI})
+if (DEFINED CI_BUILD)
+    add_compile_definitions(CI_BUILD=${CI_BUILD})
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")

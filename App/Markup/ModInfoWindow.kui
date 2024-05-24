@@ -42,6 +42,8 @@ element ModInfoButton
 	padding = 5px;
 	child UIButton button
 	{
+		borderType = rounded;
+		borderSize = 5px;
 		allAlign = centered;
 		color = (0.6, 0.1, 0.1);
 		child UIBackground

@@ -45,6 +45,8 @@ namespace NxmAPI
 		std::string GetImagePath() const;
 	};
 
+	void SetShowNSFWMods(bool NewValue);
+
 	bool GetIsLoggedIn();
 
 	extern std::string GameDomainName;

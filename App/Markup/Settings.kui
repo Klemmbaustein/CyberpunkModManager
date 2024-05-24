@@ -1,0 +1,23 @@
+
+element SettingsElement
+{
+	var SettingName;
+
+	verticalAlign = centered;
+	padding = 10px;
+
+	child UIBox
+	{
+		minSize = (300, 0)px;
+		child UIText
+		{
+			text = SettingName;
+			size = 12px;
+			wrap = 600px;
+		}
+		rightPadding = 50px;
+	}
+	child UIBox content
+	{
+	}
+}

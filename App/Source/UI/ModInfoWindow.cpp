@@ -67,6 +67,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 			OpenModInBrowser(CurrentWindow->GetModInfo(), "?tab=files");
 			};
 		Parent->AddChild(InstallButton);
+		InstallButton->SetImage("app/icons/download.png");
 	}
 	else
 	{
@@ -79,6 +80,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 				CurrentWindow->ShouldClose = true;
 				};
 			Parent->AddChild(UpdateButton);
+			UpdateButton->SetImage("app/icons/download.png");
 		}
 
 		auto* EnableButton = new ModInfoButton();
@@ -91,6 +93,9 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 			CurrentWindow->GenerateActionButtons(CurrentWindow->ActionsBox, CurrentWindow->GetModInfo());
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
+
+		EnableButton->SetImage(ModInf.Enabled ? "app/icons/disabled.png" : "app/icons/enabled.png");
+
 		Parent->AddChild(EnableButton);
 
 		auto* RemoveButton = new ModInfoButton();
@@ -101,6 +106,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 			CurrentWindow->GenerateActionButtons(CurrentWindow->ActionsBox, CurrentWindow->GetModInfo());
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
+		RemoveButton->SetImage("app/icons/delete.png");
 		Parent->AddChild(RemoveButton);
 
 	}
@@ -112,6 +118,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 		OpenInBrowserButton->button->OnClickedFunction = []() {
 			OpenModInBrowser(CurrentWindow->GetModInfo());
 			};
+		OpenInBrowserButton->SetImage("app/icons/open.png");
 		Parent->AddChild(OpenInBrowserButton);
 	}
 
@@ -199,7 +206,7 @@ void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Paren
 			if (Tag == "/img")
 			{
 				std::filesystem::create_directories("app/temp/preview/");
-				Net::GetFile(TagContent, "app/temp/preview/img.png");
+				Net::GetFile(TagContent, "app/temp/preview/img.png", false);
 
 				Texture::TextureInfo Tex = Texture::LoadTextureWithInfo("app/temp/preview/img.png");
 				if (Tex.Width != 0 && Tex.Height != 0)

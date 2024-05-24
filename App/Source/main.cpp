@@ -11,9 +11,11 @@
 #include "UI/Tabs/AppTab.h"
 #include "UI/Tabs/ModBrowserTab.h"
 #include "UI/Tabs/InstalledModsTab.h"
+#include "UI/Tabs/SettingsTab.h"
 #include "BackgroundTask.h"
 #include "WindowsFunctions.h"
 #include "DownloadHandler.h"
+#include "InstallerUpdate.h"
 #include "Error.h"
 
 #include <iostream>
@@ -47,6 +49,7 @@ static void LoadUI()
 
 	new InstalledModsTab();
 	new ModBrowserTab();
+	new SettingsTab();
 
 	Sidebar::Load();
 
@@ -68,12 +71,21 @@ int main(int argc, char** argv)
 
 	Net::SetAPIKey(NxmAPI::GetAPIKey());
 
-	Windows::RegisterSelfAsUriHandler();
+
+	if (SettingsTab::GetSetting("is_uri_handler", "1") == "1")
+	{
+		Windows::RegisterSelfAsUriHandler();
+	}
 
 	HandleArgs(argc, argv);
 
 	Window AppWindow = Window("Very cool Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
 	AppWindow.OnResizedCallback = &OnResized;
+	
+	if (SettingsTab::GetSetting("check_updates", "1") == "1")
+	{
+		InstallerUpdate::CheckForUpdate();
+	}
 
 	LoadUI();
 

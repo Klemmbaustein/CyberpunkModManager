@@ -26,9 +26,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE48A05F-2F2B-4832-A4A5-868C3BE75BF5}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Dependencies\get-7zip-linux.sh = Dependencies\get-7zip-linux.sh
 		LICENSE.txt = LICENSE.txt
-		Setup.ps1 = Setup.ps1
 		.github\workflows\release.yml = .github\workflows\release.yml
+		Setup.ps1 = Setup.ps1
 	EndProjectSection
 EndProject
 Global
@@ -41,20 +42,16 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1811E30D-4830-4886-A153-C814EBD9B41C}.Debug|x64.ActiveCfg = Debug|x64
 		{1811E30D-4830-4886-A153-C814EBD9B41C}.Debug|x64.Build.0 = Debug|x64
-		{1811E30D-4830-4886-A153-C814EBD9B41C}.Debug|x86.ActiveCfg = Debug|Win32
-		{1811E30D-4830-4886-A153-C814EBD9B41C}.Debug|x86.Build.0 = Debug|Win32
+		{1811E30D-4830-4886-A153-C814EBD9B41C}.Debug|x86.ActiveCfg = Debug|x64
 		{1811E30D-4830-4886-A153-C814EBD9B41C}.Release|x64.ActiveCfg = Release|x64
 		{1811E30D-4830-4886-A153-C814EBD9B41C}.Release|x64.Build.0 = Release|x64
-		{1811E30D-4830-4886-A153-C814EBD9B41C}.Release|x86.ActiveCfg = Release|Win32
-		{1811E30D-4830-4886-A153-C814EBD9B41C}.Release|x86.Build.0 = Release|Win32
+		{1811E30D-4830-4886-A153-C814EBD9B41C}.Release|x86.ActiveCfg = Release|x64
 		{6446F095-E554-4F27-923A-5F795248AC93}.Debug|x64.ActiveCfg = Debug|x64
 		{6446F095-E554-4F27-923A-5F795248AC93}.Debug|x64.Build.0 = Debug|x64
-		{6446F095-E554-4F27-923A-5F795248AC93}.Debug|x86.ActiveCfg = Debug|Win32
-		{6446F095-E554-4F27-923A-5F795248AC93}.Debug|x86.Build.0 = Debug|Win32
+		{6446F095-E554-4F27-923A-5F795248AC93}.Debug|x86.ActiveCfg = Debug|x64
 		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x64.ActiveCfg = Release|x64
 		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x64.Build.0 = Release|x64
-		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x86.ActiveCfg = Release|Win32
-		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x86.Build.0 = Release|Win32
+		{6446F095-E554-4F27-923A-5F795248AC93}.Release|x86.ActiveCfg = Release|x64
 		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x64.ActiveCfg = Debug|x64
 		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x64.Build.0 = Debug|x64
 		{99324208-6A16-49B7-B98B-15B1935810B0}.Debug|x86.ActiveCfg = Debug|x64

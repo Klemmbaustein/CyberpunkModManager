@@ -3,6 +3,7 @@
 #include <fstream>
 #include "miniz/miniz.h"
 #include <iostream>
+#include "StrUtil.h"
 #if _WIN32
 #include <Windows.h>
 #endif
@@ -47,7 +48,7 @@ void Archive::ExtractZip(std::string ArchivePath, std::string OutPath, std::atom
 
 		std::string TargetFileDir = OutPath + stats.m_filename;
 		TargetFileDir = TargetFileDir.substr(0, TargetFileDir.find_last_of("\\/"));
-		std::filesystem::create_directories(TargetFileDir);
+		std::filesystem::create_directories(StrUtil::Replace(TargetFileDir, "\\", "/"));
 
 		mz_zip_reader_extract_to_file(&archive, i, (OutPath + stats.m_filename).c_str(), 0);
 	}
@@ -58,7 +59,9 @@ void Archive::ExtractZip(std::string ArchivePath, std::string OutPath, std::atom
 
 void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
 {
-	std::string Extension = ZipPath.substr(ZipPath.find_last_of("."));
+	std::cout << ZipPath << " -> " << OutPath << std::endl;
+	std::string Extension = ZipPath.substr(ZipPath.find_last_of("/"));
+	Extension = Extension.substr(Extension.find_first_of("."));
 	if (Extension == ".zip")
 	{
 		ExtractZip(ZipPath, OutPath, Progress, ProgressFraction);
@@ -90,6 +93,19 @@ void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<floa
 	CloseHandle(pi.hThread);
 #else
 	std::string Command = "app/bin/7zz x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
+	std::cout << Command << std::endl;
 	system((Command).c_str());
 #endif
+
+	std::cout << "'" << Extension << "'" << std::endl;
+	if (Extension == ".tar.gz")
+	{
+		std::cout << "Archive type is .tar.gz, extracting .tar file as well..." << std::endl;
+
+		std::string FileName = ZipPath.substr(ZipPath.find_last_of("/\\") + 1);
+
+		FileName = FileName.substr(0, FileName.find_first_of("."));
+
+		Extract(OutPath + FileName + ".tar", OutPath, Progress, ProgressFraction);
+	}
 }

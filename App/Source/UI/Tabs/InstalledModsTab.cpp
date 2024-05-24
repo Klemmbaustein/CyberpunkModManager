@@ -36,6 +36,11 @@ void InstalledModsTab::LoadSections()
 			.ModID = i.ModID,
 		};
 
+		if (i.RequiresUpdate)
+		{
+			NewMod.InfoString = "Enabled - Requires update",
+			NewMod.InfoColor = NxmAPI::ModInfo::Yellow;
+		}
 		NexusInstalledMods.push_back(NewMod);
 	}
 

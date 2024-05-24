@@ -157,7 +157,7 @@ std::string ModListTab::GetModImage(NxmAPI::ModInfo Mod)
 	{
 		return ImageFile;
 	}
-	Net::GetFile(Mod.ImageUrl, ImageFile);
+	Net::GetFile(Mod.ImageUrl, ImageFile, true);
 
 	return ImageFile;
 }
