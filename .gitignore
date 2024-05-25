@@ -27,7 +27,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Oo]bj/
 [Oo]ut/
 [Ll]og/
@@ -361,18 +360,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-App/app/saved/*
-*.dll
-/App/app/temp/images
+/App/app/profiles/test
 /App/app/temp
-/App/app/profiles
-/App/App.exe
 /App/CMakeBuild
-/App/ReleaseBuild
-/App/Build/
-*.vscode
-/Dependencies/liblzma
-*.tar.xz
-7zip-download/
-CMD_OUTPUT
+*.exe
+*.dll
+/App/app/bin/7zz
+/App/app/saved
+/Dependencies/CMD_OUTPUT
