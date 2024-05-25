@@ -32,7 +32,7 @@ void Popup::PopupStart(Popup* p)
 			p->PopupWindow->CancelClose();
 		}
 	}
-
+	p->Destroy();
 	if (p->PopupWindow)
 	{
 		delete p->PopupWindow;
@@ -54,6 +54,10 @@ Vector2ui Popup::GetWindowResolution()
 bool Popup::HasBorder()
 {
 	return true;
+}
+
+void Popup::Destroy()
+{
 }
 
 Popup::~Popup()

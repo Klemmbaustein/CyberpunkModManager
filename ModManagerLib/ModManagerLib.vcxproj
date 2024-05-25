@@ -44,11 +44,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)Include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\curl\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependencies\pugixml\src;$(ProjectDir)Include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\curl\include;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)Include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\curl\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependencies\pugixml\src;$(ProjectDir)Include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\curl\include;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
@@ -90,6 +90,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\FileUtil.h" />
+    <ClInclude Include="Include\FOMOD.h" />
     <ClInclude Include="Include\Game.h" />
     <ClInclude Include="Include\GithubAPI.h" />
     <ClInclude Include="Include\ModInfo.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="Source\miniz\miniz.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\FOMOD.cpp" />
     <ClCompile Include="Source\SettingsManager.cpp" />
     <ClCompile Include="Source\GithubAPI.cpp" />
     <ClCompile Include="Source\ModInfo.cpp" />

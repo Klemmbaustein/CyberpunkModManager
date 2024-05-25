@@ -1,0 +1,77 @@
+
+element SetupOption
+{
+	var Name;
+	var Description;
+	var Color = (0.2, 0.2, 0.2);
+
+	padding = 5px;
+	child UIButton optionButton
+	{
+		borderType = border;
+		borderSize = 2px;
+		borderColor = (0.6, 0.1, 0.1);
+		orientation = vertical;
+		color = Color;
+		minSize = (250, 450)px;
+		
+		child UIBackground
+		{
+			color = 0.05;
+			size = (250, 175)px;
+			allAlign = centered;
+			child UIBackground image
+			{
+			}
+		}
+
+		child UIText
+		{
+			text = Name;
+			size = 12px;
+			wrap = 490px;
+
+			padding = 3px;
+		}
+
+		child UIText
+		{
+			text = Description;
+			size = 10px;
+			wrap = 490px;
+			color = 0.8;
+			padding = 3px;
+		}
+	}
+}
+
+element SetupFooter
+{
+	orientation = vertical;
+	tryFill = true;
+
+	child UIBackground
+	{
+		color = 0.15;
+		minSize = 20px;
+		tryFill = true;
+		verticalAlign = centered;
+		horizontalAlign = reverse;
+
+		child UIButton nextButton
+		{
+			child UIText
+			{
+				text = "Next";
+				size = 12px;
+				padding = 5px;
+				color = 0;
+			}
+
+			allAlign = centered;
+			minSize = (100, 0)px;
+			padding = 10px;
+			rightPadding = 20px;
+		}
+	}
+}

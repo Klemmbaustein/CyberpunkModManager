@@ -8,6 +8,7 @@
 #include "UI/Popup.h"
 #include "UI/Sidebar.h"
 #include "UI/SetupWindow.h"
+#include "UI/FOMODInstall.h"
 #include "UI/Tabs/AppTab.h"
 #include "UI/Tabs/ModBrowserTab.h"
 #include "UI/Tabs/InstalledModsTab.h"
@@ -71,7 +72,6 @@ int main(int argc, char** argv)
 
 	Net::SetAPIKey(NxmAPI::GetAPIKey());
 
-
 	if (SettingsTab::GetSetting("is_uri_handler", "1") == "1")
 	{
 		Windows::RegisterSelfAsUriHandler();
@@ -86,6 +86,8 @@ int main(int argc, char** argv)
 	{
 		InstallerUpdate::CheckForUpdate();
 	}
+
+	FOMODInstall::RegisterFOMODCallback();
 
 	LoadUI();
 

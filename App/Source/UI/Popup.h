@@ -32,7 +32,7 @@ public:
 	virtual void Init() = 0;
 
 	virtual bool HasBorder();
-
+	virtual void Destroy();
 
 	virtual ~Popup();
 

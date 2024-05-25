@@ -66,6 +66,7 @@ ModListTab::ModListTab()
 
 	HeaderBox = new UIBox(true);
 	ContentBox = new UIBox(false);
+	ContentBox->SetTryFill(true);
 	TabBackground->AddChild(ModsScrollBox
 		->AddChild(HeaderBox)
 		->AddChild(ContentBox));

@@ -10,6 +10,7 @@
 using namespace nlohmann;
 
 std::map<std::string, bool> ModUpdateStatuses;
+void(*ModInfo::InstallFOMODCallback)(ModInfo Info, std::string Path, std::string ToPath);
 
 ModInfo ModInfo::ParseFile(std::string FilePath)
 {
@@ -140,6 +141,12 @@ void ModInfo::Enable()
 	try
 	{
 		std::string FromDir = "app/profiles/test/mod_files/" + Name + "/";
+
+		if (std::filesystem::exists(FromDir + "fomod") && InstallFOMODCallback)
+		{
+			InstallFOMODCallback(*this, FromDir, "app/temp/fomod_" + Name);
+			return;
+		}
 
 		for (auto& i : Files)
 		{

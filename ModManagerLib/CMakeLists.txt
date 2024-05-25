@@ -12,6 +12,7 @@ file(
     "${SRC_DIR}/**.cpp"
 )
 
+add_subdirectory("../Dependencies/pugixml/" "Dependencies/pugixml")
 add_subdirectory("../Dependencies/json/" "Dependencies/json")
 
 find_package(CURL)
@@ -32,6 +33,7 @@ add_library(
 )
 target_include_directories(ModManagerLib PUBLIC "Include")
 target_link_libraries(ModManagerLib PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(ModManagerLib PUBLIC pugixml)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
 

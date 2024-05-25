@@ -69,13 +69,15 @@ void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<floa
 	}
 
 #if _WIN32
-	std::string Command = "app\\bin\\7za.exe x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
+	std::string Command = "app\\bin\\7z.exe x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
 	STARTUPINFOA Startup;
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&Startup, sizeof(Startup));
 	Startup.cb = sizeof(Startup);
 	ZeroMemory(&pi, sizeof(pi));
 
+	system(Command.c_str());
+	/*
 	CreateProcessA(NULL,
 		(LPSTR)Command.c_str(),
 		NULL,
@@ -91,6 +93,7 @@ void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<floa
 
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
+	*/
 #else
 	std::string Command = "app/bin/7zz x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
 	std::cout << Command << std::endl;

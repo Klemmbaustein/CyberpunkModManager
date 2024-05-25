@@ -24,6 +24,8 @@ struct ModInfo
 
 	void CheckModUpdateStatus();
 
+	static void(*InstallFOMODCallback)(ModInfo Info, std::string Path, std::string ToPath);
+
 	void Enable();
 	void Disable();
 	void Remove();

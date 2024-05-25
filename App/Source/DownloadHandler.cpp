@@ -35,7 +35,7 @@ static void DownloadModAsync(void*)
 	ArchiveName = ArchiveName.substr(0, ArchiveName.find_first_of("?"));
 	std::cout << "Downloading " << ArchiveName << std::endl;
 
-	Net::GetFile(ModDownloadUrl, ArchiveName, LoadBar->ProgressValue);
+	Net::GetFile(ModDownloadUrl, ArchiveName, true, LoadBar->ProgressValue);
 	LoadBar->ProgressValue = nullptr;
 	LoadBar->SetLoadingString("Installing mod...");
 
