@@ -29,11 +29,6 @@ jobs:
     - name: Setup VS devenv for x86
       uses: seanmiddleditch/gha-setup-vsdevenv@master
       with:
-        arch: amd64
-
-    - name: Setup VS devenv for amd64
-      uses: seanmiddleditch/gha-setup-vsdevenv@master
-      with:
         arch: x86
 
     - name: Init submodules
@@ -43,6 +38,11 @@ jobs:
       run: |
         cd Dependencies/7zip/CPP/7zip
         nmake
+        
+    - name: Setup VS devenv for amd64
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: amd64
 
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
