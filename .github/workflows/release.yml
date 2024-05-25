@@ -36,13 +36,13 @@ jobs:
       with:
         arch: x86
 
+    - name: Init submodules
+      run: git submodule update --init --recursive
+      
     - name: Build 7zip
       run: |
         cd Dependencies/7zip/CPP/7zip
         nmake
-
-    - name: Init submodules
-      run: git submodule update --init --recursive
 
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
