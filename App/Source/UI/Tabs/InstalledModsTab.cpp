@@ -2,6 +2,9 @@
 #include "ModInfo.h"
 #include "../../WindowsFunctions.h"
 #include <mutex>
+#include "../../BackgroundTask.h"
+#include "../../Markup/ModInfoButton.hpp"
+#include "../LoadingBar.h"
 
 static InstalledModsTab* CurrentInstalledTab = nullptr;
 
@@ -10,11 +13,50 @@ static void OnButtonClicked(int Index)
 	CurrentInstalledTab->OpenModFromIndex(Index);
 }
 
+static void CheckModUpdates(void*)
+{
+	auto LoadBar = Popup::CreatePopup<LoadingBar>();
+
+	std::atomic<float> ProgressValue = 0;
+	LoadBar->ProgressValue = &ProgressValue;
+	LoadBar->SetLoadingString("Checking for mod updates");
+	auto AllMods = ModInfo::GetAllInstalledMods();
+
+	for (auto& i : AllMods)
+	{
+		i.CheckModUpdateStatus();
+
+		ProgressValue += 1.0f / (float)AllMods.size();
+	}
+	LoadBar->CanClose = true;
+	LoadBar->ShouldClose = true;
+}
+
 InstalledModsTab::InstalledModsTab()
 {
 	IconFile = "storage.png";
 	CurrentInstalledTab = this;
 	OnButtonClickedFunction = &OnButtonClicked;
+	
+	auto UpdateButton = new ModInfoButton();
+	UpdateButton->SetText("Check for mod updates");
+	UpdateButton->SetImage("app/icons/search_web.png");
+	UpdateButton->button->OnClickedFunction = []() {
+		new BackgroundTask(CheckModUpdates, [](void*) {
+			CurrentInstalledTab->ShouldReload = true;
+			});
+		};
+	HeaderBox->AddChild(UpdateButton);
+
+	auto LocalModButton = new ModInfoButton();
+	LocalModButton->SetText("Install local mod");
+	LocalModButton->SetImage("app/icons/storage.png");
+	LocalModButton->button->OnClickedFunction = []()
+		{
+			Windows::ErrorBox("Not implemented");
+		};
+	HeaderBox->AddChild(LocalModButton);
+
 	LoadMainPage();
 }
 

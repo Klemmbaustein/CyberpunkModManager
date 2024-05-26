@@ -20,6 +20,7 @@
     <ClCompile Include="Source\UI\FOMODInstall.h" />
     <ClCompile Include="Source\UI\LoadingBar.cpp" />
     <ClCompile Include="Source\UI\ModInfoWindow.cpp" />
+    <ClCompile Include="Source\UI\ModOptionSelection.cpp" />
     <ClCompile Include="Source\UI\Popup.cpp" />
     <ClCompile Include="Source\UI\SetupWindow.cpp" />
     <ClCompile Include="Source\UI\Sidebar.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Source\Error.h" />
     <ClInclude Include="Source\InstallerUpdate.h" />
     <ClInclude Include="Source\UI\LoadingBar.h" />
+    <ClInclude Include="Source\UI\ModOptionSelection.h" />
     <ClInclude Include="Source\UI\SetupWindow.h" />
     <ClInclude Include="Source\UI\Sidebar.h" />
     <ClInclude Include="Source\UI\Tabs\InstalledModsTab.h" />

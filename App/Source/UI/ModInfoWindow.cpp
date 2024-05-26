@@ -8,6 +8,7 @@
 #include "ModInfo.h"
 #include <filesystem>
 #include <iostream>
+#include "ModOptionSelection.h"
 #include "../WindowsFunctions.h"
 #include "Tabs/InstalledModsTab.h"
 
@@ -88,7 +89,24 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 		EnableButton->button->OnClickedFunction = []() {
 			auto Mod = ModInfo::GetModByName(CurrentWindow->GetModInfo().Name);
 
-			Mod.Enabled ? Mod.Disable() : Mod.Enable();
+			if (Mod.Enabled)
+			{
+				Mod.Disable();
+			}
+			else
+			{
+				if (Mod.ContainsMultipleVersions())
+				{
+					auto Option = Popup::CreatePopup<ModOptionsSelection>();
+					Option->LoadMod(Mod);
+					CurrentWindow->ShouldClose = true;
+					return;
+				}
+				else
+				{
+					Mod.Enable();
+				}
+			}
 
 			CurrentWindow->GenerateActionButtons(CurrentWindow->ActionsBox, CurrentWindow->GetModInfo());
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;

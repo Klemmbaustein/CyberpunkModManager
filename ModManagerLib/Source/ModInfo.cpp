@@ -44,10 +44,6 @@ ModInfo ModInfo::ParseFile(std::string FilePath)
 		{
 			Info.RequiresUpdate = ModUpdateStatuses.at(Info.Name);
 		}
-		else
-		{
-			Info.CheckModUpdateStatus();
-		}
 
 		return Info;
 	}
@@ -140,7 +136,7 @@ void ModInfo::Enable()
 
 	try
 	{
-		std::string FromDir = "app/profiles/test/mod_files/" + Name + "/";
+		std::string FromDir = GetModFilesDir();
 
 		if (std::filesystem::exists(FromDir + "fomod") && InstallFOMODCallback)
 		{
@@ -210,4 +206,73 @@ void ModInfo::Remove()
 
 	std::filesystem::remove_all("app/profiles/test/mod_files/" + Name + "/");
 	std::filesystem::remove("app/profiles/test/" + Name + ".json");
+}
+
+std::string ModInfo::GetModFilesDir() const
+{
+	return "app/profiles/test/mod_files/" + Name + "/";
+}
+
+static std::vector<std::string> KnownModDirNames =
+{
+	"archive",
+	"red4ext",
+	"r6",
+	"bin",
+	"engine",
+	"fomod",
+};
+
+bool ModInfo::IsModDirectory(std::string Path)
+{
+	for (const auto& DirName : KnownModDirNames)
+	{
+		if (std::filesystem::exists(Path + "/" + DirName))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ModInfo::ContainsMultipleVersions() const
+{
+	return !GetVersions().empty();
+}
+
+void ModInfo::InstallVersion(std::string VersionName)
+{
+	std::string FromDir = GetModFilesDir();
+
+	Files = FileUtil::GetAllFilesInFolder(FromDir + VersionName);
+	for (auto& i : Files)
+	{
+		std::string FilePath = Game::GetGameLocation() + i;
+		std::filesystem::create_directories(FilePath.substr(0, FilePath.find_last_of("/")));
+		std::filesystem::copy(FromDir + VersionName + "/" + i, FilePath, std::filesystem::copy_options::update_existing);
+	}
+	Enabled = true;
+	Save();
+}
+
+std::vector<std::string> ModInfo::GetVersions() const
+{
+	std::string ModDir = GetModFilesDir();
+
+	if (IsModDirectory(ModDir))
+	{
+		std::cout << "MODDIR" << std::endl;
+		return {};
+	}
+	std::vector<std::string> FoundVersions;
+
+	for (auto& i : std::filesystem::directory_iterator(ModDir))
+	{
+		if (IsModDirectory(i.path().string()))
+		{
+			FoundVersions.push_back(i.path().filename().string());
+		}
+	}
+
+	return FoundVersions;
 }

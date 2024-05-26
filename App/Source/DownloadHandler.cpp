@@ -11,6 +11,7 @@
 #include "Archive.h"
 #include "ModInfo.h"
 #include "UI/Tabs/InstalledModsTab.h"
+#include "UI/ModOptionSelection.h"
 
 static std::string ModDownloadUrl;
 static int ModID;
@@ -120,7 +121,15 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 
 	std::filesystem::create_directories("app/profiles/test/");
 	NewMod.Save();
-	NewMod.Enable();
+	if (NewMod.ContainsMultipleVersions())
+	{
+		auto Option = Popup::CreatePopup<ModOptionsSelection>();
+		Option->LoadMod(NewMod);
+	}
+	else
+	{
+		NewMod.Enable();
+	}
 	NewMod.CheckModUpdateStatus();
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 }

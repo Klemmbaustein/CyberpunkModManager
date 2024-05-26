@@ -29,4 +29,11 @@ struct ModInfo
 	void Enable();
 	void Disable();
 	void Remove();
+
+	std::string GetModFilesDir() const;
+
+	static bool IsModDirectory(std::string Path);
+	bool ContainsMultipleVersions() const;
+	void InstallVersion(std::string VersionName);
+	std::vector<std::string> GetVersions() const;
 };

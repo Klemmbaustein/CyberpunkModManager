@@ -1,0 +1,25 @@
+
+element ModOption
+{
+	var OptionName;
+
+	child UIButton button
+	{
+		padding = 6px;
+		borderType = border;
+		borderSize = 2px;
+		borderColor = (0.6, 0.1, 0.1);
+		minSize = (300, 30)px;
+		color = 0.075;
+
+		verticalAlign = centered;
+
+		child UIText
+		{
+			padding =  5px;
+			text = OptionName;
+			size = 12px;
+			color = 1;
+		}
+	}
+}
