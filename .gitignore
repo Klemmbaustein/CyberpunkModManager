@@ -360,11 +360,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/App/app/profiles/test
-/App/app/temp
-/App/CMakeBuild
+App/app/profiles/test
+App/app/temp
+App/Build
+App/CMakeBuild
+.vscode
 *.exe
 *.dll
-/App/app/bin/7zz
-/App/app/saved
-/Dependencies/CMD_OUTPUT
+App/app/bin/7zz
+App/app/saved
+CMD_OUTPUT
