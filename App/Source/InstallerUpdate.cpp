@@ -29,18 +29,24 @@ static void UpdateCheckFunction(void*)
 		auto LoadBar = Popup::CreatePopup<LoadingBar>();
 		LoadBar->SetLoadingString("Downloading update");
 
-		std::string Release = GhAPI::DownloadLatestReleaseOf(SourceRepo, PlatformName);
+		try
+		{
+			std::string Release = GhAPI::DownloadLatestReleaseOf(SourceRepo, PlatformName);
+			std::string Extension = Release.substr(Release.find_first_of("."));
 
-		std::string Extension = Release.substr(Release.find_first_of("."));
+			LoadBar->SetLoadingString("Extracting update");
 
-		LoadBar->SetLoadingString("Extracting update");
-
-		Archive::Extract(Release, "app/temp/update/", nullptr, 0);
+			Archive::Extract(Release, "app/temp/update/", nullptr, 0);
+		}
+		catch (std::exception& e)
+		{
+			Windows::ErrorBox(e.what());
+		}
 
 #if _WIN32
-		Windows::Open("app\\bin\\update.bat");
+		system("app\\bin\\update.bat");
 #else
-		Windows::Open("sh app/bin/update.sh &");
+		system("sh app/bin/update.sh &");
 #endif
 		exit(0);
 	}

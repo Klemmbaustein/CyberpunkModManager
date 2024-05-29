@@ -23,7 +23,11 @@ ModBrowserTab::ModBrowserTab()
 	UpdateButton->SetImage("app/icons/open.png");
 	UpdateButton->button->OnClickedFunction = []() {
 
+#if _WIN32
 		Windows::Open("https://nexusmods.com/cyberpunk2077");
+#else
+		Windows::Open("xdg-open https://nexusmods.com/cyberpunk2077 &");
+#endif
 		};
 	HeaderBox->AddChild(UpdateButton);
 
