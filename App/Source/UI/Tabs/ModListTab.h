@@ -17,7 +17,7 @@ protected:
 public:
 	bool ShouldReload = false;
 
-	ModListTab();
+	ModListTab(std::string Name);
 	void OpenModFromIndex(int Index);
 
 	void LoadImages();

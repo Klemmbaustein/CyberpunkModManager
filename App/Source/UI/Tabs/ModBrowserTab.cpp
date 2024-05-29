@@ -1,15 +1,8 @@
 #include "ModBrowserTab.h"
-
-#include <KlemmUI/Window.h>
-#include <KlemmUI/Rendering/Texture.h>
-
-#include <iostream>
-#include <mutex>
-#include <filesystem>
-
-#include "StrUtil.h"
 #include "SettingsTab.h"
-using namespace KlemmUI;
+
+#include "../../Markup/ModInfoButton.hpp"
+#include "../../WindowsFunctions.h"
 
 static ModBrowserTab* CurrentBrowserTab = nullptr;
 
@@ -19,10 +12,21 @@ static void OnButtonClicked(int Index)
 }
 
 ModBrowserTab::ModBrowserTab()
+	: ModListTab("Online mods")
 {
 	IconFile = "search_web.png";
 	CurrentBrowserTab = this;
 	OnButtonClickedFunction = &OnButtonClicked;
+
+	auto UpdateButton = new ModInfoButton();
+	UpdateButton->SetText("Open NexusMods website");
+	UpdateButton->SetImage("app/icons/open.png");
+	UpdateButton->button->OnClickedFunction = []() {
+
+		Windows::Open("https://nexusmods.com/cyberpunk2077");
+		};
+	HeaderBox->AddChild(UpdateButton);
+
 	LoadMainPage();
 }
 

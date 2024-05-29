@@ -49,8 +49,8 @@ element ModInfoButton
 		child UIBackground
 		{
 			image = Image;
-			size = 15px;
-			padding = 5px;
+			size = 20px;
+			padding = 3px;
 		}
 		child UIText
 		{

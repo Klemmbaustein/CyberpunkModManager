@@ -28,3 +28,23 @@ element SidebarButton
 		borderSize = 5px;
 	}
 }
+
+element SidebarTooltip
+{
+	var Text;
+	child UIBackground
+	{
+		color = 0;
+		opacity = 0.9;
+		size = (200, 70)px;
+
+		verticalAlign = centered;
+
+		child UIText
+		{
+			padding = 15px;
+			size = 14px;
+			text = Text;
+		}
+	}
+}

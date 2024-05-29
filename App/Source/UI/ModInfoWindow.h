@@ -12,6 +12,7 @@ class ModInfoWindow : public Popup
 	void LoadInfo();
 	static thread_local ModInfoWindow* CurrentWindow;
 	KlemmUI::UIBox* ActionsBox = nullptr;
+	std::vector<unsigned int> LoadedImages;
 	void GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::ModInfo& Mod);
 public:
 	Vector2ui GetWindowResolution() override;
@@ -24,6 +25,7 @@ public:
 	std::string GetWindowTitle() override;
 	void Init() override;
 	void Update() override;
+	void Destroy() override;
 
 	void RenderMarkupString(std::string Markup, KlemmUI::UIBox* Parent);
 	void RenderMarkupLine(std::string Line, bool Centered, KlemmUI::UIBox* Parent);

@@ -4,6 +4,7 @@
 #include "../ModInfoWindow.h"
 #include <filesystem>
 #include <Net.h>
+#include "FileUtil.h"
 #include "../../Markup/ModEntry.hpp"
 #include "../../Markup/ModHeader.hpp"
 #include "../../BackgroundTask.h"
@@ -59,8 +60,8 @@ void ModListTab::ShowLoadingScreen()
 		->SetPadding(0.8f));
 }
 
-ModListTab::ModListTab()
-	: AppTab("abc")
+ModListTab::ModListTab(std::string Name)
+	: AppTab(Name)
 {
 	ModsScrollBox = new UIScrollBox(false, 0, true);
 
@@ -149,8 +150,15 @@ void ModListTab::Generate()
 	}
 }
 
+const size_t MAX_IMAGE_TEMP_SIZE = 1000 * 1000 * 20;
+
 std::string ModListTab::GetModImage(NxmAPI::ModInfo Mod)
 {
+	if (FileUtil::GetPathSize("app/temp/images") > MAX_IMAGE_TEMP_SIZE)
+	{
+		std::filesystem::remove_all("app/temp/images");
+	}
+
 	std::filesystem::create_directories("app/temp/images/");
 	std::string ImageFile = Mod.GetImagePath();
 

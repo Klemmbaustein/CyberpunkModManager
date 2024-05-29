@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 
 	HandleArgs(argc, argv);
 
-	Window AppWindow = Window("Very cool Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
+	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
 	AppWindow.OnResizedCallback = &OnResized;
 	
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")

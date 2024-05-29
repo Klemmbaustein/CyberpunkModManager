@@ -8,6 +8,7 @@ public:
 
 	static size_t SelectedTab;
 
+	std::string Name;
 	std::string IconFile;
 
 	AppTab(std::string Name);

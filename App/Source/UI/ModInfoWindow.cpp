@@ -195,6 +195,15 @@ void ModInfoWindow::Update()
 	}
 }
 
+void ModInfoWindow::Destroy()
+{
+	for (auto Image : LoadedImages)
+	{
+		Texture::UnloadTexture(Image);
+	}
+	LoadedImages.clear();
+}
+
 void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Parent)
 {
 	std::string NewLine = "";
@@ -223,10 +232,10 @@ void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Paren
 
 			if (Tag == "/img")
 			{
-				std::filesystem::create_directories("app/temp/preview/");
-				Net::GetFile(TagContent, "app/temp/preview/img.png", false);
+				std::filesystem::create_directories("app/temp/preview_img.png");
+				Net::GetFile(TagContent, "app/temp/img.png", false);
 
-				Texture::TextureInfo Tex = Texture::LoadTextureWithInfo("app/temp/preview/img.png");
+				Texture::TextureInfo Tex = Texture::LoadTextureWithInfo("app/temp/img.png");
 				if (Tex.Width != 0 && Tex.Height != 0)
 				{
 					float SizeScale = std::min(Tex.Width / 400.0f, 1.95f);
@@ -237,7 +246,9 @@ void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Paren
 						->AddChild((new UIBackground(true, 0, 1, Vector2f(SizeScale) * Vector2f(1, (float)Tex.Height / (float)Tex.Width)))
 							->SetUseTexture(true, Tex.ID)
 							->SetSizeMode(UIBox::SizeMode::AspectRelative)));
+					LoadedImages.push_back(Tex.ID);
 				}
+				std::filesystem::remove("app/temp/preview_img.png");
 			}
 
 			if (Tag == "center")

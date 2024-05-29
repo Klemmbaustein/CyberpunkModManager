@@ -31,10 +31,10 @@ public:
 	{
 	auto* e_2 = new KlemmUI::UIBackground(true, 0, 1);
 	e_2->SetUseTexture(true, Image);
-	e_2->SetMinSize(Vector2f(15));
-	e_2->SetMaxSize(Vector2f(15));
+	e_2->SetMinSize(Vector2f(20));
+	e_2->SetMaxSize(Vector2f(20));
 	e_2->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
-	e_2->SetPadding((float)5);
+	e_2->SetPadding((float)3);
 	e_2->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	button->AddChild(e_2);
 	unnamed_0 = e_2;

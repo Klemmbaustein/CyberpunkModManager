@@ -7,6 +7,7 @@ size_t AppTab::SelectedTab = 0;
 
 AppTab::AppTab(std::string Name)
 {
+	this->Name = Name;
 	TabBackground = new UIBackground(false, -1, 0.15f, 2);
 	AllTabs.push_back(this);
 }
