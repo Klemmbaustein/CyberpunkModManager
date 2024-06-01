@@ -11,11 +11,6 @@ using namespace KlemmUI;
 
 static InstalledModsTab* CurrentInstalledTab = nullptr;
 
-static void OnButtonClicked(int Index)
-{
-	CurrentInstalledTab->OpenModFromIndex(Index);
-}
-
 static void CheckModUpdates(void*)
 {
 	auto LoadBar = Popup::CreatePopup<LoadingBar>();
@@ -40,7 +35,6 @@ InstalledModsTab::InstalledModsTab()
 {
 	IconFile = "storage.png";
 	CurrentInstalledTab = this;
-	OnButtonClickedFunction = &OnButtonClicked;
 	
 	UIBox* TopBox = new UIBox(true);
 	HeaderBox->SetHorizontal(false);

@@ -4,19 +4,11 @@
 #include "../../Markup/ModInfoButton.hpp"
 #include "../../WindowsFunctions.h"
 
-static ModBrowserTab* CurrentBrowserTab = nullptr;
-
-static void OnButtonClicked(int Index)
-{
-	CurrentBrowserTab->OpenModFromIndex(Index);
-}
 
 ModBrowserTab::ModBrowserTab()
 	: ModListTab("Online mods")
 {
 	IconFile = "search_web.png";
-	CurrentBrowserTab = this;
-	OnButtonClickedFunction = &OnButtonClicked;
 
 	auto UpdateButton = new ModInfoButton();
 	UpdateButton->SetText("Open NexusMods website");

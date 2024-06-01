@@ -24,7 +24,7 @@ public:
 	void LoadMainPage();
 	void Generate();
 
-	void (*OnButtonClickedFunction)(int Index) = nullptr;
+	virtual void OnClicked(int Index);
 
 	struct ModsSection
 	{

@@ -10,6 +10,7 @@
 #include "../../BackgroundTask.h"
 #include <StrUtil.h>
 #include <iostream>
+#include "../../WindowsFunctions.h"
 using namespace KlemmUI;
 
 static std::mutex ImageLoadMutex;
@@ -150,6 +151,11 @@ void ModListTab::Generate()
 	}
 }
 
+void ModListTab::OnClicked(int Index)
+{
+	OpenModFromIndex(Index);
+}
+
 const size_t MAX_IMAGE_TEMP_SIZE = 1000 * 1000 * 20;
 
 std::string ModListTab::GetModImage(NxmAPI::ModInfo Mod)
@@ -206,7 +212,8 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 		Entry->SetDescription(StrUtil::ShortenIfTooLong(Section.Mods[i].Summary, 165));
 		Entry->SetInfo(Section.Mods[i].InfoString);
 		Entry->button->ButtonIndex = Index++;
-		Entry->button->OnClickedFunctionIndex = OnButtonClickedFunction;
+		std::function<void(int)> b = std::bind(&ModListTab::OnClicked, this, 1);
+		Entry->button->OnClickedFunctionIndex = b;
 		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
 
 		Images.push_back(Entry->imageBackground);
