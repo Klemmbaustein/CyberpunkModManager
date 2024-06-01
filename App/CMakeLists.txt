@@ -4,7 +4,8 @@ project(App)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(SRC_DIR "Source")
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+set(MARKUP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Markup")
 
 file(
     GLOB_RECURSE
@@ -13,6 +14,7 @@ file(
 )
 
 add_subdirectory("../Dependencies/KlemmUI/" "Dependencies/KlemmUI")
+add_subdirectory("../Dependencies/KlemmUI/Markup" "Dependencies/bin")
 add_subdirectory("../Dependencies/libwebp/" "Dependencies/libwebp")
 add_subdirectory("../ModManagerLib/" "ModManagerLib")
 
@@ -42,6 +44,14 @@ message(${CMD_ERROR})
 if (DEFINED CI_BUILD)
     add_compile_definitions(CI_BUILD=${CI_BUILD})
 endif()
+
+add_custom_target(
+    HeaderBuild
+    COMMENT "Running KlemmUI Markup header tool..."
+    COMMAND ${CMAKE_BINARY_DIR}/Dependencies/bin/MarkupHeaderTool/KlemmUIHT -i ${MARKUP_DIR} -o ${SRC_DIR}/Markup
+)
+
+add_dependencies(App HeaderBuild)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
 
