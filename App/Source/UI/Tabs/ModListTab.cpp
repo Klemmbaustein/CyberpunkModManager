@@ -211,9 +211,8 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 		Entry->SetName(StrUtil::ShortenIfTooLong(Section.Mods[i].Name, 40));
 		Entry->SetDescription(StrUtil::ShortenIfTooLong(Section.Mods[i].Summary, 165));
 		Entry->SetInfo(Section.Mods[i].InfoString);
-		Entry->button->ButtonIndex = Index++;
-		std::function<void(int)> b = std::bind(&ModListTab::OnClicked, this, 1);
-		Entry->button->OnClickedFunctionIndex = b;
+		Entry->button->OnClickedFunction = std::bind(&ModListTab::OnClicked, this, (int)Index);
+		Index++;
 		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
 
 		Images.push_back(Entry->imageBackground);
