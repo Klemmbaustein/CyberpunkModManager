@@ -59,9 +59,8 @@ void Archive::ExtractZip(std::string ArchivePath, std::string OutPath, std::atom
 
 void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
 {
-	std::cout << ZipPath << " -> " << OutPath << std::endl;
 	std::string Extension = ZipPath.substr(ZipPath.find_last_of("/"));
-	Extension = Extension.substr(Extension.find_first_of("."));
+	Extension = Extension.substr(Extension.find_last_of("."));
 	if (Extension == ".zip")
 	{
 		ExtractZip(ZipPath, OutPath, Progress, ProgressFraction);
@@ -96,12 +95,10 @@ void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<floa
 	*/
 #else
 	std::string Command = "app/bin/7zz x -y \"" + ZipPath + "\" \"-o" + OutPath + "\"";
-	std::cout << Command << std::endl;
 	system((Command).c_str());
 #endif
 
-	std::cout << "'" << Extension << "'" << std::endl;
-	if (Extension == ".tar.gz")
+	if (Extension == ".gz")
 	{
 		std::cout << "Archive type is .tar.gz, extracting .tar file as well..." << std::endl;
 

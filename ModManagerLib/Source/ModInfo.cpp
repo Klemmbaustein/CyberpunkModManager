@@ -261,7 +261,6 @@ std::vector<std::string> ModInfo::GetVersions() const
 
 	if (IsModDirectory(ModDir))
 	{
-		std::cout << "MODDIR" << std::endl;
 		return {};
 	}
 	std::vector<std::string> FoundVersions;
