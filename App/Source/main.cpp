@@ -3,7 +3,6 @@
 
 #include "NexusModsAPI.h"
 #include "Net.h"
-#include "Game.h"
 
 #include "UI/Popup.h"
 #include "UI/Sidebar.h"
@@ -18,8 +17,6 @@
 #include "DownloadHandler.h"
 #include "InstallerUpdate.h"
 #include "Error.h"
-
-#include <iostream>
 
 using namespace KlemmUI;
 

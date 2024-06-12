@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cstdint>
 
 namespace Webp
 {
@@ -10,7 +11,8 @@ namespace Webp
 	};
 
 	// WebP decoding is very slow, so it needs to be done on a separate thread.
-	// This function decodes a WebP and stores it in a buffer which can be loaded with the Load() function.
+	// This function decodes a WebP and stores it in a buffer which can be loaded
+	// with the Webp::Load() function on the main thread.
 	WebpBuffer LoadBuffer(std::string FilePath);
 
 	unsigned int Load(WebpBuffer Buffer);

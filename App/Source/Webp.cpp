@@ -7,21 +7,22 @@
 
 Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)
 {
-	FILE* FilePtr;
-	uint8_t* Buffer;
-	size_t FileSize;
-
 	if (!std::filesystem::exists(FilePath))
 	{
 		return WebpBuffer();
 	}
 
-	FilePtr = fopen(FilePath.c_str(), "rb");
+	FILE* FilePtr = fopen(FilePath.c_str(), "rb");
 	fseek(FilePtr, 0, SEEK_END);
-	FileSize = ftell(FilePtr);
+	size_t FileSize = ftell(FilePtr);
 	rewind(FilePtr);
 
-	Buffer = (uint8_t*)malloc(FileSize);
+	if (FileSize == 0)
+	{
+		return WebpBuffer();
+	}
+
+	uint8_t* Buffer = (uint8_t*)malloc(FileSize);
 
 	if (!Buffer)
 	{
@@ -58,7 +59,11 @@ Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)
 
 unsigned int Webp::Load(WebpBuffer Buffer)
 {
-	unsigned int TextureID = KlemmUI::Texture::LoadTexture(Buffer.Bytes, Buffer.Width, Buffer.Height);
+	unsigned int TextureID = KlemmUI::Texture::LoadTexture(
+		Buffer.Bytes,
+		Buffer.Width,
+		Buffer.Height
+	);
 	delete[] Buffer.Bytes;
 	return TextureID;
 }

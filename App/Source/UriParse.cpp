@@ -9,7 +9,6 @@ Uri::Uri(std::string UriString)
 		&& UriString[UriString.size() - 1] == '\'')
 	{
 		UriString = UriString.substr(1, UriString.size() - 2);
-		std::cout << UriString << std::endl;
 	}
 
 	this->UriString = UriString;

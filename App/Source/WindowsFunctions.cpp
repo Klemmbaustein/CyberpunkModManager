@@ -82,6 +82,68 @@ void ErrorMessageFromStatus(LSTATUS Status)
 	MessageBox(NULL, OutString, L"Error", MB_ICONERROR);
 }
 
+std::string wstrtostr(const std::wstring& wstr)
+{
+	std::string strTo;
+	char* szTo = new char[wstr.length() + 1];
+	szTo[wstr.size()] = '\0';
+	WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, szTo, (int)wstr.length(), NULL, NULL);
+	strTo = szTo;
+	delete[] szTo;
+	return strTo;
+}
+
+std::string Windows::OpenFileDialog()
+{
+	try
+	{
+		std::string FilePath = "";
+		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+			COINIT_DISABLE_OLE1DDE);
+		if (SUCCEEDED(hr))
+		{
+			IFileOpenDialog* pFileOpen;
+
+			// Create the FileOpenDialog object.
+			hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+				IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+			if (SUCCEEDED(hr))
+			{
+				// Show the Open dialog box.
+				hr = pFileOpen->Show(NULL);
+				// Get the file name from the dialog box.
+				if (SUCCEEDED(hr))
+				{
+					IShellItem* pItem;
+					hr = pFileOpen->GetResult(&pItem);
+					if (SUCCEEDED(hr))
+					{
+						PWSTR pszFilePath;
+						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+						// Display the file name to the user.
+						if (SUCCEEDED(hr))
+						{
+							FilePath = FileUtil::wstrtostr(pszFilePath);
+							return FilePath;
+						}
+						pItem->Release();
+					}
+				}
+				pFileOpen->Release();
+			}
+			CoUninitialize();
+		}
+		return FilePath;
+	}
+	catch (std::exception& e)
+	{
+		Log::Print(e.what());
+	}
+	return "";
+}
+
+
 void Windows::RegisterSelfAsUriHandler()
 {
 	HKEY ClassesKey = nullptr;
@@ -166,7 +228,11 @@ void Windows::SetWorkingDirectory()
 		// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
 		PathString.append("/../");
 	}
-	std::cout << PathString << std::endl;
+	if (std::filesystem::exists(PathString + "/../../App/app/shaders"))
+	{
+		PathString.append("/../../App/");
+	}
+	std::cout << "App root directory: " << PathString << std::endl;
 	std::filesystem::current_path(PathString);
 }
 
@@ -192,6 +258,18 @@ void Windows::ErrorBox(std::string Content)
 bool Windows::YesNoBox(std::string Content)
 {
 	return !system(("zenity --question --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
+}
+std::string Windows::OpenFileDialog()
+{
+	char filename[4096];
+	FILE *f = popen("zenity --file-selection", "r");
+	char* buf = fgets(filename, 4096, f);
+	if (!buf)
+	{
+		return "";
+	}
+	pclose(f);
+	return StrUtil::Replace(filename, "\n", "");
 }
 
 bool Windows::IsProcessRunning(std::string Name)

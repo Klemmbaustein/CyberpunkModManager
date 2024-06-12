@@ -45,6 +45,10 @@ std::vector<std::string> FileUtil::GetAllFilesInFolder(std::string FolderPath, s
 size_t FileUtil::GetPathSize(std::filesystem::path TargetPath)
 {
 	size_t Size = 0;
+	if (!std::filesystem::exists(TargetPath))
+	{
+		return 0;
+	}
 	for (const auto& File : std::filesystem::recursive_directory_iterator(TargetPath))
 	{
 		if (std::filesystem::is_regular_file(File))

@@ -5,6 +5,7 @@ namespace Windows
 {
 	void SetWorkingDirectory();
 	void Open(std::string Path);
+	std::string OpenFileDialog();
 	bool IsProcessRunning(std::string Name);
 	std::string GetCurrentProcessName();
 

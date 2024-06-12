@@ -48,7 +48,7 @@ endif()
 add_custom_target(
     HeaderBuild
     COMMENT "Running KlemmUI Markup header tool..."
-    COMMAND ${CMAKE_BINARY_DIR}/Dependencies/bin/MarkupHeaderTool/KlemmUIHT -i ${MARKUP_DIR} -o ${SRC_DIR}/Markup
+    COMMAND $<TARGET_FILE:KlemmUIHT> -i ${MARKUP_DIR} -o ${SRC_DIR}/Markup
 )
 add_dependencies(HeaderBuild KlemmUIHT)
 

@@ -1,9 +1,9 @@
 #include "InstalledModsTab.h"
 #include "ModInfo.h"
 #include "../../WindowsFunctions.h"
-#include <mutex>
 #include "../../BackgroundTask.h"
 #include "../../Markup/ModInfoButton.hpp"
+#include "../../DownloadHandler.h"
 #include "../LoadingBar.h"
 #include "StrUtil.h"
 
@@ -56,7 +56,10 @@ InstalledModsTab::InstalledModsTab()
 	LocalModButton->SetImage("app/icons/storage.png");
 	LocalModButton->button->OnClickedFunction = []()
 		{
-			Windows::ErrorBox("Not implemented");
+			std::string File = Windows::OpenFileDialog();
+			std::string FileName = File.substr(File.find_last_of("/\\") + 1);
+			FileName = FileName.substr(0, FileName.find_last_of("."));
+			DownloadHandler::InstallZip(File, FileName, "Mod installed from local files.");
 		};
 	TopBox->AddChild(LocalModButton);
 
