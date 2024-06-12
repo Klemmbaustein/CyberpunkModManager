@@ -140,7 +140,7 @@ std::string Windows::OpenFileDialog()
 	}
 	catch (std::exception& e)
 	{
-		Log::Print(e.what());
+		std::cout << e.what() << std::endl;
 	}
 	return "";
 }
