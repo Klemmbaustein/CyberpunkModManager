@@ -26,13 +26,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup VS devenv for x86
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: x86
+
+    - name: Init submodules
+      run: git submodule update --init --recursive
+
+    - name: Build 7zip
+      run: |
+        cd Dependencies/7zip/CPP/7zip
+        nmake
+
     - name: Setup VS devenv for amd64
       uses: seanmiddleditch/gha-setup-vsdevenv@master
       with:
         arch: amd64
-
-    - name: Init submodules
-      run: git submodule update --init --recursive
 
     - name: Run Setup
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -40,7 +50,7 @@ jobs:
 
     - name: Build Application
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild CyberpunkModManager.sln /p:Configuration=Release
+      run: msbuild CyberpunkModManager.sln /p:Configuration=Release /p:CI_BUILD=${{ github.run_number }}
 
     - name: Make release
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -57,13 +67,13 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Init submodules
       run: git submodule update --init --recursive
-    
+
     - name: Install dependencies
       run: |
           sudo apt-get update
