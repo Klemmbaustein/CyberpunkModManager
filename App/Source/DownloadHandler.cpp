@@ -100,7 +100,10 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 	{
 		PrevMod.Remove();
 	}
-	if(ZipPath != "") { 
+	if (ZipPath == "")
+	{
+	    return;
+	}
 	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
