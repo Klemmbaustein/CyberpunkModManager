@@ -225,14 +225,14 @@ void Windows::SetWorkingDirectory()
 
 	PathString = PathString.substr(0, PathString.find_last_of("/\\"));
 
+	if (std::filesystem::exists(PathString + "/../../App/app/shaders"))
+	{
+		PathString.append("/../../App/");
+	}
 	if (!std::filesystem::is_directory(PathString + "/app"))
 	{
 		// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
 		PathString.append("/../");
-	}
-	if (std::filesystem::exists(PathString + "/../../App/app/shaders"))
-	{
-		PathString.append("/../../App/");
 	}
 	std::cout << "App root directory: " << PathString << std::endl;
 	std::filesystem::current_path(PathString);
