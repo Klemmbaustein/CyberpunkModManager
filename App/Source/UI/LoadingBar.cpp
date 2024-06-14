@@ -24,6 +24,7 @@ void LoadingBar::Init()
 	LoadingText = new UIText(8, 1, "", UI::Text);
 	LoadingText->SetPosition(Vector2f(-0.9f, 0.1f));
 
+	CanClose = false;
 }
 
 bool LoadingBar::HasBorder()
@@ -35,6 +36,7 @@ void LoadingBar::Update()
 {
 	if (ShouldClose)
 	{
+		CanClose = true;
 		return;
 	}
 
