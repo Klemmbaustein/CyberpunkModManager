@@ -100,7 +100,7 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 	{
 		PrevMod.Remove();
 	}
-
+	if(ZipPath != "") { 
 	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
@@ -132,6 +132,9 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 	}
 	NewMod.CheckModUpdateStatus();
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+	}
+	
+	
 }
 
 static std::string OpenFile;
