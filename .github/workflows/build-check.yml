@@ -20,50 +20,6 @@ env:
   LINUX_BUILD_NAME: CyberpunkModManager-Linux-${{ github.run_number }}
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup VS devenv for x86
-      uses: seanmiddleditch/gha-setup-vsdevenv@master
-      with:
-        arch: x86
-
-    - name: Init submodules
-      run: git submodule update --init --recursive
-
-    - name: Build 7zip
-      run: |
-        cd Dependencies/7zip/CPP/7zip
-        nmake
-
-    - name: Setup VS devenv for amd64
-      uses: seanmiddleditch/gha-setup-vsdevenv@master
-      with:
-        arch: amd64
-
-    - name: Run Setup
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./Setup.ps1 CI_BUILD
-
-    - name: Build Application
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild CyberpunkModManager.sln /p:Configuration=Release /p:CI_BUILD=${{ github.run_number }}
-
-    - name: Make release
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: cd App && ./MakeRelease.ps1
-
-    - name: Upload release artifact
-      uses: actions/upload-artifact@v3
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        path: App/Release
-        name: ${{env.WINDOWS_BUILD_NAME}}
-
 
   build-linux:
     runs-on: ubuntu-latest
