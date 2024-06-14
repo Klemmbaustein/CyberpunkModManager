@@ -2,7 +2,9 @@
 #include "FileUtil.h"
 #include "nlohmann/json.hpp"
 #include "Game.h"
+#include "Profile.h"
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include "../../App/Source/WindowsFunctions.h"
@@ -71,7 +73,7 @@ void ModInfo::WriteFile(std::string FilePath)
 }
 ModInfo ModInfo::GetModByName(std::string Name)
 {
-	return ParseFile("app/profiles/test/" + Name + ".json");
+	return ParseFile(Profile::Current.Path + Name + ".json");
 }
 
 void ModInfo::CheckModUpdateStatus()
@@ -107,9 +109,9 @@ void ModInfo::CheckModUpdateStatus()
 std::vector<ModInfo> ModInfo::GetAllInstalledMods()
 {
 	std::vector<ModInfo> FoundMods;
-	std::filesystem::create_directories("app/profiles/test/");
+	std::filesystem::create_directories(Profile::Current.Path);
 
-	for (auto& i : std::filesystem::directory_iterator("app/profiles/test/"))
+	for (auto& i : std::filesystem::directory_iterator(Profile::Current.Path))
 	{
 		if (std::filesystem::is_directory(i))
 		{
@@ -124,7 +126,7 @@ std::vector<ModInfo> ModInfo::GetAllInstalledMods()
 
 void ModInfo::Save()
 {
-	WriteFile("app/profiles/test/" + Name + ".json");
+	WriteFile(Profile::Current.Path + Name + ".json");
 }
 
 void ModInfo::Enable()
@@ -156,6 +158,53 @@ void ModInfo::Enable()
 	catch (std::exception e)
 	{
 		Windows::ErrorBox(e.what());
+	}
+}
+
+void ModInfo::Unload()
+{
+	if (!Enabled)
+	{
+		return;
+	}
+	std::string GameLocation = Game::GetGameLocation();
+
+	if (!std::filesystem::exists(GameLocation))
+	{
+		return;
+	}
+
+	for (auto& i : Files)
+	{
+		std::string Path = i.substr(0, i.find_last_of("/\\"));
+		std::filesystem::create_directories(Profile::Current.Path + "unloaded/" + Path);
+		std::filesystem::copy(GameLocation + i, Profile::Current.Path + "unloaded/" + i,
+				std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::remove(GameLocation + i);
+	}
+}
+
+void ModInfo::Load()
+{
+	if (!Enabled)
+	{
+		return;
+	}
+	std::string GameLocation = Game::GetGameLocation();
+
+	if (!std::filesystem::exists(GameLocation))
+	{
+		return;
+	}
+
+	auto UnloadedFiles = FileUtil::GetAllFilesInFolder(Profile::Current.Path + "unloaded/");
+
+	for (auto& i : UnloadedFiles)
+	{
+		std::string Path = i.substr(0, i.find_last_of("/\\"));
+		std::filesystem::create_directories(GameLocation + Path);
+		std::filesystem::copy(Profile::Current.Path + "unloaded/" + i, GameLocation + i,
+				std::filesystem::copy_options::overwrite_existing);
 	}
 }
 
@@ -204,13 +253,13 @@ void ModInfo::Remove()
 {
 	Disable();
 
-	std::filesystem::remove_all("app/profiles/test/mod_files/" + Name + "/");
-	std::filesystem::remove("app/profiles/test/" + Name + ".json");
+	std::filesystem::remove_all(Profile::Current.Path + "/mod_files/" + Name + "/");
+	std::filesystem::remove(Profile::Current.Path + Name + ".json");
 }
 
 std::string ModInfo::GetModFilesDir() const
 {
-	return "app/profiles/test/mod_files/" + Name + "/";
+	return Profile::Current.Path +  "/mod_files/" + Name + "/";
 }
 
 static std::vector<std::string> KnownModDirNames =

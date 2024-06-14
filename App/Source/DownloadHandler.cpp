@@ -12,6 +12,7 @@
 #include "ModInfo.h"
 #include "UI/Tabs/InstalledModsTab.h"
 #include "UI/ModOptionSelection.h"
+#include "Profile.h"
 
 static std::string ModDownloadUrl;
 static int ModID;
@@ -40,7 +41,8 @@ static void DownloadModAsync(void*)
 	LoadBar->ProgressValue = nullptr;
 	LoadBar->SetLoadingString("Installing mod...");
 
-	std::string ImagePath = "app/profiles/test/images/" + Mod.Name + ".webp";
+	std::filesystem::create_directories(Profile::Current.Path + "/images");
+	std::string ImagePath = Profile::Current.Path + "/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath, true);
 	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID, CurrentFileID, File.Category);
 	std::filesystem::remove(ArchiveName);
@@ -101,10 +103,10 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 		PrevMod.Remove();
 	}
 
-	std::string ModPath = "app/profiles/test/mod_files/" + Name + "/";
+	std::string ModPath = Profile::Current.Path + "/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
-	std::filesystem::create_directories("app/profiles/test/images/");
+	std::filesystem::create_directories(Profile::Current.Path + "/images/");
 
 	auto ModFiles = FileUtil::GetAllFilesInFolder(ModPath);
 
@@ -119,7 +121,7 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 		.Files = ModFiles,
 	};
 
-	std::filesystem::create_directories("app/profiles/test/");
+	std::filesystem::create_directories(Profile::Current.Path);
 	NewMod.Save();
 	if (NewMod.ContainsMultipleVersions())
 	{

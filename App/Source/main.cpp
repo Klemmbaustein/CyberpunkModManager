@@ -15,6 +15,7 @@
 #include "BackgroundTask.h"
 #include "WindowsFunctions.h"
 #include "DownloadHandler.h"
+#include "Profile.h"
 #include "InstallerUpdate.h"
 #include "Error.h"
 
@@ -75,10 +76,12 @@ int main(int argc, char** argv)
 	}
 
 	HandleArgs(argc, argv);
+	Profile::Init();
 
 	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
 	AppWindow.OnResizedCallback = &OnResized;
-	
+//	AppWindow.DPIMultiplier = 0.5f;
+
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")
 	{
 		InstallerUpdate::CheckForUpdate();

@@ -1,0 +1,63 @@
+element ProfileButton
+{
+	var Image;
+	child UIButton button
+	{
+		size = 25px;
+		padding = 15px;
+		image = Image;
+	}
+}
+
+element ProfileEntry
+{
+	var Description;
+	var Color = (0.6, 0.1, 0.1);
+	tryFill = true;
+	horizontalAlign = centered;
+
+	child UIButton profileButton
+	{
+		padding = 10px;
+		color = Color;
+		minSize = (1.9, 0);
+		borderType = rounded;
+		borderSize = 5px;
+		verticalAlign = centered;
+
+		child UIBackground activeIcon
+		{
+			image = "app/icons/enabled.png";
+			size = 25px;
+			padding = 15px;
+		}
+
+		child UIBox
+		{
+			orientation = vertical;
+			minSize = (1.5, 0);
+			child UIBox nameBox
+			{
+				padding = 5px;
+			}
+			
+			child UIText
+			{
+				text = Description;
+				color = 0.8;
+				size = 12px;
+				padding = 5px;
+			}
+		}
+
+		child ProfileButton renameButton
+		{
+			Image = "app/icons/rename.png";
+		}
+
+		child ProfileButton deleteButton
+		{
+			Image = "app/icons/delete.png";
+		}
+	}
+}

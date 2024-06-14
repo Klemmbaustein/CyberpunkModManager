@@ -5,6 +5,7 @@
 #include "../../Markup/ModInfoButton.hpp"
 #include "../../DownloadHandler.h"
 #include "../LoadingBar.h"
+#include "../ProfileWindow.h"
 #include "StrUtil.h"
 
 using namespace KlemmUI;
@@ -62,6 +63,15 @@ InstalledModsTab::InstalledModsTab()
 			DownloadHandler::InstallZip(File, FileName, "Mod installed from local files.");
 		};
 	TopBox->AddChild(LocalModButton);
+
+	auto ProfilesButton = new ModInfoButton();
+	ProfilesButton->SetText("Profiles");
+	ProfilesButton->SetImage("app/icons/storage.png");
+	ProfilesButton->button->OnClickedFunction = []()
+		{
+			Popup::CreatePopup<ProfileWindow>();
+		};
+	TopBox->AddChild(ProfilesButton);
 
 	SearchField = new UITextField(0, 0.05f, UI::Text, []() {
 		std::string NewFilter = CurrentInstalledTab->SearchField->GetText();

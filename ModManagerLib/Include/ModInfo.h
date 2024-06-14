@@ -1,6 +1,5 @@
 #pragma once
 #include "NexusModsAPI.h"
-
 struct ModInfo
 {
 	std::string Name;
@@ -29,6 +28,12 @@ struct ModInfo
 	void Enable();
 	void Disable();
 	void Remove();
+
+	// Functions for profiles.
+	// When a profile is switched, all mods of the old profile are unloaded
+	// and all mods of the new profile are loaded.
+	void Unload();
+	void Load();
 
 	std::string GetModFilesDir() const;
 

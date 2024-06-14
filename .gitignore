@@ -359,7 +359,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-App/app/profiles/test
+App/app/profiles/*
 App/app/temp
 App/Build
 App/CMakeBuild
