@@ -51,6 +51,9 @@
     <ClInclude Include="Include\FOMOD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Profile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NexusModsAPI.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\FOMOD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Profile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

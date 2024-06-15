@@ -97,6 +97,7 @@
     <ClInclude Include="Include\Net.h" />
     <ClInclude Include="Include\NexusModsAPI.h" />
     <ClInclude Include="Include\ParsePE.h" />
+    <ClInclude Include="Include\Profile.h" />
     <ClInclude Include="Include\SettingsManager.h" />
     <ClInclude Include="Include\StrUtil.h" />
     <ClInclude Include="Include\Archive.h" />
@@ -104,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\FOMOD.cpp" />
+    <ClCompile Include="Source\Profile.cpp" />
     <ClCompile Include="Source\SettingsManager.cpp" />
     <ClCompile Include="Source\GithubAPI.cpp" />
     <ClCompile Include="Source\ModInfo.cpp" />
