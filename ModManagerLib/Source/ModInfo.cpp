@@ -178,6 +178,13 @@ void ModInfo::Unload()
 	{
 		std::string Path = i.substr(0, i.find_last_of("/\\"));
 		std::filesystem::create_directories(Profile::Current.Path + "unloaded/" + Path);
+
+		if (!std::filesystem::exists(GameLocation + i))
+		{
+			std::cout << "Mod file doesn't exist: '" + GameLocation + i << "'" << std::endl;
+			continue;
+		}
+
 		std::filesystem::copy(GameLocation + i, Profile::Current.Path + "unloaded/" + i,
 				std::filesystem::copy_options::overwrite_existing);
 		std::filesystem::remove(GameLocation + i);

@@ -15,8 +15,8 @@ public:
 	KlemmUI::UIBox* nameBox;
 	KlemmUI::UIButton* profileButton;
 	KlemmUI::UIText* unnamed_0;
+	ProfileButton* copyButton;
 	ProfileButton* deleteButton;
-	ProfileButton* renameButton;
 	ProfileEntry() : UIBox(true)
 	{
 	this->SetHorizontalAlign(KlemmUI::UIBox::Align::Centered);
@@ -31,7 +31,7 @@ public:
 	profileButton->BorderSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
 	profileButton->SetMinSize(Vector2f(1.9,0));
 	profileButton->SetVerticalAlign(KlemmUI::UIBox::Align::Centered);
-	profileButton->SetPadding((float)10);
+	profileButton->SetPadding((float)5);
 	profileButton->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	this->AddChild(profileButton);
 	{
@@ -40,7 +40,7 @@ public:
 	activeIcon->SetMinSize(Vector2f(25));
 	activeIcon->SetMaxSize(Vector2f(25));
 	activeIcon->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
-	activeIcon->SetPadding((float)15);
+	activeIcon->SetPadding((float)10);
 	activeIcon->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	profileButton->AddChild(activeIcon);
 	auto* e_3 = new KlemmUI::UIBox(true);
@@ -63,9 +63,9 @@ public:
 	e_3->AddChild(e_5);
 	unnamed_0 = e_5;
 	}
-	renameButton = new ProfileButton();
-	renameButton->SetImage("app/icons/rename.png");
-	profileButton->AddChild(renameButton);
+	copyButton = new ProfileButton();
+	copyButton->SetImage("app/icons/copy.png");
+	profileButton->AddChild(copyButton);
 	deleteButton = new ProfileButton();
 	deleteButton->SetImage("app/icons/delete.png");
 	profileButton->AddChild(deleteButton);

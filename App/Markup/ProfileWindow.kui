@@ -4,7 +4,7 @@ element ProfileButton
 	child UIButton button
 	{
 		size = 25px;
-		padding = 15px;
+		padding = 10px;
 		image = Image;
 	}
 }
@@ -18,7 +18,7 @@ element ProfileEntry
 
 	child UIButton profileButton
 	{
-		padding = 10px;
+		padding = 5px;
 		color = Color;
 		minSize = (1.9, 0);
 		borderType = rounded;
@@ -29,7 +29,7 @@ element ProfileEntry
 		{
 			image = "app/icons/enabled.png";
 			size = 25px;
-			padding = 15px;
+			padding = 10px;
 		}
 
 		child UIBox
@@ -50,9 +50,9 @@ element ProfileEntry
 			}
 		}
 
-		child ProfileButton renameButton
+		child ProfileButton copyButton
 		{
-			Image = "app/icons/rename.png";
+			Image = "app/icons/copy.png";
 		}
 
 		child ProfileButton deleteButton

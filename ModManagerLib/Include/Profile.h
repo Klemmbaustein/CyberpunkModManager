@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <cstdint>
 
 struct Profile
 {
@@ -8,7 +9,13 @@ struct Profile
 	static Profile Current;
 	std::string Path;
 	std::string DisplayName;
-	void MakeActive();
+	void MakeActive() const;
+
+	uint32_t GetModsCount() const;
+
+	void Rename(std::string NewName);
+
+	bool Copy() const;
 
 	static void Init();
 };
