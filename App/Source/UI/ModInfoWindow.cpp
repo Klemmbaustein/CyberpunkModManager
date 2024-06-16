@@ -14,8 +14,6 @@
 
 using namespace KlemmUI;
 
-thread_local ModInfoWindow* ModInfoWindow::CurrentWindow = nullptr;
-
 void ModInfoWindow::LoadInfo()
 {
 	PopupBackground->DeleteChildren();
@@ -63,9 +61,9 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 	{
 		auto* InstallButton = new ModInfoButton();
 		InstallButton->SetText("Install");
-		InstallButton->button->OnClickedFunction = []() {
+		InstallButton->button->OnClickedFunction = [this]() {
 			// Can't actually install anything since NexusMods is the worst thing ever.
-			OpenModInBrowser(CurrentWindow->GetModInfo(), "?tab=files");
+			OpenModInBrowser(GetModInfo(), "?tab=files");
 			};
 		Parent->AddChild(InstallButton);
 		InstallButton->SetImage("app/icons/download.png");
@@ -76,9 +74,9 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 		{
 			auto* UpdateButton = new ModInfoButton();
 			UpdateButton->SetText("Update");
-			UpdateButton->button->OnClickedFunction = []() {
-				OpenModInBrowser(CurrentWindow->GetModInfo(), "?tab=files");
-				CurrentWindow->ShouldClose = true;
+			UpdateButton->button->OnClickedFunction = [this]() {
+				OpenModInBrowser(GetModInfo(), "?tab=files");
+				ShouldClose = true;
 				};
 			Parent->AddChild(UpdateButton);
 			UpdateButton->SetImage("app/icons/download.png");
@@ -86,8 +84,8 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 
 		auto* EnableButton = new ModInfoButton();
 		EnableButton->SetText(ModInf.Enabled ? "Disable" : "Enable");
-		EnableButton->button->OnClickedFunction = []() {
-			auto Mod = ModInfo::GetModByName(CurrentWindow->GetModInfo().Name);
+		EnableButton->button->OnClickedFunction = [this]() {
+			auto Mod = ModInfo::GetModByName(GetModInfo().Name);
 
 			if (Mod.Enabled)
 			{
@@ -99,7 +97,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 				{
 					auto Option = Popup::CreatePopup<ModOptionsSelection>();
 					Option->LoadMod(Mod);
-					CurrentWindow->ShouldClose = true;
+					ShouldClose = true;
 					return;
 				}
 				else
@@ -108,7 +106,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 				}
 			}
 
-			CurrentWindow->GenerateActionButtons(CurrentWindow->ActionsBox, CurrentWindow->GetModInfo());
+			GenerateActionButtons(ActionsBox, GetModInfo());
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
 
@@ -118,10 +116,10 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 
 		auto* RemoveButton = new ModInfoButton();
 		RemoveButton->SetText("Uninstall");
-		RemoveButton->button->OnClickedFunction = []() {
-			auto Mod = ModInfo::GetModByName(CurrentWindow->GetModInfo().Name);
+		RemoveButton->button->OnClickedFunction = [this]() {
+			auto Mod = ModInfo::GetModByName(GetModInfo().Name);
 			Mod.Remove();
-			CurrentWindow->GenerateActionButtons(CurrentWindow->ActionsBox, CurrentWindow->GetModInfo());
+			GenerateActionButtons(ActionsBox, GetModInfo());
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
 		RemoveButton->SetImage("app/icons/delete.png");
@@ -133,8 +131,8 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 	{
 		auto* OpenInBrowserButton = new ModInfoButton();
 		OpenInBrowserButton->SetText("Open website");
-		OpenInBrowserButton->button->OnClickedFunction = []() {
-			OpenModInBrowser(CurrentWindow->GetModInfo());
+		OpenInBrowserButton->button->OnClickedFunction = [this]() {
+			OpenModInBrowser(GetModInfo());
 			};
 		OpenInBrowserButton->SetImage("app/icons/open.png");
 		Parent->AddChild(OpenInBrowserButton);
@@ -179,7 +177,6 @@ std::string ModInfoWindow::GetWindowTitle()
 
 void ModInfoWindow::Init()
 {
-	CurrentWindow = this;
 	PopupBackground->SetHorizontalAlign(UIBox::Align::Centered);
 	PopupBackground->SetVerticalAlign(UIBox::Align::Centered);
 	PopupBackground->AddChild(new UIText(1, 1, "Loading...", UI::Text));

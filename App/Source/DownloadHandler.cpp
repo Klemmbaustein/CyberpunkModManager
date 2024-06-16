@@ -17,7 +17,7 @@
 static std::string ModDownloadUrl;
 static int ModID;
 static int FileID;
-static void DownloadModAsync(void*)
+static void DownloadModAsync()
 {
 	std::string CurrentModUrl = ModDownloadUrl;
 	int CurrentModID = ModID;
@@ -143,7 +143,7 @@ void DownloadHandler::CheckDownloadRequest()
 	{
 		OpenFile = FileUtil::ReadFile("app/OpenUri");
 		
-		new BackgroundTask([](void*) {
+		new BackgroundTask([]() {
 			DownloadModUri(OpenFile);
 			});
 		std::filesystem::remove("app/OpenUri");

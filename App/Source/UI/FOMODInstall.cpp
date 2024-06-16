@@ -12,13 +12,11 @@
 
 using namespace KlemmUI;
 
-static thread_local FOMODInstall* CurrentInstall = nullptr;
-
 void FOMODInstall::NextInstallGroup(bool Force)
 {
 	if (!Force)
 	{
-		for (auto& i : CurrentInstall->CurrentStep->Groups)
+		for (auto& i : CurrentStep->Groups)
 		{
 			if (!i.HasValidSelection())
 			{
@@ -28,42 +26,37 @@ void FOMODInstall::NextInstallGroup(bool Force)
 		}
 	}
 
-	for (auto& i : CurrentInstall->CurrentStep->Groups)
+	for (auto& i : CurrentStep->Groups)
 	{
 		for (auto& j : i.Plugins)
 		{
 			if (j.Selected)
 			{
-				j.Enable(CurrentInstall->InstalledMod);
+				j.Enable(InstalledMod);
 			}
 		}
 	}
 
-	CurrentInstall->UnloadTextures();
+	UnloadTextures();
 
-	if (CurrentInstall->StepIndex + 1 >= CurrentInstall->InstalledMod.Steps.size())
+	if (StepIndex + 1 >= InstalledMod.Steps.size())
 	{
-		CurrentInstall->InstallMod();
-		CurrentInstall->ShouldClose = true;
+		InstallMod();
+		ShouldClose = true;
 		return;
 	}
 
-	CurrentInstall->CurrentStep = &CurrentInstall->InstalledMod.Steps[++CurrentInstall->StepIndex];
+	CurrentStep = &InstalledMod.Steps[++StepIndex];
 
-	if (CurrentInstall->CurrentStep->Visible.Evaluate(CurrentInstall->InstalledMod))
+	if (CurrentStep->Visible.Evaluate(InstalledMod))
 	{
-		CurrentInstall->Background->GetScrollObject()->Percentage = 0;
-		CurrentInstall->GenerateUI();
+		Background->GetScrollObject()->Percentage = 0;
+		GenerateUI();
 	}
 	else
 	{
 		NextInstallGroup(true);
 	}
-}
-
-void FOMODInstall::OnNextClicked()
-{
-	NextInstallGroup(false);
 }
 
 void FOMODInstall::GenerateUI()
@@ -79,7 +72,9 @@ void FOMODInstall::GenerateUI()
 	
 	auto Footer = new SetupFooter();
 	Background->AddChild(Footer);
-	Footer->nextButton->OnClickedFunction = &OnNextClicked;
+	Footer->nextButton->OnClickedFunction = [this]() {
+		NextInstallGroup(false);
+		};
 }
 
 void FOMODInstall::UnloadTextures()
@@ -127,10 +122,10 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 			PluginOption->SetColor(Vector3f(0.4f, 0.05f, 0.05f));
 		}
 		PluginOption->optionButton->ButtonIndex = ItemIndex;
-		PluginOption->optionButton->OnClickedFunctionIndex = [](int Index)
+		PluginOption->optionButton->OnClickedFunctionIndex = [this](int Index)
 			{
 				int it = 0;
-				for (auto& i : CurrentInstall->CurrentStep->Groups)
+				for (auto& i : CurrentStep->Groups)
 				{
 					for (auto& j : i.Plugins)
 					{
@@ -149,7 +144,7 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 							i.DeSelectAll();
 						}
 						j.Selected = !Value;
-						CurrentInstall->GenerateUI();
+						GenerateUI();
 						return;
 					}
 				}
@@ -245,7 +240,6 @@ void FOMODInstall::LoadModPath(ModInfo Info, std::string ModPath, std::string To
 
 void FOMODInstall::Init()
 {
-	CurrentInstall = this;
 	Background = new UIScrollBox(false, 0, true);
 	PopupBackground->AddChild(Background
 		->SetMinSize(2)
