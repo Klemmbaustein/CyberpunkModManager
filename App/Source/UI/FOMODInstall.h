@@ -16,8 +16,7 @@ class FOMODInstall : public Popup
 	std::vector<KlemmUI::Texture::TextureInfo> Textures;
 
 	KlemmUI::UIScrollBox* Background = nullptr;
-	static void NextInstallGroup(bool Force);
-	static void OnNextClicked();
+	void NextInstallGroup(bool Force);
 	void GenerateUI();
 	void UnloadTextures();
 	void GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex);

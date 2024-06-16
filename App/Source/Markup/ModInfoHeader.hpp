@@ -17,13 +17,13 @@ public:
 	{
 	image = new KlemmUI::UIBackground(true, 0, 1);
 	image->BoxBorder = KlemmUI::UIBox::BorderType::DarkenedEdge;
-	image->BorderRadius = 2;
+	image->BorderRadius = float(2);
 	image->BorderSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
-	image->BorderColor = Vector3f(0.6,0,0.1);
-	image->SetMinSize(Vector2f(340,180));
-	image->SetMaxSize(Vector2f(340,180));
+	image->BorderColor = Vector3f(float(0.6), float(0), float(0.1));
+	image->SetMinSize(Vector2f(float(340), float(180)));
+	image->SetMaxSize(Vector2f(float(340), float(180)));
 	image->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
-	image->SetPadding((float)5);
+	image->SetPadding((float)float(5));
 	image->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	this->AddChild(image);
 	auto* e_2 = new KlemmUI::UIBox(true);
@@ -32,25 +32,25 @@ public:
 	{
 	name = new KlemmUI::UIText(1, 1, "", nullptr);
 	name->SetText(Name);
-	name->SetTextSize(15);
+	name->SetTextSize(float(15));
 	name->SetTextSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	name->SetFont(KlemmUI::MarkupLanguageManager::GetActive()->GetFont(""));
-	name->WrapDistance = 800;
+	name->WrapDistance = float(800);
 	name->Wrap = true;
 	name->WrapSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
-	name->SetPadding((float)5);
+	name->SetPadding((float)float(5));
 	name->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	e_2->AddChild(name);
 	subTitle = new KlemmUI::UIText(1, 1, "", nullptr);
 	subTitle->SetText(SubTitle);
-	subTitle->SetColor(Vector3f(0.9));
-	subTitle->SetTextSize(11);
+	subTitle->SetColor(Vector3f(float(0.9)));
+	subTitle->SetTextSize(float(11));
 	subTitle->SetTextSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	subTitle->SetFont(KlemmUI::MarkupLanguageManager::GetActive()->GetFont(""));
-	subTitle->WrapDistance = 800;
+	subTitle->WrapDistance = float(800);
 	subTitle->Wrap = true;
 	subTitle->WrapSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
-	subTitle->SetPadding((float)5);
+	subTitle->SetPadding((float)float(5));
 	subTitle->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	e_2->AddChild(subTitle);
 	}

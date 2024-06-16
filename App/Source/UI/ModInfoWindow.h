@@ -10,7 +10,6 @@ class ModInfoWindow : public Popup
 	std::mutex InfoMutex;
 	bool HasInfo = false;
 	void LoadInfo();
-	static thread_local ModInfoWindow* CurrentWindow;
 	KlemmUI::UIBox* ActionsBox = nullptr;
 	std::vector<unsigned int> LoadedImages;
 	void GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::ModInfo& Mod);

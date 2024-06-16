@@ -15,6 +15,8 @@ struct Profile
 
 	void Rename(std::string NewName);
 
+	bool IsCurrent() const;
+
 	bool Copy() const;
 
 	static void Init();
