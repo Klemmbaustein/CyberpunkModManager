@@ -41,7 +41,7 @@ bool Windows::IsProcessRunning(std::string Name)
 	WTSEnumerateProcessesA(WTS_CURRENT_SERVER_HANDLE, 0, 1, &ppProcessInfo, &pCount);
 	pProcess = ppProcessInfo;
 
-	for (int i = 0; i < pCount; i++)
+	for (DWORD i = 0; i < pCount; i++)
 	{
 		std::string pName = pProcess->pProcessName;
 		if (pProcess->ProcessId == GetCurrentProcessId())
@@ -180,7 +180,7 @@ void Windows::RegisterSelfAsUriHandler()
 	RegSetValueW(NxmKey, NULL, REG_SZ, L"URL:nxm", 8 * sizeof(wchar_t));
 
 	std::wstring ExePath = GetExecutableDir().c_str();
-	RegSetValueW(CommandKey, NULL, REG_SZ, (ExePath + L" uri=%1").c_str(), (ExePath.size() + 1) * sizeof(wchar_t));
+	RegSetValueW(CommandKey, NULL, REG_SZ, (ExePath + L" uri=%1").c_str(), DWORD((ExePath.size() + 1) * sizeof(wchar_t)));
 	RegCloseKey(ClassesKey);
 	RegCloseKey(NxmKey);
 	RegCloseKey(CommandKey);

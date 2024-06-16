@@ -17,7 +17,7 @@
 
 bool Crashed = false;
 
-void SignalHandler(int Signal)
+void SignalHandler(int)
 {
 	if (Crashed)
 	{
