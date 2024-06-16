@@ -14,9 +14,9 @@ public:
 	checkButton = new KlemmUI::UIButton(true, 0, 1, nullptr);
 	checkButton->SetUseTexture(true, Image);
 	checkButton->BoxBorder = KlemmUI::UIBox::BorderType::Rounded;
-	checkButton->BorderRadius = float(5);
+	checkButton->BorderRadius = 5;
 	checkButton->BorderSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
-	checkButton->SetMinSize(Vector2f(float(22)));
+	checkButton->SetMinSize(Vector2f(22));
 	checkButton->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	this->AddChild(checkButton);
 	}

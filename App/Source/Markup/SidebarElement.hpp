@@ -9,11 +9,11 @@ public:
 	KlemmUI::UIBackground* bg;
 	SidebarElement() : UIBox(true)
 	{
-	this->SetMinSize(Vector2f(float(0), float(2)));
+	this->SetMinSize(Vector2f(0,2));
 	{
 	bg = new KlemmUI::UIBackground(true, 0, 1);
-	bg->SetColor(Vector3f(float(0.1)));
-	bg->SetMinSize(Vector2f(float(80)));
+	bg->SetColor(Vector3f(0.1));
+	bg->SetMinSize(Vector2f(80));
 	bg->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	bg->SetTryFill((bool)true);
 	bg->SetHorizontal(false);

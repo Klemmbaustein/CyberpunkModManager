@@ -30,21 +30,12 @@ static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 
 static void ProfileDelete(Profile Target, ProfileWindow* TargetWindow)
 {
-	if (!Windows::YesNoBox("Really delete '" + Target.DisplayName + "'?"))
+	if (Windows::YesNoBox("Really delete '" + Target.DisplayName + "'?"))
 	{
-		return;
+		std::filesystem::remove_all(Target.Path);
+		AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+		TargetWindow->GenerateList();
 	}
-
-	if (Target.IsCurrent())
-	{
-		Profile::GetAllProfiles()[0].MakeActive();
-	}
-
-	std::filesystem::remove_all(Target.Path);
-
-	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
-	TargetWindow->GenerateList();
-
 }
 
 static bool IsValidProfileName(const std::string& Name)
@@ -92,7 +83,7 @@ void ProfileWindow::GenerateList()
 	auto Profiles = Profile::GetAllProfiles();
 	for (const Profile& pf : Profiles)
 	{
-		bool Selected = pf.IsCurrent();
+		bool Selected = pf.Path == Profile::Current.Path;
 		auto Entry = new ProfileEntry();
 		Entry->activeIcon->IsVisible = Selected;
 

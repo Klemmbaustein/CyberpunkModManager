@@ -37,9 +37,9 @@ std::vector<Profile> Profile::GetAllProfiles()
 
 void Profile::MakeActive() const
 {
-	if (IsCurrent())
+	if (Current.Path == Path)
 	{
-		// Don't unload/reload mods if the new is the already active one.
+		// Don't unload/reload profiles if the new profile is the same as the old one.
 		return;
 	}
 
@@ -103,11 +103,6 @@ void Profile::Rename(std::string NewName)
 	{
 		Current = *this;
 	}
-}
-
-bool Profile::IsCurrent() const
-{
-	return Current.Path == Path;
 }
 
 bool Profile::Copy() const

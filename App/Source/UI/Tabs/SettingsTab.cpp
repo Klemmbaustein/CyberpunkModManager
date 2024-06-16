@@ -10,6 +10,9 @@ using namespace KlemmUI;
 SettingsManager Settings;
 bool LoadedSettings = false;
 
+static std::vector<std::string> BoolValues;
+static int BoolIt = 0;
+
 static void AddBoolEntry(std::string Name, std::string Value, std::string Default, UIBox* Parent)
 {
 	bool Val = Settings.GetValue(Value, Default) == "1";
@@ -25,18 +28,21 @@ static void AddBoolEntry(std::string Name, std::string Value, std::string Defaul
 		CheckButton->SetImage("app/icons/Checkbox.png");
 	}
 
-	CheckButton->checkButton->OnClickedFunction = [Value]()
+	CheckButton->checkButton->OnClickedFunctionIndex = [](int Index)
 		{
-			Settings.SetValue(Value, (Settings.GetValue(Value, "") == "1") ? "0" : "1");
+			std::string ValueName = BoolValues.at(Index);
+			Settings.SetValue(ValueName, (Settings.GetValue(ValueName, "") == "1") ? "0" : "1");
 
-			if (Value == "show_nsfw_mods")
+			if (ValueName == "show_nsfw_mods")
 			{
 				AppTab::GetTabOfType<ModBrowserTab>()->ShouldReload = true;
 			}
 
 			AppTab::GetTabOfType<SettingsTab>()->Generate();
 		};
+	CheckButton->checkButton->ButtonIndex = BoolIt++;
 
+	BoolValues.push_back(Value);
 
 	Element->content->AddChild(CheckButton);
 }
@@ -76,6 +82,9 @@ SettingsTab::SettingsTab()
 
 void SettingsTab::Generate()
 {
+	BoolIt = 0;
+	BoolValues.clear();
+
 	SettingsBox->DeleteChildren();
 
 	AddBoolEntry("Check for app updates on startup", "check_updates", "1", SettingsBox);

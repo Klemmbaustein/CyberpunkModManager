@@ -10,7 +10,9 @@
 
 using namespace KlemmUI;
 
-static void CheckModUpdates()
+static InstalledModsTab* CurrentInstalledTab = nullptr;
+
+static void CheckModUpdates(void*)
 {
 	auto LoadBar = Popup::CreatePopup<LoadingBar>();
 
@@ -33,6 +35,7 @@ InstalledModsTab::InstalledModsTab()
 	: ModListTab("Installed mods")
 {
 	IconFile = "storage.png";
+	CurrentInstalledTab = this;
 	
 	UIBox* TopBox = new UIBox(true);
 	HeaderBox->SetHorizontal(false);
@@ -42,9 +45,9 @@ InstalledModsTab::InstalledModsTab()
 	auto UpdateButton = new ModInfoButton();
 	UpdateButton->SetText("Check for mod updates");
 	UpdateButton->SetImage("app/icons/search_web.png");
-	UpdateButton->button->OnClickedFunction = [this]() {
-		new BackgroundTask(CheckModUpdates, [this]() {
-			ShouldReload = true;
+	UpdateButton->button->OnClickedFunction = []() {
+		new BackgroundTask(CheckModUpdates, [](void*) {
+			CurrentInstalledTab->ShouldReload = true;
 			});
 		};
 	TopBox->AddChild(UpdateButton);
@@ -70,13 +73,13 @@ InstalledModsTab::InstalledModsTab()
 		};
 	TopBox->AddChild(ProfilesButton);
 
-	SearchField = new UITextField(0, 0.05f, UI::Text, [this]() {
-		std::string NewFilter = SearchField->GetText();
+	SearchField = new UITextField(0, 0.05f, UI::Text, []() {
+		std::string NewFilter = CurrentInstalledTab->SearchField->GetText();
 
-		if (SearchFilter != NewFilter)
+		if (CurrentInstalledTab->SearchFilter != NewFilter)
 		{
-			SearchFilter = NewFilter;
-			ShouldReload = true;
+			CurrentInstalledTab->SearchFilter = NewFilter;
+			CurrentInstalledTab->ShouldReload = true;
 		}
 		});
 

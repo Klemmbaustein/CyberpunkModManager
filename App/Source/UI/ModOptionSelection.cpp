@@ -5,6 +5,8 @@
 
 using namespace KlemmUI;
 
+static thread_local ModOptionsSelection* CurrentSelection = nullptr;
+
 void ModOptionsSelection::GenerateOptions()
 {
 	PopupBackground->DeleteChildren();
@@ -21,13 +23,14 @@ void ModOptionsSelection::GenerateOptions()
 	{
 		auto Option = new ModOption();
 		Option->SetOptionName(i);
-		Option->button->OnClickedFunction = [i, this]()
+		Option->button->OnClickedFunctionIndex = [](int Index)
 			{
-				TargetMod.InstallVersion(i);
-				ShouldClose = true;
+				CurrentSelection->TargetMod.InstallVersion(CurrentSelection->TargetMod.GetVersions()[Index]);
+				CurrentSelection->ShouldClose = true;
 
 				AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
+		Option->button->ButtonIndex = ButtonIndex++;
 		PopupBackground->AddChild(Option);
 	}
 }
@@ -42,6 +45,7 @@ void ModOptionsSelection::LoadMod(ModInfo Mod)
 
 void ModOptionsSelection::Init()
 {
+	CurrentSelection = this;
 }
 
 void ModOptionsSelection::Update()

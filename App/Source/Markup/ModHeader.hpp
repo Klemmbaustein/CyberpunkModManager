@@ -16,21 +16,21 @@ public:
 	{
 	auto* e_1 = new KlemmUI::UIText(1, 1, "", nullptr);
 	e_1->SetText(Name);
-	e_1->SetColor(Vector3f(float(1)));
-	e_1->SetTextSize(float(15));
+	e_1->SetColor(Vector3f(1));
+	e_1->SetTextSize(15);
 	e_1->SetTextSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	e_1->SetFont(KlemmUI::MarkupLanguageManager::GetActive()->GetFont(""));
-	e_1->SetPadding((float)float(5));
+	e_1->SetPadding((float)5);
 	e_1->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
-	e_1->SetDownPadding((float)float(0));
+	e_1->SetDownPadding((float)0);
 	e_1->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	this->AddChild(e_1);
 	unnamed_0 = e_1;
 	auto* e_2 = new KlemmUI::UIBackground(true, 0, 1);
-	e_2->SetColor(Vector3f(float(0.6), float(0), float(0.1)));
-	e_2->SetMinSize(Vector2f(float(2)));
+	e_2->SetColor(Vector3f(0.6,0,0.1));
+	e_2->SetMinSize(Vector2f(2));
 	e_2->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
-	e_2->SetPadding((float)float(4));
+	e_2->SetPadding((float)4);
 	e_2->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	e_2->SetTryFill((bool)true);
 	this->AddChild(e_2);

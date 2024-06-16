@@ -120,22 +120,24 @@ void ModListTab::LoadMainPage()
 	}
 
 	LoadedMods.clear();
-	new BackgroundTask([this]()
+	new BackgroundTask([](void* Data)
 		{
+			ModListTab* Tab = static_cast<ModListTab*>(Data);
 			std::lock_guard Guard(PageLoadMutex);
-			LoadedMods.clear();
-			LoadSections();
+			Tab->LoadedMods.clear();
+			Tab->LoadSections();
 		},
 		
-		[this]()
-		{
-			Generate();
-			new BackgroundTask([this]()
+		[](void* Data) {
+			ModListTab* Tab = static_cast<ModListTab*>(Data);
+			Tab->Generate();
+			new BackgroundTask([](void* Data)
 			{
-				LoadImages();
-				IsLoadingList = false;
-			});
-		});
+				ModListTab* Tab = static_cast<ModListTab*>(Data);
+				Tab->LoadImages();
+				Tab->IsLoadingList = false;
+			},nullptr, Data);
+		}, this);
 }
 
 void ModListTab::Generate()
@@ -201,7 +203,7 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 		Rows.push_back(Row);
 	}
 
-	int ModsPerPage = int((Window::GetActiveWindow()->GetSize().X - 150 * Window::GetActiveWindow()->GetDPI()) / (200.0f * Window::GetActiveWindow()->GetDPI()));
+	int ModsPerPage = (Window::GetActiveWindow()->GetSize().X - 150 * Window::GetActiveWindow()->GetDPI()) / (200 * Window::GetActiveWindow()->GetDPI());
 
 	for (size_t i = 0; i < Section.Mods.size(); i++)
 	{

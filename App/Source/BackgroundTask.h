@@ -2,7 +2,6 @@
 #include <atomic>
 #include <string>
 #include <thread>
-#include <functional>
 #include <vector>
 
 struct BackgroundTask
@@ -11,11 +10,12 @@ struct BackgroundTask
 	std::atomic<float> Progress = 0;
 	std::string Status;
 	std::thread* Thread = nullptr;
-	std::function<void()> Callback;
+	void(*Callback)(void* UserData);
+	void* UserData = nullptr;
 	// Will point to the task that is being executed right now.
 	thread_local static BackgroundTask* ThisThreadPtr;
 
-	BackgroundTask(std::function<void()> Function, std::function<void()> Callback = nullptr);
+	BackgroundTask(void (*Function)(void* UserData), void(*Callback)(void* UserData) = nullptr, void* UserData = nullptr);
 	~BackgroundTask();
 
 	static void SetProgress(float Progress);
@@ -27,8 +27,9 @@ struct BackgroundTask
 
 	static void UpdateTasks();
 
+	static bool IsFunctionRunningAsTask(void (*Function)());
 	static std::vector<BackgroundTask*> AllTasks;
 
 private:
-	static void TaskRun(std::function<void()> Function, BackgroundTask* Task);
+	static void TaskRun(void (*Function)(void* Data), void* UserData, BackgroundTask* Task);
 };

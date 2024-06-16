@@ -9,8 +9,8 @@
 #include "../BackgroundTask.h"
 #include "Game.h"
 
-static SetupWindow* CurrentSetup = nullptr;
 static thread_local std::string ApiKeyValue;
+static SetupWindow* CurrentSetup = nullptr;
 
 using namespace KlemmUI;
 
@@ -76,10 +76,10 @@ void SetupWindow::GenerateAPIKeySetupPage()
 	AddText("Please enter your NexusMods API key.");
 	AddText("You can your the key by going to nexusmods.com, then to 'Site preferences' -> 'API KEYS' -> 'Personal API Key'");
 
-	InputField = new UITextField(0, 0, UI::Text, [this]() {
-		ApiKeyValue = InputField->GetText();
+	InputField = new UITextField(0, 0, UI::Text, []() {
+		ApiKeyValue = CurrentSetup->InputField->GetText();
 
-		GenerateAccountInfo();
+		CurrentSetup->GenerateAccountInfo();
 		});
 	Element->content->AddChild(InputField
 		->SetHintText("API key here")
@@ -88,7 +88,7 @@ void SetupWindow::GenerateAPIKeySetupPage()
 		->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative)
 		->SetMinSize(Vector2f(1.75f, 0)));
 
-	Element->nextButton->OnClickedFunction = [this]()
+	Element->nextButton->OnClickedFunction = []()
 		{
 			if (ClickedNext)
 			{
@@ -104,14 +104,14 @@ void SetupWindow::GenerateAPIKeySetupPage()
 				return;
 			}
 
-			Element->content->DeleteChildren();
+			CurrentSetup->Element->content->DeleteChildren();
 			ClickedNext = true;
 
 			NxmAPI::SaveAPIKey(ApiKeyValue);
 			Net::SetAPIKey(ApiKeyValue);
 			AppTab::GetTabOfType<ModBrowserTab>()->ShouldReload = true;
 
-			new BackgroundTask([this]() {
+			new BackgroundTask([](void*) {
 				auto LoadPopup = Popup::CreatePopup<LoadingBar>();
 				LoadPopup->SetLoadingString("Looking for game...");
 
@@ -122,8 +122,8 @@ void SetupWindow::GenerateAPIKeySetupPage()
 
 				if (std::filesystem::exists(GameLocation))
 				{
-					CanClose = true;
-					ShouldClose = true;
+					CurrentSetup->CanClose = true;
+					CurrentSetup->ShouldClose = true;
 				}
 
 				});

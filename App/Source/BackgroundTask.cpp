@@ -7,12 +7,14 @@ thread_local BackgroundTask* BackgroundTask::ThisThreadPtr = nullptr;
 bool BackgroundTask::IsRunningTask;
 std::vector<BackgroundTask*> BackgroundTask::AllTasks;
 
-BackgroundTask::BackgroundTask(std::function<void()> Function, std::function<void()> Callback)
+BackgroundTask::BackgroundTask(void(*Function)(void* UserData), void(*Callback)(void* UserData), void* UserData)
 {
+	Type = (size_t)Function;
 	AllTasks.push_back(this);
 	this->Callback = Callback;
+	this->UserData = UserData;
 
-	Thread = new std::thread(TaskRun, Function, this);
+	Thread = new std::thread(TaskRun, Function, UserData, this);
 }
 
 BackgroundTask::~BackgroundTask()
@@ -33,13 +35,13 @@ void BackgroundTask::SetStatus(std::string NewStatus)
 	ThisThreadPtr->Status = NewStatus;
 }
 
-void BackgroundTask::TaskRun(std::function<void()> Function, BackgroundTask* ThisTask)
+void BackgroundTask::TaskRun(void (*Function)(void* Data), void* UserData, BackgroundTask* ThisTask)
 {
 	Error::RegisterErrorHandler();
 	ThisThreadPtr = ThisTask;
 	try
 	{
-		Function();
+		Function(UserData);
 	}
 	catch (std::exception& e)
 	{
@@ -48,6 +50,17 @@ void BackgroundTask::TaskRun(std::function<void()> Function, BackgroundTask* Thi
 	ThisTask->Progress = 1;
 }
 
+bool BackgroundTask::IsFunctionRunningAsTask(void(*Function)())
+{
+	for (auto& i : AllTasks)
+	{
+		if (i->Type == (size_t)Function)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool BackgroundTask::IsBackgroundTask()
 {
@@ -62,11 +75,12 @@ void BackgroundTask::UpdateTasks()
 		if (AllTasks[i]->Progress >= 1)
 		{
 			auto Callback = AllTasks[i]->Callback;
+			void* Data = AllTasks[i]->UserData;
 			delete AllTasks[i];
 			AllTasks.erase(AllTasks.begin() + i);
 			if (Callback)
 			{
-				Callback();
+				Callback(Data);
 			}
 			break;
 		}
