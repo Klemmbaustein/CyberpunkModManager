@@ -9,7 +9,6 @@ namespace DownloadHandler
 		std::string ZipPath,
 		std::string Name,
 		std::string Description,
-		std::string Image = "",
 		int ModID = 0,
 		int FileID = 0,
 		std::string FileCategory = ""

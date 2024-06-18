@@ -1,14 +1,41 @@
 #include "Profile.h"
 #include <filesystem>
 #include "ModInfo.h"
+#include "FileUtil.h"
 #include <iostream>
+#include <fstream>
 const std::string ProfileRootPath = "app/profiles/";
-
+const std::string ActiveProfileFile = "app/saved/profile.txt";
 Profile Profile::Current; 
+
+static void SaveCurrentProfile()
+{
+	std::ofstream ProfileInfoFile = std::ofstream(ActiveProfileFile);
+	ProfileInfoFile << Profile::Current.DisplayName;
+	ProfileInfoFile.close();
+}
 
 void Profile::Init()
 {
-	Current = NewProfile("test");
+	std::string LastProfile = FileUtil::ReadFile(ActiveProfileFile);
+
+
+	if (LastProfile.empty())
+	{
+		// Make the default profile 'test' if it exists and no other profile is saved.
+		// Before profile support, all mod files were put into app/profiles/test/
+		// And things might break if we just create a new profile and ignore 'test' until it's switched back to.
+		if (std::filesystem::exists("app/profiles/test/"))
+		{
+			LastProfile = "test";
+		}
+		else
+		{
+			LastProfile = "Default";
+		}
+	}
+
+	Current = NewProfile(LastProfile);
 }
 
 Profile Profile::NewProfile(std::string Name)
@@ -39,7 +66,7 @@ void Profile::MakeActive() const
 {
 	if (IsCurrent())
 	{
-		// Don't unload/reload mods if the new is the already active one.
+		// Don't unload/reload mods if the new one is the already active one.
 		return;
 	}
 
@@ -57,6 +84,8 @@ void Profile::MakeActive() const
 	{
 		i.Load();
 	}
+
+	SaveCurrentProfile();
 }
 
 uint32_t Profile::GetModsCount() const
@@ -90,9 +119,14 @@ void Profile::Rename(std::string NewName)
 		return;
 	}
 
-	bool IsCurrent = Path == Current.Path;
-
 	std::string NewPath = ProfileRootPath + NewName + "/";
+
+	if (std::filesystem::exists(NewPath))
+	{
+		return;
+	}
+
+	bool IsCurrent = Path == Current.Path;
 
 	std::filesystem::rename(Path, NewPath);
 
@@ -102,6 +136,7 @@ void Profile::Rename(std::string NewName)
 	if (IsCurrent)
 	{
 		Current = *this;
+		SaveCurrentProfile();
 	}
 }
 

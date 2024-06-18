@@ -27,7 +27,6 @@ ModInfo ModInfo::ParseFile(std::string FilePath)
 		ModInfo Info = ModInfo{
 			.Name = FileJson.at("name"),
 			.Description = FileJson.at("description"),
-			.ImagePath = FileJson.at("imagePath"),
 			.ModID = FileJson.at("modId"),
 			.Enabled = FileJson.at("enabled"),
 			.Files = FileJson.at("files"),
@@ -41,10 +40,10 @@ ModInfo ModInfo::ParseFile(std::string FilePath)
 		{
 			Info.FileCategory = FileJson.at("category");
 		}
-
-		if (ModUpdateStatuses.contains(Info.Name))
+		std::string UpdateName = Profile::Current.Path + ":" + Info.Name;
+		if (ModUpdateStatuses.contains(UpdateName))
 		{
-			Info.RequiresUpdate = ModUpdateStatuses.at(Info.Name);
+			Info.RequiresUpdate = ModUpdateStatuses.at(UpdateName);
 		}
 
 		return Info;
@@ -62,7 +61,6 @@ void ModInfo::WriteFile(std::string FilePath)
 	Out << json{
 		{ "name", Name },
 		{ "description", Description },
-		{ "imagePath", ImagePath },
 		{ "modId", ModID },
 		{ "fileId", FileID },
 		{ "category", FileCategory },
@@ -96,13 +94,15 @@ void ModInfo::CheckModUpdateStatus()
 		}
 	}
 
-	if (ModUpdateStatuses.contains(Name))
+	std::string UpdateName = Profile::Current.Path + ":" + Name;
+
+	if (ModUpdateStatuses.contains(UpdateName))
 	{
-		ModUpdateStatuses.at(Name) = RequiresUpdate;
+		ModUpdateStatuses.at(UpdateName) = RequiresUpdate;
 	}
 	else
 	{
-		ModUpdateStatuses.insert(std::pair(Name, RequiresUpdate));
+		ModUpdateStatuses.insert(std::pair(UpdateName, RequiresUpdate));
 	}
 }
 

@@ -2,10 +2,11 @@
 #include <filesystem>
 #include "../WindowsFunctions.h"
 #include "../Markup/ProfileEntry.hpp"
+#include "../Markup/NewProfileBox.hpp"
 #include "Profile.h"
 #include "Tabs/InstalledModsTab.h"
-#include <KlemmUI/UI/UITextField.h>
 #include "LoadingBar.h"
+#include <iostream>
 
 static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 {
@@ -16,7 +17,7 @@ static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 	if (LoadingBarRequired)
 	{
 		LoadBar = Popup::CreatePopup<LoadingBar>();
-		LoadBar->SetLoadingString("Copying files...");
+		LoadBar->SetLoadingString("Loading...");
 	}
 	Target.MakeActive();
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
@@ -35,20 +36,38 @@ static void ProfileDelete(Profile Target, ProfileWindow* TargetWindow)
 		return;
 	}
 
+	bool LoadingBarRequired = Target.GetModsCount() > 0;
+
+	LoadingBar* LoadBar = nullptr;
+
+	if (LoadingBarRequired)
+	{
+		LoadBar = Popup::CreatePopup<LoadingBar>();
+		LoadBar->SetLoadingString("Deleting...");
+	}
+
 	if (Target.IsCurrent())
 	{
 		Profile::GetAllProfiles()[0].MakeActive();
 	}
 
 	std::filesystem::remove_all(Target.Path);
+	if (LoadingBarRequired)
+	{
+		LoadBar->ShouldClose = true;
+	}
 
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 	TargetWindow->GenerateList();
-
 }
 
 static bool IsValidProfileName(const std::string& Name)
 {
+	if (Name.empty())
+	{
+		return false;
+	}
+	
 	char InvalidChars[] = {
 		':',
 		'?',
@@ -76,10 +95,24 @@ static bool IsValidProfileName(const std::string& Name)
 
 static void ProfileCopy(Profile Target, ProfileWindow* TargetWindow)
 {
+	bool LoadingBarRequired = Target.GetModsCount() > 0;
+
+	LoadingBar* LoadBar = nullptr;
+
+	if (LoadingBarRequired)
+	{
+		LoadBar = Popup::CreatePopup<LoadingBar>();
+		LoadBar->SetLoadingString("Copying profile...");
+	}
 	if (!Target.Copy())
 	{
 		Windows::ErrorBox("Failed to copy profile.");
 	}
+	if (LoadingBarRequired)
+	{
+		LoadBar->ShouldClose = true;
+	}
+
 	TargetWindow->GenerateList();
 }
 
@@ -87,7 +120,7 @@ void ProfileWindow::GenerateList()
 {
 	using namespace KlemmUI;
 
-	PopupBackground->DeleteChildren();
+	ProfilesList->DeleteChildren();
 
 	auto Profiles = Profile::GetAllProfiles();
 	for (const Profile& pf : Profiles)
@@ -130,18 +163,56 @@ void ProfileWindow::GenerateList()
 		Entry->SetDescription(std::to_string(pf.GetModsCount()) + (Selected ? " mods (active)" : " mods"));
 		Entry->deleteButton->button->OnClickedFunction = std::bind(ProfileDelete, pf, this);
 		Entry->copyButton->button->OnClickedFunction = std::bind(ProfileCopy, pf, this);
-		PopupBackground->AddChild(Entry);
+		ProfilesList->AddChild(Entry);
 	}
 }
 
 void ProfileWindow::Init()
 {
+	using namespace KlemmUI;
+
+	ProfilesList = new UIScrollBox(false, 0, true);
+
+	PopupBackground->AddChild(ProfilesList);
+
+	ProfilesList->SetMinSize(Vector2f(2.0f, 1.7f));
+	ProfilesList->SetMaxSize(ProfilesList->GetMinSize());
+
+	auto NewBox = new NewProfileBox();
+	PopupBackground->AddChild(NewBox);
+
+	NewNameTextField = new UITextField(0, 0, UI::Text, nullptr);
+
+	NewBox->nameBox->AddChild(NewNameTextField);
+	NewNameTextField
+		->SetHintText("Profile name")
+		->SetTextSize(13)
+		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+		->SetMinSize(Vector2f(1.75f, 0.01f));
+
+	NewBox->newButton->button->OnClickedFunction = [this]() {
+
+		std::string ProfileName = NewNameTextField->GetText();
+
+		if (!IsValidProfileName(ProfileName))
+		{
+			Windows::ErrorBox("Enter a valid profile name");
+			return;
+		}
+
+		Profile::NewProfile(ProfileName).MakeActive();
+
+		NewNameTextField->SetText("");
+
+		AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+		GenerateList();
+		};
+
 	GenerateList();
 }
 
 void ProfileWindow::Update()
 {
-	
 }
 
 std::string ProfileWindow::GetWindowTitle()

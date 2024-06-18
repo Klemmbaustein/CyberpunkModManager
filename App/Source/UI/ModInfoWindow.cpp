@@ -4,7 +4,7 @@
 #include "../Webp.h"
 #include "Net.h"
 #include "UI.h"
-#include "../Markup/ModInfoButton.hpp"
+#include "../Markup/AppButton.hpp"
 #include "ModInfo.h"
 #include <filesystem>
 #include <iostream>
@@ -59,7 +59,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 
 	if (ModInf.Name.empty())
 	{
-		auto* InstallButton = new ModInfoButton();
+		auto* InstallButton = new AppButton();
 		InstallButton->SetText("Install");
 		InstallButton->button->OnClickedFunction = [this]() {
 			// Can't actually install anything since NexusMods is the worst thing ever.
@@ -72,7 +72,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 	{
 		if (Mod.InfoColor == NxmAPI::ModInfo::Yellow)
 		{
-			auto* UpdateButton = new ModInfoButton();
+			auto* UpdateButton = new AppButton();
 			UpdateButton->SetText("Update");
 			UpdateButton->button->OnClickedFunction = [this]() {
 				OpenModInBrowser(GetModInfo(), "?tab=files");
@@ -82,7 +82,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 			UpdateButton->SetImage("app/icons/download.png");
 		}
 
-		auto* EnableButton = new ModInfoButton();
+		auto* EnableButton = new AppButton();
 		EnableButton->SetText(ModInf.Enabled ? "Disable" : "Enable");
 		EnableButton->button->OnClickedFunction = [this]() {
 			auto Mod = ModInfo::GetModByName(GetModInfo().Name);
@@ -114,7 +114,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 
 		Parent->AddChild(EnableButton);
 
-		auto* RemoveButton = new ModInfoButton();
+		auto* RemoveButton = new AppButton();
 		RemoveButton->SetText("Uninstall");
 		RemoveButton->button->OnClickedFunction = [this]() {
 			auto Mod = ModInfo::GetModByName(GetModInfo().Name);
@@ -129,7 +129,7 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 
 	if (ModInf.ModID != 0 || Mod.ModID != 0)
 	{
-		auto* OpenInBrowserButton = new ModInfoButton();
+		auto* OpenInBrowserButton = new AppButton();
 		OpenInBrowserButton->SetText("Open website");
 		OpenInBrowserButton->button->OnClickedFunction = [this]() {
 			OpenModInBrowser(GetModInfo());

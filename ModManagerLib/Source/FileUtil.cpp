@@ -5,6 +5,10 @@
 
 std::string FileUtil::ReadFile(std::string FilePath)
 {
+	if (!std::filesystem::exists(FilePath))
+	{
+		return "";
+	}
 	std::ifstream InStream = std::ifstream(FilePath);
 	std::string ContentString((std::istreambuf_iterator<char>(InStream)),
 		(std::istreambuf_iterator<char>()));

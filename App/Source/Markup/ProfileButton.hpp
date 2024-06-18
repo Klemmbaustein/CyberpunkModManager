@@ -13,10 +13,10 @@ public:
 	{
 	button = new KlemmUI::UIButton(true, 0, 1, nullptr);
 	button->SetUseTexture(true, Image);
-	button->SetMinSize(Vector2f(float(25)));
-	button->SetMaxSize(Vector2f(float(25)));
+	button->SetMinSize(Vector2f(float(30)));
+	button->SetMaxSize(Vector2f(float(30)));
 	button->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
-	button->SetPadding((float)float(10));
+	button->SetPadding((float)float(8));
 	button->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	this->AddChild(button);
 	}

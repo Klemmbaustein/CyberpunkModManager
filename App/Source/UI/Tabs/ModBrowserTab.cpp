@@ -1,7 +1,7 @@
 #include "ModBrowserTab.h"
 #include "SettingsTab.h"
 
-#include "../../Markup/ModInfoButton.hpp"
+#include "../../Markup/AppButton.hpp"
 #include "../../WindowsFunctions.h"
 
 
@@ -10,7 +10,7 @@ ModBrowserTab::ModBrowserTab()
 {
 	IconFile = "search_web.png";
 
-	auto UpdateButton = new ModInfoButton();
+	auto UpdateButton = new AppButton();
 	UpdateButton->SetText("Open NexusMods website");
 	UpdateButton->SetImage("app/icons/open.png");
 	UpdateButton->button->OnClickedFunction = []() {

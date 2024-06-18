@@ -44,7 +44,7 @@ static void DownloadModAsync()
 	std::filesystem::create_directories(Profile::Current.Path + "/images");
 	std::string ImagePath = Profile::Current.Path + "/images/" + Mod.Name + ".webp";
 	Net::GetFile(Mod.ImageUrl, ImagePath, true);
-	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, ImagePath, CurrentModID, CurrentFileID, File.Category);
+	DownloadHandler::InstallZip(ArchiveName, Mod.Name, Mod.Summary, CurrentModID, CurrentFileID, File.Category);
 	std::filesystem::remove(ArchiveName);
 	LoadBar->ShouldClose = true;
 	LoadBar->CanClose = true;
@@ -95,7 +95,7 @@ void DownloadHandler::DownloadModUri(Uri ModUri)
 
 	new BackgroundTask(&DownloadModAsync);
 }
-void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, std::string Image, int CurrentModID, int CurrentFileID, std::string FileCategory)
+void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::string Description, int CurrentModID, int CurrentFileID, std::string FileCategory)
 {
 	auto PrevMod = ModInfo::GetModByName(Name);
 	if (!PrevMod.Name.empty())
@@ -113,7 +113,6 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 	ModInfo NewMod = ModInfo{
 		.Name = Name,
 		.Description = Description,
-		.ImagePath = Image,
 		.FileCategory = FileCategory,
 		.ModID = CurrentModID,
 		.FileID = CurrentFileID,
