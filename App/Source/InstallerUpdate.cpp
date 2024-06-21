@@ -19,7 +19,7 @@ const std::string PlatformName = "Windows";
 const std::string PlatformName = "Linux";
 #endif
 
-static void UpdateCheckFunction(void*)
+static void UpdateCheckFunction()
 {
 	using namespace InstallerUpdate;
 	std::string Latest = GhAPI::GetLatestReleaseOf(SourceRepo);
