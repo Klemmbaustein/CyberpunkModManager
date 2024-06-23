@@ -117,6 +117,8 @@ void InstalledModsTab::LoadSections()
 			.ModID = i.ModID,
 		};
 
+		NewMod.ImageUrl = GetModImage(NewMod);
+
 		if (!SearchFilter.empty()
 			&& StrUtil::Lower(i.Name).find(StrUtil::Lower(SearchFilter)) == std::string::npos
 			&& StrUtil::Lower(i.Description).find(StrUtil::Lower(SearchFilter)) == std::string::npos)

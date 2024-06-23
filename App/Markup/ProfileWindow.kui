@@ -12,7 +12,7 @@ element ProfileButton
 element ProfileEntry
 {
 	var Description;
-	var Color = (0.6, 0.1, 0.1);
+	var Color = highlightColor;
 	tryFill = true;
 	horizontalAlign = centered;
 

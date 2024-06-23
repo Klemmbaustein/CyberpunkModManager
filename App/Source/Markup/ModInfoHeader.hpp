@@ -19,7 +19,7 @@ public:
 	image->BoxBorder = KlemmUI::UIBox::BorderType::DarkenedEdge;
 	image->BorderRadius = float(2);
 	image->BorderSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
-	image->BorderColor = Vector3f(float(0.6), float(0), float(0.1));
+	image->BorderColor = Vector3f(float(0.6), float(0.1), float(0.1));
 	image->SetMinSize(Vector2f(float(340), float(180)));
 	image->SetMaxSize(Vector2f(float(340), float(180)));
 	image->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);

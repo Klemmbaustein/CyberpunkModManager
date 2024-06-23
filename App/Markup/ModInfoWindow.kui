@@ -6,7 +6,7 @@ element ModInfoHeader
 	child UIBackground image
 	{
 		borderType = border;
-		borderColor = (0.6, 0, 0.1);
+		borderColor = highlightColor;
 		borderSize = 2px;
 		size = (340, 180)px;
 		padding = 5px;
@@ -52,7 +52,7 @@ element ModInfoWindowElement
 	child UIBackground
 	{
 		size = 2px;
-		color = (0.6, 0, 0.1);
+		color = highlightColor;
 		tryFill = true;
 	}
 

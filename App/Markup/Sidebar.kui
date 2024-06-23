@@ -16,7 +16,7 @@ element SidebarButton
 	padding = 5px;
 	child UIButton button
 	{
-		color = (0.6, 0.1, 0.1);
+		color = highlightColor;
 		size = 70px;
 		child UIBackground image
 		{

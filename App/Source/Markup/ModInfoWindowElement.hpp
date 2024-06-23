@@ -22,7 +22,7 @@ public:
 	actionBox->SetPaddingSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	this->AddChild(actionBox);
 	auto* e_3 = new KlemmUI::UIBackground(true, 0, 1);
-	e_3->SetColor(Vector3f(float(0.6), float(0), float(0.1)));
+	e_3->SetColor(Vector3f(float(0.6), float(0.1), float(0.1)));
 	e_3->SetMinSize(Vector2f(float(2)));
 	e_3->SetMaxSize(Vector2f(float(2)));
 	e_3->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);

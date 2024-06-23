@@ -27,7 +27,7 @@ public:
 	button->BoxBorder = KlemmUI::UIBox::BorderType::DarkenedEdge;
 	button->BorderRadius = float(2);
 	button->BorderSizeMode = KlemmUI::UIBox::SizeMode::PixelRelative;
-	button->BorderColor = Vector3f(float(0.6), float(0.0), float(0.1));
+	button->BorderColor = Vector3f(float(0.6), float(0.1), float(0.1));
 	button->SetMinSize(Vector2f(float(200), float(0)));
 	button->SetSizeMode(KlemmUI::UIBox::SizeMode::PixelRelative);
 	button->SetHorizontalAlign(KlemmUI::UIBox::Align::Centered);

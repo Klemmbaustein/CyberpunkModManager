@@ -33,7 +33,7 @@ element ModEntry
 		color = 0.1;
 		borderType = border;
 		borderSize = 2px;
-		borderColor = (0.6, 0.0, 0.1);
+		borderColor = highlightColor;
 		minSize = (200, 0)px;
 		padding = 4px;
 		orientation = vertical;

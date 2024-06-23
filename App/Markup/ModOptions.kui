@@ -8,7 +8,7 @@ element ModOption
 		padding = 6px;
 		borderType = border;
 		borderSize = 2px;
-		borderColor = (0.6, 0.1, 0.1);
+		borderColor = highlightColor;
 		minSize = (300, 30)px;
 		color = 0.075;
 
