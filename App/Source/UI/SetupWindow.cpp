@@ -124,10 +124,33 @@ void SetupWindow::GenerateAPIKeySetupPage()
 				{
 					CanClose = true;
 					ShouldClose = true;
+					return;
 				}
 
-				});
+				Windows::ErrorBox("Could not automatically find the Cyberpunk 2077 game installation. Please enter the game's path manually.");
 
+				while (true)
+				{
+					GameLocation = Windows::OpenFileDialog(true);
+
+					if (std::filesystem::exists(GameLocation)
+						&& std::filesystem::exists(GameLocation + "/bin/x64/Cyberpunk2077.exe"))
+					{
+						CanClose = true;
+						ShouldClose = true;
+						Game::SetGameLocation(GameLocation);
+						return;
+					}
+					else if (GameLocation.empty())
+					{
+						Windows::ErrorBox("Please enter the game's path manually");
+					}
+					else
+					{
+						Windows::ErrorBox("Not a valid game install");
+					}
+				}
+				});
 		};
 
 	InfoBox = new UIBox(false);

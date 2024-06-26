@@ -95,7 +95,7 @@ std::string wstrtostr(const std::wstring& wstr)
 	return strTo;
 }
 
-std::string Windows::OpenFileDialog()
+std::string Windows::OpenFileDialog(bool PickFolders)
 {
 	try
 	{
@@ -109,6 +109,10 @@ std::string Windows::OpenFileDialog()
 			// Create the FileOpenDialog object.
 			hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
 				IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+			if (PickFolders)
+			{
+				pFileOpen->SetOptions(FOS_PICKFOLDERS);
+			}
 
 			if (SUCCEEDED(hr))
 			{
@@ -261,10 +265,18 @@ bool Windows::YesNoBox(std::string Content)
 {
 	return !system(("zenity --question --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
 }
-std::string Windows::OpenFileDialog()
+std::string Windows::OpenFileDialog(bool PickFolders)
 {
 	char filename[4096];
-	FILE *f = popen("zenity --file-selection", "r");
+
+	std::string Command = "zenity --file-selection";
+
+	if (PickFolders)
+	{
+		Command.append(" --directory");
+	}
+
+	FILE *f = popen(Command.c_str(), "r");
 	char* buf = fgets(filename, 4096, f);
 	if (!buf)
 	{

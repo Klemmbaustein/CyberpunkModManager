@@ -108,3 +108,13 @@ std::string Game::GetGameLocation()
 	}
 	return GameLocation;
 }
+
+void Game::SetGameLocation(std::string NewPath)
+{
+	GameLocation = NewPath;
+	std::filesystem::create_directories("app/saved");
+	std::ofstream LocationFile = std::ofstream(GameDirFile);
+	LocationFile << GameLocation;
+	LocationFile.close();
+
+}

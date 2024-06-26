@@ -8,4 +8,6 @@ namespace Game
 	std::string SearchForGame();
 
 	std::string GetGameLocation();
+
+	void SetGameLocation(std::string NewPath);
 }

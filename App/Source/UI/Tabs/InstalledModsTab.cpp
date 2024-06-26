@@ -56,7 +56,7 @@ InstalledModsTab::InstalledModsTab()
 	LocalModButton->SetImage("app/icons/storage.png");
 	LocalModButton->button->OnClickedFunction = []()
 		{
-			std::string File = Windows::OpenFileDialog();
+			std::string File = Windows::OpenFileDialog(false);
 			
 			if (File.empty())
 			{
