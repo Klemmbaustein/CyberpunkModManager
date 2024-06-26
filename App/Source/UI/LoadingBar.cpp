@@ -13,7 +13,7 @@ void LoadingBar::SetLoadingString(const std::string& NewValue)
 void LoadingBar::Init()
 {
 	PopupWindow->BorderColor = Vector3f(0.6f, 0.1f, 0.1f);
-	PopupWindow->IsAreaGrabbableCallback = [](Window* Target) { return true; };
+	PopupWindow->IsAreaGrabbableCallback = [](Window*) { return true; };
 
 	LoadingBackground = new UIBackground(true, Vector2f(-0.9f, -0.6f), 0.15f, Vector2f(1.8f, 0.6f));
 	LoadingBarBox = new UIBackground(true, 0, Vector3f(0.6f, 0.1f, 0.1f), 0);

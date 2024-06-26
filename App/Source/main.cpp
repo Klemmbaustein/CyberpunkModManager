@@ -21,7 +21,7 @@
 
 using namespace KlemmUI;
 
-static void OnResized(KlemmUI::Window* Target)
+static void OnResized(KlemmUI::Window*)
 {
 	AppTab::ResizeAll();
 }

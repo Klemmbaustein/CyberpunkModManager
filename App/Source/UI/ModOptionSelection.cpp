@@ -16,7 +16,6 @@ void ModOptionsSelection::GenerateOptions()
 
 	auto Options = TargetMod.GetVersions();
 
-	int ButtonIndex = 0;
 	for (auto& i : Options)
 	{
 		auto Option = new ModOption();

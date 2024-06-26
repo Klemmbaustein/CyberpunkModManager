@@ -229,13 +229,13 @@ void FOMODInstall::RegisterFOMODCallback()
 		};
 }
 
-void FOMODInstall::LoadModPath(ModInfo Info, std::string ModPath, std::string ToPath)
+void FOMODInstall::LoadModPath(ModInfo NewInfo, std::string NewModPath, std::string NewToPath)
 {
 	std::lock_guard g{ ModPathMutex };
 
-	this->Info = Info;
-	this->ModPath = ModPath;
-	this->ToPath = ToPath;
+	this->Info = NewInfo;
+	this->ModPath = NewModPath;
+	this->ToPath = NewToPath;
 }
 
 void FOMODInstall::Init()

@@ -25,7 +25,7 @@ namespace NxmAPI
 		uint8_t* ImageBuffer = nullptr;
 		int ImageWidth = 0, ImageHeight = 0;
 		int ModID = 0;
-		int Downloads;
+		int Downloads = 0;
 
 		struct ModFile
 		{
