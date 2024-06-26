@@ -1,4 +1,4 @@
-#include "ProfileWindow.h"
+﻿#include "ProfileWindow.h"
 #include <filesystem>
 #include "../WindowsFunctions.h"
 #include "../Markup/ProfileEntry.hpp"
@@ -7,6 +7,7 @@
 #include "Tabs/InstalledModsTab.h"
 #include "LoadingBar.h"
 #include <iostream>
+#include <KlemmUI/UI/UITextField.h>
 
 static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 {
@@ -31,6 +32,12 @@ static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 
 static void ProfileDelete(Profile Target, ProfileWindow* TargetWindow)
 {
+	// Do not delete the last profile
+	if (Profile::GetAllProfiles().size() == 1)
+	{
+		return;
+	}
+
 	if (!Windows::YesNoBox("Really delete '" + Target.DisplayName + "'?"))
 	{
 		return;
@@ -150,13 +157,14 @@ void ProfileWindow::GenerateList()
 				{
 					Windows::ErrorBox("Not a valid profile name.");
 				}
-				this->GenerateList();
+				GenerateList();
 			};
 
 		NameTextField
 			->SetText(pf.DisplayName)
 			->SetTextSize(15)
 			->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+			->SetOpacity(0)
 			->SetMinSize(Vector2f(1, 0));
 
 		Entry->nameBox->AddChild(NameTextField);
@@ -180,29 +188,13 @@ void ProfileWindow::Init()
 
 	auto NewBox = new NewProfileBox();
 	PopupBackground->AddChild(NewBox);
-
-	NewNameTextField = new UITextField(0, 0, UI::Text, nullptr);
-
-	NewBox->nameBox->AddChild(NewNameTextField);
-	NewNameTextField
-		->SetHintText("Profile name")
-		->SetTextSize(13)
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
-		->SetMinSize(Vector2f(1.75f, 0.01f));
+	NewBox
+		->SetPadding(10)
+		->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative);
 
 	NewBox->newButton->button->OnClickedFunction = [this]() {
 
-		std::string ProfileName = NewNameTextField->GetText();
-
-		if (!IsValidProfileName(ProfileName))
-		{
-			Windows::ErrorBox("Enter a valid profile name");
-			return;
-		}
-
-		Profile::NewProfile(ProfileName).MakeActive();
-
-		NewNameTextField->SetText("");
+		Profile::NewProfile("New profile").MakeActive();
 
 		AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 		GenerateList();
