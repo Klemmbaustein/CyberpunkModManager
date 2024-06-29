@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
 set(MARKUP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Markup")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 file(
     GLOB_RECURSE
@@ -18,28 +19,18 @@ add_subdirectory("../Dependencies/KlemmUI/Markup" "Dependencies/bin")
 add_subdirectory("../Dependencies/libwebp/" "Dependencies/libwebp")
 add_subdirectory("../ModManagerLib/" "ModManagerLib")
 
-find_package(CURL)
-
-# TODO: use the curl submodule.
-# Right now, this will only use pre-installed libcurl.
-# To fix this, I would need to figure out compiling it with openssl.
-# On windows, CURL compiles with CURL_USE_SCHANNEL. (This will not work on linux)
-if(CURL_FOUND)
-    include_directories(${CURL_INCLUDE_DIR})
-else(CURL_FOUND)
-    message(FATAL_ERROR "Could not find the CURL library and development files.")
-endif(CURL_FOUND)
-
 add_executable(
    App
    ${SRCS}
 )
-execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies/get-7zip-linux.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies
-    RESULT_VARIABLE CMD_ERROR
-    OUTPUT_FILE CMD_OUTPUT
-)
-message(${CMD_ERROR})
+
+if(NOT WIN32)
+    execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies/get-7zip-linux.sh
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies
+        RESULT_VARIABLE CMD_ERROR
+        OUTPUT_FILE CMD_OUTPUT
+    )
+endif()
 
 if (DEFINED CI_BUILD)
     add_compile_definitions(CI_BUILD=${CI_BUILD})
@@ -54,7 +45,9 @@ add_dependencies(HeaderBuild KlemmUIHT)
 
 add_dependencies(App HeaderBuild)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
+if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
+endif()
 
 target_link_libraries(App PRIVATE SDL2::SDL2)
 target_link_libraries(App PRIVATE libglew_static)

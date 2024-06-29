@@ -27,6 +27,16 @@ void Windows::SetWorkingDirectory()
 	PathString = PathString.substr(0, PathString.find_last_of(L"/\\"));
 
 	std::filesystem::current_path(PathString);
+
+	if (std::filesystem::exists("../app/shaders"))
+	{
+		std::filesystem::current_path("..");
+	}
+
+	if (std::filesystem::exists("../../app/shaders"))
+	{
+		std::filesystem::current_path("../..");
+	}
 }
 
 void Windows::Open(std::string Path)
@@ -77,14 +87,14 @@ bool Windows::YesNoBox(std::string Content)
 	return Answer == IDYES;
 }
 
-void ErrorMessageFromStatus(LSTATUS Status)
+static void ErrorMessageFromStatus(LSTATUS Status)
 {
 	LPWSTR OutString;
-	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, Status, 0, (LPWSTR)&OutString, 0, NULL);
-	MessageBox(NULL, OutString, L"Error", MB_ICONERROR);
+	FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, Status, 0, (LPWSTR)&OutString, 0, NULL);
+	MessageBoxW(NULL, OutString, L"Error", MB_ICONERROR);
 }
 
-std::string wstrtostr(const std::wstring& wstr)
+static std::string wstrtostr(const std::wstring& wstr)
 {
 	std::string strTo;
 	char* szTo = new char[wstr.length() + 1];
