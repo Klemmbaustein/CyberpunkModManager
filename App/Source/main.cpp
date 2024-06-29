@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 
 	Application::Error::SetErrorCallback([](std::string Message) {
 		Windows::ErrorBox("Internal error:\n" + Message);
-		});
+	});
 	Application::Initialize("app/shaders");
 
 	Net::SetAPIKey(NxmAPI::GetAPIKey());
@@ -80,7 +80,6 @@ int main(int argc, char** argv)
 
 	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
 	AppWindow.OnResizedCallback = &OnResized;
-//	AppWindow.DPIMultiplier = 0.5f;
 
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")
 	{

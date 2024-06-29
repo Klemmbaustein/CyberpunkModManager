@@ -90,8 +90,7 @@ void DownloadHandler::DownloadModUri(Uri ModUri)
 		ModID,
 		FileID,
 		ModUri.Query["key"],
-		ModUri.Query["expires"]
-	);
+		ModUri.Query["expires"]);
 
 	new BackgroundTask(&DownloadModAsync);
 }
@@ -141,10 +140,10 @@ void DownloadHandler::CheckDownloadRequest()
 	if (std::filesystem::exists("app/OpenUri"))
 	{
 		OpenFile = FileUtil::ReadFile("app/OpenUri");
-		
+
 		new BackgroundTask([]() {
 			DownloadModUri(OpenFile);
-			});
+		});
 		std::filesystem::remove("app/OpenUri");
 	}
 }

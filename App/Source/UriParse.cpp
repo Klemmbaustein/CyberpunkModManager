@@ -4,9 +4,7 @@
 
 Uri::Uri(std::string UriString)
 {
-	if (UriString.size() >= 2
-		&& UriString[0] == '\''
-		&& UriString[UriString.size() - 1] == '\'')
+	if (UriString.size() >= 2 && UriString[0] == '\'' && UriString[UriString.size() - 1] == '\'')
 	{
 		UriString = UriString.substr(1, UriString.size() - 2);
 	}
@@ -51,7 +49,7 @@ Uri::Uri(std::string UriString)
 	{
 		// URI contains a query (like https://abc.xyz/something?query=hello&something=else
 		std::string QueryString = PathString.substr(QueryBegin + 1);
-		
+
 		PathString = PathString.substr(0, QueryBegin);
 
 		auto QueryVec = ParsePath(QueryString, '&');

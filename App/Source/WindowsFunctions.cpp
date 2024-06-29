@@ -7,10 +7,11 @@
 #include <StrUtil.h>
 #include <Shlobj.h>
 #include <shobjidl.h>
-
-#pragma comment(linker,"\"/manifestdependency:type='win32' \
+// clang-format off
+#pragma comment(linker, "\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
 processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+// clang-format on
 
 static std::wstring GetExecutableDir()
 {
@@ -112,8 +113,7 @@ std::string Windows::OpenFileDialog(bool PickFolders)
 	try
 	{
 		std::string FilePath = "";
-		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-			COINIT_DISABLE_OLE1DDE);
+		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 		if (SUCCEEDED(hr))
 		{
 			IFileOpenDialog* pFileOpen;
@@ -280,6 +280,7 @@ bool Windows::YesNoBox(std::string Content)
 {
 	return !system(("zenity --question --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
 }
+
 std::string Windows::OpenFileDialog(bool PickFolders)
 {
 	char filename[4096];
@@ -291,7 +292,7 @@ std::string Windows::OpenFileDialog(bool PickFolders)
 		Command.append(" --directory");
 	}
 
-	FILE *f = popen(Command.c_str(), "r");
+	FILE* f = popen(Command.c_str(), "r");
 	char* buf = fgets(filename, 4096, f);
 	if (!buf)
 	{

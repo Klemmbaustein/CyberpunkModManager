@@ -12,6 +12,7 @@ struct Uri
 	std::string UriString;
 
 	Uri(std::string UriString);
+
 private:
 	std::vector<std::string> ParsePath(std::string PathString, char Separator);
 };

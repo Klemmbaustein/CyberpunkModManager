@@ -29,7 +29,7 @@ void SignalHandler(int)
 	std::cout << std::stacktrace::current() << std::endl;
 #else
 	void* trace[32];
-	char** messages = (char **)NULL;
+	char** messages = (char**)NULL;
 	int i = 0, trace_size = 0;
 
 	trace_size = backtrace(trace, 32);

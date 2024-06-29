@@ -61,8 +61,8 @@ unsigned int Webp::Load(WebpBuffer Buffer)
 	unsigned int TextureID = KlemmUI::Texture::LoadTexture(
 		Buffer.Bytes,
 		Buffer.Width,
-		Buffer.Height
-	);
+		Buffer.Height);
+
 	delete[] Buffer.Bytes;
 	return TextureID;
 }
