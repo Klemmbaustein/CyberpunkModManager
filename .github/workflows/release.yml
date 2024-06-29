@@ -90,7 +90,7 @@ jobs:
       run: |
         mkdir Release/
         cp -rf App/app/ Release/app/
-        cp ../LICENSE.txt Release/
+        cp LICENSE.txt Release/
         cp Build/ModManager Release/CyberpunkModManager
 
     - name: Upload release artifact
