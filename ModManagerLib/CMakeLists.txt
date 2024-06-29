@@ -12,13 +12,13 @@ file(
     "${SRC_DIR}/**.cpp"
 )
 
-add_subdirectory("../Dependencies/pugixml/" "Dependencies/pugixml")
-add_subdirectory("../Dependencies/json/" "Dependencies/json")
+add_subdirectory("../Dependencies/pugixml/" "Dependencies/pugixml" EXCLUDE_FROM_ALL)
+add_subdirectory("../Dependencies/json/" "Dependencies/json" EXCLUDE_FROM_ALL)
 
 if(WIN32)
     set(CURL_USE_SCHANNEL ON)
     set(BUILD_SHARED_LIBS OFF)
-    add_subdirectory("../Dependencies/curl" "Dependencies/curl")
+    add_subdirectory("../Dependencies/curl" "Dependencies/curl" EXCLUDE_FROM_ALL)
 else()
     find_package(CURL)
     if(CURL_FOUND)
@@ -35,12 +35,11 @@ add_library(
 target_include_directories(ModManagerLib PUBLIC "Include")
 target_link_libraries(ModManagerLib PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(ModManagerLib PUBLIC pugixml)
-target_link_libraries(ModManagerLib PUBLIC libcurl)
-
-if(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
+if (WIN32)
+    target_link_libraries(ModManagerLib PUBLIC libcurl)
+else()
+    target_link_libraries(ModManagerLib PUBLIC ${CURL_LIBRARIES})
 endif()
-
 if (DEFINED TETHER_CI)
     add_compile_definitions(CI_BUILD=${TETHER_CI})
 endif()

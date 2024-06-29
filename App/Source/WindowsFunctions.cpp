@@ -25,18 +25,20 @@ void Windows::SetWorkingDirectory()
 	std::wstring PathString = GetExecutableDir();
 
 	PathString = PathString.substr(0, PathString.find_last_of(L"/\\"));
-
+	// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
+	if (std::filesystem::exists(PathString + L"/../../../App/app/shaders"))
+	{
+		PathString.append(L"/../../../App/");
+	}
+	else if (std::filesystem::exists(PathString + L"/../../App/app/shaders"))
+	{
+		PathString.append(L"/../../App/");
+	}
+	if (!std::filesystem::is_directory(PathString + L"/app"))
+	{
+		PathString.append(L"/../");
+	}
 	std::filesystem::current_path(PathString);
-
-	if (std::filesystem::exists("../app/shaders"))
-	{
-		std::filesystem::current_path("..");
-	}
-
-	if (std::filesystem::exists("../../app/shaders"))
-	{
-		std::filesystem::current_path("../..");
-	}
 }
 
 void Windows::Open(std::string Path)
@@ -238,10 +240,13 @@ void Windows::SetWorkingDirectory()
 	std::string PathString = GetProcessName(getpid());
 
 	PathString = PathString.substr(0, PathString.find_last_of("/\\"));
-
 	if (std::filesystem::exists(PathString + "/../../App/app/shaders"))
 	{
 		PathString.append("/../../App/");
+	}
+	else if (std::filesystem::exists(PathString + "/../App/app/shaders"))
+	{
+		PathString.append("/../App/");
 	}
 	if (!std::filesystem::is_directory(PathString + "/app"))
 	{

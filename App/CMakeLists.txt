@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(App)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -14,13 +13,13 @@ file(
     "${SRC_DIR}/**.cpp"
 )
 
-add_subdirectory("../Dependencies/KlemmUI/" "Dependencies/KlemmUI")
-add_subdirectory("../Dependencies/KlemmUI/Markup" "Dependencies/bin")
-add_subdirectory("../Dependencies/libwebp/" "Dependencies/libwebp")
+add_subdirectory("../Dependencies/KlemmUI/" "Dependencies/KlemmUI" EXCLUDE_FROM_ALL)
+add_subdirectory("../Dependencies/KlemmUI/Markup" "Dependencies/bin" EXCLUDE_FROM_ALL)
+add_subdirectory("../Dependencies/libwebp/" "Dependencies/libwebp" EXCLUDE_FROM_ALL)
 add_subdirectory("../ModManagerLib/" "ModManagerLib")
 
 add_executable(
-   App
+   ModManager
    ${SRCS}
 )
 
@@ -43,16 +42,11 @@ add_custom_target(
 )
 add_dependencies(HeaderBuild KlemmUIHT)
 
-add_dependencies(App HeaderBuild)
+add_dependencies(ModManager HeaderBuild)
 
-if(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
-endif()
-
-target_link_libraries(App PRIVATE SDL2::SDL2)
-target_link_libraries(App PRIVATE libglew_static)
-target_link_libraries(App PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(App PRIVATE KlemmUI)
-target_link_libraries(App PRIVATE webp)
-target_link_libraries(App PRIVATE ModManagerLib)
-target_link_libraries(App PRIVATE ${CURL_LIBRARIES})
+target_link_libraries(ModManager PRIVATE SDL2::SDL2)
+target_link_libraries(ModManager PRIVATE libglew_static)
+target_link_libraries(ModManager PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(ModManager PRIVATE KlemmUI)
+target_link_libraries(ModManager PRIVATE webp)
+target_link_libraries(ModManager PRIVATE ModManagerLib)

@@ -6,6 +6,6 @@ if (Test-Path "Release") {
 
 mkdir Release/
 cp app Release/ -r -fo
-cp App.exe Release/CyberpunkModManager.exe
+cp ../build/Release/ModManager.exe Release/CyberpunkModManager.exe
 cp ../LICENSE.txt Release/
-cp SDL2.dll Release/SDL2.dll
+cp ../build/Release/SDL2.dll Release/SDL2.dll

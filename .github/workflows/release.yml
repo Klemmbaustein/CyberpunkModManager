@@ -50,7 +50,9 @@ jobs:
 
     - name: Build Application
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild CyberpunkModManager.sln /p:Configuration=Release /p:CI_BUILD=${{ github.run_number }}
+      run: |
+        cmake -S . -B build/ -DCI_BUILD=${{ github.run_number }}
+        cmake --build build/ -j 4 --config=Release
 
     - name: Make release
       working-directory: ${{env.GITHUB_WORKSPACE}}
