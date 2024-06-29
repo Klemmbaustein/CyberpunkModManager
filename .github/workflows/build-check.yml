@@ -39,16 +39,14 @@ jobs:
 
     - name: Build Application
       run: |
-        cd App/
         cmake -S . -B Build -DCMAKE_BUILD_TYPE=RelWithDebInfo
         cmake --build Build/ -j 8
     - name: Make release
       run: |
-        cd App/
         mkdir Release/
-        cp -rf app/ Release/app/
+        cp -rf App/app/ Release/app/
         cp ../LICENSE.txt Release/
-        cp Build/App Release/CyberpunkModManager
+        cp Build/ModManager Release/CyberpunkModManager
 
     - name: Upload release artifact
       uses: actions/upload-artifact@v3
