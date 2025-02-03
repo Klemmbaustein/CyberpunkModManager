@@ -17,5 +17,5 @@ public:
 	void Update() override;
 
 	std::string GetWindowTitle() override;
-	Vector2ui GetWindowResolution() override;
+	kui::Vec2ui GetWindowResolution() override;
 };

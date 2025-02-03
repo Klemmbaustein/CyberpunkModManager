@@ -1,13 +1,12 @@
 ﻿#include "ProfileWindow.h"
 #include <filesystem>
 #include "../WindowsFunctions.h"
-#include "../Markup/ProfileEntry.hpp"
-#include "../Markup/NewProfileBox.hpp"
+#include <ProfileWindow.kui.hpp>
 #include "Profile.h"
 #include "Tabs/InstalledModsTab.h"
 #include "LoadingBar.h"
 #include <iostream>
-#include <KlemmUI/UI/UITextField.h>
+#include <kui/UI/UITextField.h>
 
 static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 {
@@ -125,7 +124,7 @@ static void ProfileCopy(Profile Target, ProfileWindow* TargetWindow)
 
 void ProfileWindow::GenerateList()
 {
-	using namespace KlemmUI;
+	using namespace kui;
 
 	ProfilesList->DeleteChildren();
 
@@ -136,15 +135,15 @@ void ProfileWindow::GenerateList()
 		auto Entry = new ProfileEntry();
 		Entry->activeIcon->IsVisible = Selected;
 
-		Entry->profileButton->OnClickedFunction = std::bind(ProfileEnable, pf, this);
+		Entry->profileButton->OnClicked = std::bind(ProfileEnable, pf, this);
 
-		Vector3f Color = Selected ? Vector3f(1, 0.3f, 0.4f) : Vector3f(0.6f, 0.1f, 0.1f);
+		auto Color = Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.6f, 0.1f, 0.1f);
 
 		Entry->SetColor(Color);
 		UITextField* NameTextField = nullptr;
 		NameTextField = new UITextField(0, Color, UI::Text, nullptr);
 
-		NameTextField->OnClickedFunction = [pf, NameTextField, this]()
+		NameTextField->OnChanged = [pf, NameTextField, this]()
 			{
 				std::string NewName = NameTextField->GetText();
 				Profile ProfileCopy = pf;
@@ -162,37 +161,35 @@ void ProfileWindow::GenerateList()
 
 		NameTextField
 			->SetText(pf.DisplayName)
-			->SetTextSize(15)
-			->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+			->SetTextSize(15_px)
 			->SetOpacity(0)
-			->SetMinSize(Vector2f(1, 0));
+			->SetMinSize(Vec2f(1, 0));
 
 		Entry->nameBox->AddChild(NameTextField);
 		Entry->SetDescription(std::to_string(pf.GetModsCount()) + (Selected ? " mods (active)" : " mods"));
-		Entry->deleteButton->button->OnClickedFunction = std::bind(ProfileDelete, pf, this);
-		Entry->copyButton->button->OnClickedFunction = std::bind(ProfileCopy, pf, this);
+		Entry->deleteButton->button->OnClicked = std::bind(ProfileDelete, pf, this);
+		Entry->copyButton->button->OnClicked = std::bind(ProfileCopy, pf, this);
 		ProfilesList->AddChild(Entry);
 	}
 }
 
 void ProfileWindow::Init()
 {
-	using namespace KlemmUI;
+	using namespace kui;
 
 	ProfilesList = new UIScrollBox(false, 0, true);
 
 	PopupBackground->AddChild(ProfilesList);
 
-	ProfilesList->SetMinSize(Vector2f(2.0f, 1.7f));
+	ProfilesList->SetMinSize(Vec2f(2.0f, 1.7f));
 	ProfilesList->SetMaxSize(ProfilesList->GetMinSize());
 
 	auto NewBox = new NewProfileBox();
 	PopupBackground->AddChild(NewBox);
 	NewBox
-		->SetPadding(10)
-		->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative);
+		->SetPadding(10_px);
 
-	NewBox->newButton->button->OnClickedFunction = [this]() {
+	NewBox->newButton->button->OnClicked = [this]() {
 
 		Profile::NewProfile("New profile").MakeActive();
 

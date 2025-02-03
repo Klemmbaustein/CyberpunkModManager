@@ -1,17 +1,16 @@
 #include "ModListTab.h"
 #include "../../Webp.h"
-#include <KlemmUI/Rendering/Texture.h>
+#include <kui/Image.h>
 #include "../ModInfoWindow.h"
 #include <filesystem>
 #include <Net.h>
 #include "FileUtil.h"
-#include "../../Markup/ModEntry.hpp"
-#include "../../Markup/ModHeader.hpp"
+#include <ModEntry.kui.hpp>
 #include "../../BackgroundTask.h"
 #include <StrUtil.h>
 #include <iostream>
 #include "../../WindowsFunctions.h"
-using namespace KlemmUI;
+using namespace kui;
 
 static std::mutex ImageLoadMutex;
 static std::mutex PageLoadMutex;
@@ -34,7 +33,7 @@ void ModListTab::LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Titl
 	LoadedMods.push_back(ModsSection{
 		.Title = Title,
 		.Mods = Mods
-	});
+		});
 }
 
 void ModListTab::ClearContent()
@@ -45,7 +44,7 @@ void ModListTab::ClearContent()
 	ContentBox->SetHorizontalAlign(UIBox::Align::Default);
 	for (unsigned int tex : LoadedTextures)
 	{
-		Texture::UnloadTexture(tex);
+		image::UnloadImage(tex);
 	}
 	LoadedTextures.clear();
 }
@@ -53,11 +52,10 @@ void ModListTab::ClearContent()
 void ModListTab::ShowLoadingScreen()
 {
 	ClearContent();
-	
+
 	ContentBox->SetVerticalAlign(UIBox::Align::Centered);
 	ContentBox->SetHorizontalAlign(UIBox::Align::Centered);
-	ContentBox->AddChild((new UIText(20, 1, "Loading...", UI::Text))
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+	ContentBox->AddChild((new UIText(20_px, 1, "Loading...", UI::Text))
 		->SetPadding(0.8f));
 }
 
@@ -68,7 +66,7 @@ ModListTab::ModListTab(std::string Name)
 
 	HeaderBox = new UIBox(true);
 	ContentBox = new UIBox(false);
-	ContentBox->SetTryFill(true);
+	ContentBox->SetMinWidth(UISize::Parent(1));
 	TabBackground->AddChild(ModsScrollBox
 		->AddChild(HeaderBox)
 		->AddChild(ContentBox));
@@ -126,15 +124,14 @@ void ModListTab::LoadMainPage()
 			LoadedMods.clear();
 			LoadSections();
 		},
-		
 		[this]()
 		{
 			Generate();
 			new BackgroundTask([this]()
-			{
-				LoadImages();
-				IsLoadingList = false;
-			});
+				{
+					LoadImages();
+					IsLoadingList = false;
+				});
 		});
 }
 
@@ -175,16 +172,16 @@ std::string ModListTab::GetModImage(NxmAPI::ModInfo Mod)
 	return ImageFile;
 }
 
-static Vector3f InfoTextColors[] =
+static Vec3f InfoTextColors[] =
 {
 	// Red
-	Vector3f(1, 0, 0.1f),
+	Vec3f(1, 0, 0.1f),
 	// Green
-	Vector3f(0.1f, 1, 0.0f),
+	Vec3f(0.1f, 1, 0.0f),
 	// Yellow
-	Vector3f(1, 1, 0.1f),
+	Vec3f(1, 1, 0.1f),
 	// Grey
-	Vector3f(0.65f),
+	Vec3f(0.65f),
 };
 
 void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
@@ -206,10 +203,10 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 	for (size_t i = 0; i < Section.Mods.size(); i++)
 	{
 		auto Entry = new ModEntry();
-		Entry->SetName(StrUtil::ShortenIfTooLong(Section.Mods[i].Name, 40));
-		Entry->SetDescription(StrUtil::ShortenIfTooLong(Section.Mods[i].Summary, 165));
+		Entry->SetName(Section.Mods[i].Name);
+		Entry->SetDescription(StrUtil::Replace(Section.Mods[i].Summary, "&amp;", "&"));
 		Entry->SetInfo(Section.Mods[i].InfoString);
-		Entry->button->OnClickedFunction = std::bind(&ModListTab::OnClicked, this, (int)Index);
+		Entry->button->OnClicked = std::bind(&ModListTab::OnClicked, this, (int)Index);
 		Index++;
 		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
 
@@ -249,7 +246,7 @@ void ModListTab::UpdateImages()
 				ImageBackground
 					->SetUseTexture(true, LoadedWebp)
 					->SetColor(1)
-					->SetMinSize(Vector2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
+					->SetMinSize(Vec2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
 				ImageBackground->DeleteChildren();
 			}
 

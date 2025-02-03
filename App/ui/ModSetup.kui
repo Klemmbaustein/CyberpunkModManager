@@ -1,15 +1,14 @@
 
 element SetupOption
 {
-	var Name;
-	var Description;
+	var Name = "some name";
+	var Description = "description here";
 	var Color = (0.2, 0.2, 0.2);
 
 	padding = 5px;
 	child UIButton optionButton
 	{
-		borderType = border;
-		borderSize = 2px;
+		border = 2px;
 		borderColor = highlightColor;
 		orientation = vertical;
 		color = Color;
@@ -48,13 +47,13 @@ element SetupOption
 element SetupFooter
 {
 	orientation = vertical;
-	tryFill = true;
+	width = 100%;
 
 	child UIBackground
 	{
 		color = 0.15;
 		minSize = 20px;
-		tryFill = true;
+		width = 100%;
 		verticalAlign = centered;
 		horizontalAlign = reverse;
 

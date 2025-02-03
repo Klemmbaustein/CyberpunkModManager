@@ -6,8 +6,7 @@ element CheckBox
 
 	child UIButton checkButton
 	{
-		borderType = rounded;
-		borderSize = 5px;
+		corners = 5px;
 		minSize = 22px;
 		image = Image;
 	}
@@ -16,10 +15,10 @@ element CheckBox
 element Separator
 {
 	orientation = vertical;
-	tryFill = true;
+	width = 100%;
 	child UIBackground
 	{
-		tryFill = true;
+		width = 100%;
 		color = 1;
 		minSize = 1px;
 	}
@@ -29,12 +28,11 @@ element Separator
 element AppButton
 {
 	var Image;
-	var Text;
+	var Text = "button text";
 	padding = 5px;
 	child UIButton button
 	{
-		borderType = rounded;
-		borderSize = 5px;
+		corners = 5px;
 		allAlign = centered;
 		color = highlightColor;
 		child UIBackground

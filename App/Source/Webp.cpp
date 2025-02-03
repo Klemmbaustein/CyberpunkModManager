@@ -2,7 +2,7 @@
 #include "webp/decode.h"
 #include <cstring>
 #include <filesystem>
-#include <KlemmUI/Rendering/Texture.h>
+#include <kui/Image.h>
 
 Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)
 {
@@ -58,7 +58,7 @@ Webp::WebpBuffer Webp::LoadBuffer(std::string FilePath)
 
 unsigned int Webp::Load(WebpBuffer Buffer)
 {
-	unsigned int TextureID = KlemmUI::Texture::LoadTexture(
+	unsigned int TextureID = kui::image::LoadImage(
 		Buffer.Bytes,
 		Buffer.Width,
 		Buffer.Height);

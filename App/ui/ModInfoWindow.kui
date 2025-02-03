@@ -5,9 +5,9 @@ element ModInfoHeader
 	var SubTitle = "Mod subtitle";
 	child UIBackground image
 	{
-		borderType = border;
+		border = 2px;
 		borderColor = highlightColor;
-		borderSize = 2px;
+
 		size = (340, 180)px;
 		padding = 5px;
 	}
@@ -18,18 +18,18 @@ element ModInfoHeader
 
 		child UIText name
 		{
-			size = 15px;
+			size = 16px;
 			text = Name;
 			padding = 5px;
-			wrap = 800px;
+			wrap = 400px;
 		}
 
 		child UIText subTitle
 		{
-			size = 11px;
+			size = 12px;
 			text = SubTitle;
 			color = 0.9;
-			wrap = 800px;
+			wrap = 400px;
 			padding = 5px;
 		}
 	}
@@ -38,7 +38,7 @@ element ModInfoHeader
 element ModInfoWindowElement
 {
 	orientation = vertical;
-	tryFill = true;
+	width = 100%;
 
 	child ModInfoHeader header
 	{
@@ -51,14 +51,14 @@ element ModInfoWindowElement
 
 	child UIBackground
 	{
-		size = 2px;
+		height = 2px;
 		color = highlightColor;
-		tryFill = true;
+		width = 100%;
 	}
 
 	child UIBox descriptionBox
 	{
-		tryFill = true;
+		width = 100%;
 		orientation = vertical;
 		padding = 5px;
 	}

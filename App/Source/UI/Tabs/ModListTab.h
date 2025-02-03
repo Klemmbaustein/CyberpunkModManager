@@ -1,11 +1,11 @@
 #pragma once
 #include "AppTab.h"
-#include <KlemmUI/UI/UIScrollBox.h>
+#include <kui/UI/UIScrollBox.h>
 #include "NexusModsAPI.h"
 
 class ModListTab : public AppTab
 {
-	std::vector<KlemmUI::UIBackground*> Images;
+	std::vector<kui::UIBackground*> Images;
 	std::vector<unsigned int> LoadedTextures;
 	bool LoadedNewImage = false;
 	bool IsLoadingList = false;
@@ -41,8 +41,8 @@ public:
 	virtual void Update() override;
 	virtual void OnResized() override;
 
-	KlemmUI::UIScrollBox* ModsScrollBox = nullptr;
-	KlemmUI::UIBox* HeaderBox = nullptr;
-	KlemmUI::UIBox* ContentBox = nullptr;
+	kui::UIScrollBox* ModsScrollBox = nullptr;
+	kui::UIBox* HeaderBox = nullptr;
+	kui::UIBox* ContentBox = nullptr;
 
 };

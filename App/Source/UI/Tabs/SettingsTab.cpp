@@ -1,11 +1,10 @@
 #include "SettingsTab.h"
-#include "../../Markup/SettingsElement.hpp"
-#include "../../Markup/CheckBox.hpp"
-#include "../../Markup/Separator.hpp"
-#include "../../InstallerUpdate.h"
+#include <Settings.kui.hpp>
+#include <Common.kui.hpp>
 #include "NexusModsAPI.h"
 #include "ModBrowserTab.h"
-using namespace KlemmUI;
+#include "../../InstallerUpdate.h"
+using namespace kui;
 
 SettingsManager Settings;
 bool LoadedSettings = false;
@@ -22,10 +21,10 @@ static void AddBoolEntry(std::string Name, std::string Value, std::string Defaul
 
 	if (Val)
 	{
-		CheckButton->SetImage("app/icons/Checkbox.png");
+		CheckButton->SetImage("res:icons/Checkbox.png");
 	}
 
-	CheckButton->checkButton->OnClickedFunction = [Value]()
+	CheckButton->checkButton->OnClicked = [Value]()
 		{
 			Settings.SetValue(Value, (Settings.GetValue(Value, "") == "1") ? "0" : "1");
 
@@ -46,8 +45,7 @@ static void AddText(std::string TextName, std::string Text, UIBox* Parent)
 	auto Element = new SettingsElement();
 	Element->SetSettingName(TextName);
 	Parent->AddChild(Element);
-	Element->content->AddChild((new UIText(12, 1, Text, UI::Text))
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative));
+	Element->content->AddChild((new UIText(12_px, 1, Text, UI::Text)));
 }
 
 std::string SettingsTab::GetSetting(std::string Name, std::string Default)
@@ -67,7 +65,7 @@ SettingsTab::SettingsTab()
 	SettingsBox = new UIScrollBox(false, 0, true);
 
 	TabBackground->HorizontalBoxAlign = UIBox::Align::Centered;
-	SettingsBox->SetMinSize(Vector2f(1, 2));
+	SettingsBox->SetMinSize(Vec2f(1, 2));
 
 	TabBackground->AddChild(SettingsBox);
 

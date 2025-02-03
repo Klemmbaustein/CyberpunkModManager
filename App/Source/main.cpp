@@ -1,5 +1,6 @@
-#include <KlemmUI/Window.h>
-#include <KlemmUI/Application.h>
+#include <kui/Window.h>
+#include <kui/App.h>
+#include <kui/Platform.h>
 
 #include "NexusModsAPI.h"
 #include "Net.h"
@@ -19,9 +20,9 @@
 #include "InstallerUpdate.h"
 #include "Error.h"
 
-using namespace KlemmUI;
+using namespace kui;
 
-static void OnResized(KlemmUI::Window*)
+static void OnResized(kui::Window*)
 {
 	AppTab::ResizeAll();
 }
@@ -63,10 +64,9 @@ int main(int argc, char** argv)
 	Error::RegisterErrorHandler();
 	Windows::SetWorkingDirectory();
 
-	Application::Error::SetErrorCallback([](std::string Message) {
+	app::error::SetErrorCallback([](std::string Message, bool) {
 		Windows::ErrorBox("Internal error:\n" + Message);
 	});
-	Application::Initialize("app/shaders");
 
 	Net::SetAPIKey(NxmAPI::GetAPIKey());
 
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 	HandleArgs(argc, argv);
 	Profile::Init();
 
-	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
+	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable | platform::win32::WindowFlag::DarkTitleBar);
 	AppWindow.OnResizedCallback = &OnResized;
 
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")

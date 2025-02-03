@@ -11,23 +11,22 @@ element ProfileButton
 
 element ProfileEntry
 {
-	var Description;
-	var Color = highlightColor;
-	tryFill = true;
+	var Description = "Description";
+	var Color = (1, 0, 0);
+	width = 100%;
 	horizontalAlign = centered;
 
 	child UIButton profileButton
 	{
 		padding = 5px;
 		color = Color;
-		minSize = (1.9, 0);
-		borderType = rounded;
-		borderSize = 5px;
+		width = 100%;
+		corners = 5px;
 		verticalAlign = centered;
 
 		child UIBackground activeIcon
 		{
-			image = "app/icons/enabled.png";
+			image = "res:icons/enabled.png";
 			size = 25px;
 			padding = 10px;
 		}
@@ -52,12 +51,12 @@ element ProfileEntry
 
 		child ProfileButton copyButton
 		{
-			Image = "app/icons/copy.png";
+			Image = "res:icons/copy.png";
 		}
 
 		child ProfileButton deleteButton
 		{
-			Image = "app/icons/delete.png";
+			Image = "res:icons/delete.png";
 		}
 	}
 }
@@ -67,12 +66,18 @@ element NewProfileBox
 	verticalAlign = centered;
 	child AppButton newButton
 	{
-		Image = "app/icons/add.png";
+		Image = "res:icons/add.png";
 		Text = "New profile";
 	}
 
-	child UIBox nameBox
+	child UITextField nameBox
 	{
-		padding = 10px;
+		width = 200px;
+		height = 100%;
+		color = 0;
+		textColor = 1;
+		textSize = 11px;
+		hintText = "Profile name";
+		padding = 5px;
 	}
 }

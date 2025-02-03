@@ -1,6 +1,6 @@
 #pragma once
 #include "Popup.h"
-#include "../Markup/ModInfoWindowElement.hpp"
+#include <ModInfoWindow.kui.hpp>
 #include "NexusModsAPI.h"
 
 
@@ -10,11 +10,11 @@ class ModInfoWindow : public Popup
 	std::mutex InfoMutex;
 	bool HasInfo = false;
 	void LoadInfo();
-	KlemmUI::UIBox* ActionsBox = nullptr;
+	kui::UIBox* ActionsBox = nullptr;
 	std::vector<unsigned int> LoadedImages;
-	void GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::ModInfo& Mod);
+	void GenerateActionButtons(kui::UIBox* Parent, const NxmAPI::ModInfo& Mod);
 public:
-	Vector2ui GetWindowResolution() override;
+	kui::Vec2ui GetWindowResolution() override;
 	
 	ModInfoWindowElement* InfoElement = nullptr;
 
@@ -26,6 +26,6 @@ public:
 	void Update() override;
 	void Destroy() override;
 
-	void RenderMarkupString(std::string Markup, KlemmUI::UIBox* Parent);
-	void RenderMarkupLine(std::string Line, bool Centered, KlemmUI::UIBox* Parent);
+	void RenderMarkupString(std::string Markup, kui::UIBox* Parent);
+	void RenderMarkupLine(std::string Line, bool Centered, kui::UIBox* Parent);
 };

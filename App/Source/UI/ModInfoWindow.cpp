@@ -1,10 +1,10 @@
 #include "ModInfoWindow.h"
-#include <KlemmUI/UI/UIScrollBox.h>
-#include <KlemmUI/Rendering/Texture.h>
+#include <kui/UI/UIScrollBox.h>
+#include <kui/Image.h>
 #include "../Webp.h"
 #include "Net.h"
 #include "UI.h"
-#include "../Markup/AppButton.hpp"
+#include <Common.kui.hpp>
 #include "ModInfo.h"
 #include <filesystem>
 #include <iostream>
@@ -12,7 +12,7 @@
 #include "../WindowsFunctions.h"
 #include "Tabs/InstalledModsTab.h"
 
-using namespace KlemmUI;
+using namespace kui;
 
 void ModInfoWindow::LoadInfo()
 {
@@ -49,7 +49,7 @@ static void OpenModInBrowser(const NxmAPI::ModInfo& Mod, std::string Tab = "")
 #endif
 }
 
-void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::ModInfo& Mod)
+void ModInfoWindow::GenerateActionButtons(kui::UIBox* Parent, const NxmAPI::ModInfo& Mod)
 {
 	Parent->DeleteChildren();
 	ActionsBox = Parent;
@@ -61,12 +61,12 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 	{
 		auto* InstallButton = new AppButton();
 		InstallButton->SetText("Install");
-		InstallButton->button->OnClickedFunction = [this]() {
+		InstallButton->button->OnClicked = [this]() {
 			// Can't actually install anything since NexusMods is the worst thing ever.
 			OpenModInBrowser(GetModInfo(), "?tab=files");
 			};
 		Parent->AddChild(InstallButton);
-		InstallButton->SetImage("app/icons/download.png");
+		InstallButton->SetImage("res:icons/download.png");
 	}
 	else
 	{
@@ -74,17 +74,17 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 		{
 			auto* UpdateButton = new AppButton();
 			UpdateButton->SetText("Update");
-			UpdateButton->button->OnClickedFunction = [this]() {
+			UpdateButton->button->OnClicked = [this]() {
 				OpenModInBrowser(GetModInfo(), "?tab=files");
 				ShouldClose = true;
 				};
 			Parent->AddChild(UpdateButton);
-			UpdateButton->SetImage("app/icons/download.png");
+			UpdateButton->SetImage("res:icons/download.png");
 		}
 
 		auto* EnableButton = new AppButton();
 		EnableButton->SetText(ModInf.Enabled ? "Disable" : "Enable");
-		EnableButton->button->OnClickedFunction = [this]() {
+		EnableButton->button->OnClicked = [this]() {
 			auto Mod = ModInfo::GetModByName(GetModInfo().Name);
 
 			if (Mod.Enabled)
@@ -110,19 +110,19 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
 
-		EnableButton->SetImage(ModInf.Enabled ? "app/icons/disabled.png" : "app/icons/enabled.png");
+		EnableButton->SetImage(ModInf.Enabled ? "res:icons/disabled.png" : "res:icons/enabled.png");
 
 		Parent->AddChild(EnableButton);
 
 		auto* RemoveButton = new AppButton();
 		RemoveButton->SetText("Uninstall");
-		RemoveButton->button->OnClickedFunction = [this]() {
+		RemoveButton->button->OnClicked = [this]() {
 			auto Mod = ModInfo::GetModByName(GetModInfo().Name);
 			Mod.Remove();
 			GenerateActionButtons(ActionsBox, GetModInfo());
 			AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
 			};
-		RemoveButton->SetImage("app/icons/delete.png");
+		RemoveButton->SetImage("res:icons/delete.png");
 		Parent->AddChild(RemoveButton);
 
 	}
@@ -131,18 +131,18 @@ void ModInfoWindow::GenerateActionButtons(KlemmUI::UIBox* Parent, const NxmAPI::
 	{
 		auto* OpenInBrowserButton = new AppButton();
 		OpenInBrowserButton->SetText("Open website");
-		OpenInBrowserButton->button->OnClickedFunction = [this]() {
+		OpenInBrowserButton->button->OnClicked = [this]() {
 			OpenModInBrowser(GetModInfo());
 			};
-		OpenInBrowserButton->SetImage("app/icons/open.png");
+		OpenInBrowserButton->SetImage("res:icons/open.png");
 		Parent->AddChild(OpenInBrowserButton);
 	}
 
 }
 
-Vector2ui ModInfoWindow::GetWindowResolution()
+Vec2ui ModInfoWindow::GetWindowResolution()
 {
-	return Vector2ui(800, 700);
+	return Vec2ui(800, 700);
 }
 
 void ModInfoWindow::SetModInfo(NxmAPI::ModInfo Info)
@@ -179,7 +179,7 @@ void ModInfoWindow::Init()
 {
 	PopupBackground->SetHorizontalAlign(UIBox::Align::Centered);
 	PopupBackground->SetVerticalAlign(UIBox::Align::Centered);
-	PopupBackground->AddChild(new UIText(1, 1, "Loading...", UI::Text));
+	PopupBackground->AddChild(new UIText(15_px, 1, "Loading...", UI::Text));
 
 }
 
@@ -196,12 +196,12 @@ void ModInfoWindow::Destroy()
 {
 	for (auto Image : LoadedImages)
 	{
-		Texture::UnloadTexture(Image);
+		image::UnloadImage(Image);
 	}
 	LoadedImages.clear();
 }
 
-void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Parent)
+void ModInfoWindow::RenderMarkupString(std::string Markup, kui::UIBox* Parent)
 {
 	std::string NewLine = "";
 	std::string Tag;
@@ -232,17 +232,15 @@ void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Paren
 				std::filesystem::create_directories("app/temp/preview_img.png");
 				Net::GetFile(TagContent, "app/temp/img.png", false);
 
-				Texture::TextureInfo Tex = Texture::LoadTextureWithInfo("app/temp/img.png");
+				image::ImageInfo Tex = image::LoadImageWithInfo("app/temp/img.png");
 				if (Tex.Width != 0 && Tex.Height != 0)
 				{
 					float SizeScale = std::min(Tex.Width / 400.0f, 1.95f);
 
 					Parent->AddChild((new UIBox(true))
-						->SetTryFill(true)
 						->SetHorizontalAlign(Centered ? UIBox::Align::Centered : UIBox::Align::Default)
-						->AddChild((new UIBackground(true, 0, 1, Vector2f(SizeScale) * Vector2f(1, (float)Tex.Height / (float)Tex.Width)))
-							->SetUseTexture(true, Tex.ID)
-							->SetSizeMode(UIBox::SizeMode::AspectRelative)));
+						->AddChild((new UIBackground(true, 0, 1, SizeVec(Vec2f(SizeScale) * Vec2f(1, (float)Tex.Height / (float)Tex.Width), SizeMode::AspectRelative)))
+							->SetUseTexture(true, Tex.ID)));
 					LoadedImages.push_back(Tex.ID);
 				}
 				std::filesystem::remove("app/temp/preview_img.png");
@@ -287,7 +285,7 @@ void ModInfoWindow::RenderMarkupString(std::string Markup, KlemmUI::UIBox* Paren
 
 }
 
-void ModInfoWindow::RenderMarkupLine(std::string Line, bool Centered, KlemmUI::UIBox* Parent)
+void ModInfoWindow::RenderMarkupLine(std::string Line, bool Centered, kui::UIBox* Parent)
 {
 	// No.
 	if (Line.find("Bitcoin") != std::string::npos
@@ -298,12 +296,10 @@ void ModInfoWindow::RenderMarkupLine(std::string Line, bool Centered, KlemmUI::U
 	}
 
 	Parent->AddChild((new UIBox(true))
-		->SetTryFill(true)
+			->SetMinWidth(UISize::Parent(1))
 		->SetHorizontalAlign(Centered ? UIBox::Align::Centered : UIBox::Align::Default)
-		->AddChild((new UIText(11, 1, Line, UI::Text))
-			->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
-			->SetWrapEnabled(true, 3.85f, UIBox::SizeMode::ScreenRelative)
-			->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative)
-			->SetPadding(5, 5, 0, 0)));
+		->AddChild((new UIText(11_px, 1, Line, UI::Text))
+			->SetWrapEnabled(true, 1.9f)
+			->SetPadding(5_px, 5_px, 0, 0)));
 
 }

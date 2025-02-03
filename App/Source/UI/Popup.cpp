@@ -2,7 +2,7 @@
 #include "UI.h"
 #include "../Error.h"
 
-using namespace KlemmUI;
+using namespace kui;
 
 std::mutex Popup::PopupMutex;
 std::vector<Popup*> Popup::Popups;
@@ -46,9 +46,9 @@ Popup::Popup()
 {
 }
 
-Vector2ui Popup::GetWindowResolution()
+kui::Vec2ui Popup::GetWindowResolution()
 {
-	return Vector2ui(640, 480);
+	return kui::Vec2ui(640, 480);
 }
 
 bool Popup::HasBorder()
