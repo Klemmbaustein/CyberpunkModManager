@@ -126,6 +126,7 @@ void ModListTab::LoadMainPage()
 		},
 		[this]()
 		{
+			std::lock_guard Guard(PageLoadMutex);
 			Generate();
 			new BackgroundTask([this]()
 				{

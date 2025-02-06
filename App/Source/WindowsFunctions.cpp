@@ -253,7 +253,7 @@ void Windows::SetWorkingDirectory()
 		// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
 		PathString.append("/../");
 	}
-	std::cout << "App root directory: " << PathString << std::endl;
+
 	std::filesystem::current_path(PathString);
 }
 
