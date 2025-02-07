@@ -72,7 +72,7 @@ static bool ClickedNext = false;
 void SetupWindow::GenerateAPIKeySetupPage()
 {
 	AddText("Please enter your NexusMods API key.");
-	AddText("You can your the key by going to nexusmods.com, then to 'Site preferences' -> 'API KEYS' -> 'Personal API Key'");
+	AddText("You can your the key by going to nexusmods.com, then to 'Site preferences' -> 'API Keys' -> 'Personal API Key'");
 
 	InputField = new UITextField(0, 0, UI::Text, [this]() {
 		ApiKeyValue = InputField->GetText();
@@ -83,8 +83,8 @@ void SetupWindow::GenerateAPIKeySetupPage()
 		->SetHintText("API key here")
 		->SetTextSize(12_px)
 		->SetPadding(50_px, 50_px, 10_px, 10_px)
-		->SetMinSize(Vec2f(1.75f, 0.15f))
-		->SetMaxSize(Vec2f(1.75f, 1)));
+		->SetMinSize(SizeVec(UISize::Parent(1), 0.15f))
+		->SetMaxSize(SizeVec(UISize::Parent(1), 1)));
 
 	Element->nextButton->OnClicked = [this]()
 		{

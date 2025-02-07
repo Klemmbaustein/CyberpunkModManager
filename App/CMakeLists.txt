@@ -18,9 +18,9 @@ add_subdirectory("../Dependencies/KlemmUI/" "Dependencies/KlemmUI" EXCLUDE_FROM_
 add_subdirectory("../Dependencies/libwebp/" "Dependencies/libwebp" EXCLUDE_FROM_ALL)
 add_subdirectory("../ModManagerLib/" "ModManagerLib")
 
-if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Release")
 	add_executable(
-		ModManager
+		ModManager WIN32
 		${SRCS}
 	)
 else()

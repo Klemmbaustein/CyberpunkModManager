@@ -120,13 +120,13 @@ void ModListTab::LoadMainPage()
 	LoadedMods.clear();
 	new BackgroundTask([this]()
 		{
-			std::lock_guard Guard(PageLoadMutex);
+			std::unique_lock Guard(PageLoadMutex);
 			LoadedMods.clear();
 			LoadSections();
 		},
 		[this]()
 		{
-			std::lock_guard Guard(PageLoadMutex);
+			std::unique_lock Guard(PageLoadMutex);
 			Generate();
 			new BackgroundTask([this]()
 				{
