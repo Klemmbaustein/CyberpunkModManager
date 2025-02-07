@@ -28,6 +28,9 @@ ModBrowserTab::ModBrowserTab()
 
 void ModBrowserTab::LoadSections()
 {
+	if (!NxmAPI::GetIsLoggedIn())
+		return;
+
 	NxmAPI::SetShowNSFWMods(SettingsTab::GetSetting("show_nsfw_mods", "0") == "1");
 	LoadSection(NxmAPI::GetMods("trending"), "Trending");
 	LoadSection(NxmAPI::GetMods("latest_updated"), "Last Updated");
