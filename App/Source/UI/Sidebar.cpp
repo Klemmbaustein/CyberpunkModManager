@@ -2,6 +2,7 @@
 #include <Sidebar.kui.hpp>
 #include "Tabs/AppTab.h"
 #include <iostream>
+#include <kui/KlemmUI.h>
 using namespace kui;
 
 namespace Sidebar
@@ -43,7 +44,7 @@ void Sidebar::Update()
 		i->button->SetHoveredColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.5f, 0.1f, 0.1f));
 		i->button->SetPressedColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.4f, 0.1f, 0.1f));
 
-		if (i->IsBeingHovered())
+		if (i->IsBeingHovered() && i->GetParentWindow()->HasFocus())
 		{
 			HoveredBox = i;
 			HoveredIndex = Index;
@@ -52,18 +53,15 @@ void Sidebar::Update()
 		Index++;
 	}
 
-	if (HoveredBox == nullptr && Tooltip)
+	if (!HoveredBox && Tooltip)
 	{
 		delete Tooltip;
 		Tooltip = nullptr;
 	}
 
-	if (HoveredBox)
+	if (HoveredBox && !Tooltip)
 	{
-		if (!Tooltip)
-		{
-			Tooltip = new SidebarTooltip();
-		}
+		Tooltip = new SidebarTooltip();
 		Tooltip->SetPosition(Vec2f(Element->GetPosition().X + (70_px).GetScreen().X, HoveredBox->GetPosition().Y));
 		Tooltip->SetText(AppTab::AllTabs[HoveredIndex]->Name);
 		Tooltip->UpdateElement();

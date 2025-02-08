@@ -11,6 +11,7 @@
 #include "ModOptionSelection.h"
 #include "../WindowsFunctions.h"
 #include "Tabs/InstalledModsTab.h"
+#include <StrUtil.h>
 
 using namespace kui;
 
@@ -24,11 +25,23 @@ void ModInfoWindow::LoadInfo()
 	InfoElement->header->SetName(Mod.Name);
 	InfoElement->header->SetSubTitle(Mod.Summary);
 
-	InfoElement->header->image->SetUseTexture(true, Webp::Load(Webp::LoadBuffer(Mod.GetImagePath())));
+	if (PreviewWebp)
+	{
+		image::UnloadImage(PreviewWebp);
+	}
+
+	PreviewWebp = Webp::Load(Webp::LoadBuffer(Mod.GetImagePath(), true));
+
+	InfoElement->header->image->SetUseTexture(true, PreviewWebp);
 
 	GenerateActionButtons(InfoElement->actionBox, Mod);
-
-	RenderMarkupString(Mod.Description, InfoElement->descriptionBox);
+	std::string Displayed = StrUtil::Replace(Mod.Description, "&lt;", "<");
+	Displayed = StrUtil::Replace(Displayed, "&gt;", ">");
+	Displayed = StrUtil::Replace(Displayed, "&#92;", "\\");
+	Displayed = StrUtil::Replace(Displayed, "\xE2\x9C\x93", "-");
+	Displayed = StrUtil::Replace(Displayed, "\xE2\x80\x94", "-");
+	Displayed = StrUtil::Replace(Displayed, "\xE2\x96\xB8", ">");
+	RenderMarkupString(Displayed, InfoElement->descriptionBox);
 
 	PopupWindow->SetTitle("Mod info: " + Mod.Name);
 
@@ -199,6 +212,8 @@ void ModInfoWindow::Destroy()
 		image::UnloadImage(Image);
 	}
 	LoadedImages.clear();
+
+	image::UnloadImage(PreviewWebp);
 }
 
 void ModInfoWindow::RenderMarkupString(std::string Markup, kui::UIBox* Parent)
@@ -298,7 +313,7 @@ void ModInfoWindow::RenderMarkupLine(std::string Line, bool Centered, kui::UIBox
 	Parent->AddChild((new UIBox(true))
 			->SetMinWidth(UISize::Parent(1))
 		->SetHorizontalAlign(Centered ? UIBox::Align::Centered : UIBox::Align::Default)
-		->AddChild((new UIText(11_px, 1, Line, UI::Text))
+		->AddChild((new UIText(12_px, 1, Line, UI::Text))
 			->SetWrapEnabled(true, 1.9f)
 			->SetPadding(5_px, 5_px, 0, 0)));
 

@@ -3,7 +3,7 @@ element ProfileButton
 	var Image;
 	child UIButton button
 	{
-		size = 30px;
+		size = 26px;
 		padding = 8px;
 		image = Image;
 	}
@@ -28,7 +28,7 @@ element ProfileEntry
 		{
 			image = "res:icons/enabled.png";
 			size = 25px;
-			padding = 10px;
+			padding = 8px;
 		}
 
 		child UIBox
@@ -37,7 +37,7 @@ element ProfileEntry
 			minSize = (1.5, 0);
 			child UIBox nameBox
 			{
-				padding = 5px;
+				padding = 4px;
 			}
 			
 			child UIText
@@ -45,7 +45,7 @@ element ProfileEntry
 				text = Description;
 				color = 0.8;
 				size = 12px;
-				padding = 5px;
+				padding = 4px;
 			}
 		}
 
@@ -68,16 +68,5 @@ element NewProfileBox
 	{
 		Image = "res:icons/add.png";
 		Text = "New profile";
-	}
-
-	child UITextField nameBox
-	{
-		width = 200px;
-		height = 100%;
-		color = 0;
-		textColor = 1;
-		textSize = 11px;
-		hintText = "Profile name";
-		padding = 5px;
 	}
 }

@@ -17,7 +17,7 @@ static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 	if (LoadingBarRequired)
 	{
 		LoadBar = Popup::CreatePopup<LoadingBar>();
-		LoadBar->SetLoadingString("Loading...");
+		LoadBar->SetLoadingString("Copying mod files...");
 	}
 	Target.MakeActive();
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
@@ -161,7 +161,7 @@ void ProfileWindow::GenerateList()
 
 		NameTextField
 			->SetText(pf.DisplayName)
-			->SetTextSize(15_px)
+			->SetTextSize(13_px)
 			->SetOpacity(0)
 			->SetMinSize(Vec2f(1, 0));
 
@@ -181,13 +181,13 @@ void ProfileWindow::Init()
 
 	PopupBackground->AddChild(ProfilesList);
 
-	ProfilesList->SetMinSize(Vec2f(2.0f, 1.7f));
+	ProfilesList->SetMinSize(Vec2f(2.0f, 1.8f));
 	ProfilesList->SetMaxSize(ProfilesList->GetMinSize());
 
 	auto NewBox = new NewProfileBox();
 	PopupBackground->AddChild(NewBox);
 	NewBox
-		->SetPadding(10_px);
+		->SetPadding(5_px);
 
 	NewBox->newButton->button->OnClicked = [this]() {
 

@@ -70,5 +70,5 @@ std::string LoadingBar::GetWindowTitle()
 
 kui::Vec2ui LoadingBar::GetWindowResolution()
 {
-	return kui::Vec2ui(300, 50);
+	return kui::Vec2ui(300, 70);
 }

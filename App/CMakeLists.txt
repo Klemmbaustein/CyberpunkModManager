@@ -30,6 +30,10 @@ else()
 	)
 endif()
 
+if(UNIX)
+	target_link_options(ModManager PUBLIC "-rdynamic")
+endif()
+
 if(NOT WIN32)
 	execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies/get-7zip-linux.sh
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Dependencies

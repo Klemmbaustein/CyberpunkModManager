@@ -7,6 +7,7 @@
 
 #include "UI/Popup.h"
 #include "UI/Sidebar.h"
+#include "UI/TitleBar.h"
 #include "UI/SetupWindow.h"
 #include "UI/FOMODInstall.h"
 #include "UI/Tabs/AppTab.h"
@@ -19,6 +20,7 @@
 #include "Profile.h"
 #include "InstallerUpdate.h"
 #include "Error.h"
+
 
 using namespace kui;
 
@@ -50,7 +52,9 @@ static void LoadUI()
 	new InstalledModsTab();
 	new ModBrowserTab();
 	new SettingsTab();
+	AppTab::UpdateAll();
 
+	TitleBar::Load();
 	Sidebar::Load();
 
 	if (SetupWindow::ShouldOpen())
@@ -75,11 +79,21 @@ int main(int argc, char** argv)
 		Windows::RegisterSelfAsUriHandler();
 	}
 
+	TitleBar::IsVisible = SettingsTab::GetSetting("use_custom_title_bar", "1") == "1";
+
 	HandleArgs(argc, argv);
 	Profile::Init();
 
-	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable | platform::win32::WindowFlag::DarkTitleBar);
+	Window::WindowFlag Flags = Window::WindowFlag::Resizable | platform::win32::WindowFlag::DarkTitleBar;
+
+	if (TitleBar::IsVisible)
+	{
+		Flags = Flags | Window::WindowFlag::Borderless;
+	}
+
+	Window AppWindow = Window("Cyberpunk 2077 mod manager", Flags);
 	AppWindow.OnResizedCallback = &OnResized;
+	AppWindow.BorderColor = Vec3f(0.6f, 0.2f, 0.2f);
 
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")
 	{
@@ -94,6 +108,7 @@ int main(int argc, char** argv)
 	{
 		AppTab::UpdateAll();
 		Sidebar::Update();
+		TitleBar::Update();
 		Popup::UpdatePopups();
 		BackgroundTask::UpdateTasks();
 		DownloadHandler::CheckDownloadRequest();

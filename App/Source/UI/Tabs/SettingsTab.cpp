@@ -3,6 +3,7 @@
 #include <Common.kui.hpp>
 #include "NexusModsAPI.h"
 #include "ModBrowserTab.h"
+#include "../TitleBar.h"
 #include "../../InstallerUpdate.h"
 using namespace kui;
 
@@ -26,11 +27,16 @@ static void AddBoolEntry(std::string Name, std::string Value, std::string Defaul
 
 	CheckButton->checkButton->OnClicked = [Value]()
 		{
-			Settings.SetValue(Value, (Settings.GetValue(Value, "") == "1") ? "0" : "1");
+			bool NewValue = (Settings.GetValue(Value, "") == "0");
+			Settings.SetValue(Value, NewValue ? "1" : "0");
 
 			if (Value == "show_nsfw_mods")
 			{
 				AppTab::GetTabOfType<ModBrowserTab>()->ShouldReload = true;
+			}
+			if (Value == "use_custom_title_bar")
+			{
+				TitleBar::IsVisible = NewValue;
 			}
 
 			AppTab::GetTabOfType<SettingsTab>()->Generate();
@@ -77,8 +83,9 @@ void SettingsTab::Generate()
 	SettingsBox->DeleteChildren();
 
 	AddBoolEntry("Check for app updates on startup", "check_updates", "1", SettingsBox);
-	AddBoolEntry("Show NSFW mods in the mod browser", "show_nsfw_mods", "0", SettingsBox);
+	AddBoolEntry("Show NSFW mods in the online mods browser", "show_nsfw_mods", "0", SettingsBox);
 	AddBoolEntry("Is nxm:// URL handler", "is_uri_handler", "1", SettingsBox);
+	AddBoolEntry("Use custom window title bar", "use_custom_title_bar", "1", SettingsBox);
 
 	auto SettingsSeparator = new Separator();
 	SettingsBox->AddChild(SettingsSeparator);

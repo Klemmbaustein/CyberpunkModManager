@@ -13,7 +13,10 @@
 using namespace kui;
 
 static std::mutex ImageLoadMutex;
-static std::mutex PageLoadMutex;
+static std::mutex LoadedModsMutex;
+static std::mutex ImageListMutex;
+
+std::map<std::string, Webp::WebpBuffer> Images;
 
 static void LoadModImageWebP(NxmAPI::ModInfo& Mod, std::string FilePath)
 {
@@ -23,9 +26,11 @@ static void LoadModImageWebP(NxmAPI::ModInfo& Mod, std::string FilePath)
 	}
 	auto Buffer = Webp::LoadBuffer(FilePath);
 	std::unique_lock Guard(ImageLoadMutex);
+	std::unique_lock ListGuard(ImageListMutex);
 	Mod.ImageBuffer = Buffer.Bytes;
 	Mod.ImageWidth = Buffer.Width;
 	Mod.ImageHeight = Buffer.Height;
+	Images.insert({FilePath, Buffer});
 }
 
 void ModListTab::LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Title)
@@ -74,6 +79,7 @@ ModListTab::ModListTab(std::string Name)
 
 void ModListTab::OpenModFromIndex(int Index)
 {
+	std::unique_lock Guard(LoadedModsMutex);
 	int it = 0;
 	for (const auto& i : LoadedMods)
 	{
@@ -90,11 +96,22 @@ void ModListTab::OpenModFromIndex(int Index)
 
 void ModListTab::LoadImages()
 {
-	for (auto& i : LoadedMods)
+	std::vector<ModsSection> ModsCopy;
 	{
-		for (auto& j : i.Mods)
+		std::unique_lock Guard(LoadedModsMutex);
+		ModsCopy = LoadedMods;
+	}
+	for (size_t i = 0; i < ModsCopy.size(); i++)
+	{
+		std::cout << "Loading " << ModsCopy[i].Mods.size() << " images..." << std::endl;
+		for (size_t j = 0; j < ModsCopy[i].Mods.size(); j++)
 		{
-			LoadModImageWebP(j, GetModImage(j));
+			if (LoadedMods.size() != ModsCopy.size()
+				|| ModsCopy[i].Mods.size() != LoadedMods[i].Mods.size())
+			{
+				return;
+			}
+			LoadModImageWebP(LoadedMods[i].Mods[j], GetModImage(ModsCopy[i].Mods[j]));
 			LoadedNewImage = true;
 		}
 	}
@@ -104,6 +121,9 @@ void ModListTab::LoadImages()
 
 void ModListTab::LoadMainPage()
 {
+	ModsPerRow = GetModsPerRow();
+	std::unique_lock Guard(LoadedModsMutex);
+	std::unique_lock ImageGuard(ImageLoadMutex);
 	ShowLoadingScreen();
 	for (auto& i : LoadedMods)
 	{
@@ -120,13 +140,12 @@ void ModListTab::LoadMainPage()
 	LoadedMods.clear();
 	new BackgroundTask([this]()
 		{
-			std::unique_lock Guard(PageLoadMutex);
+			std::unique_lock Guard(LoadedModsMutex);
 			LoadedMods.clear();
 			LoadSections();
 		},
 		[this]()
 		{
-			std::unique_lock Guard(PageLoadMutex);
 			Generate();
 			new BackgroundTask([this]()
 				{
@@ -138,6 +157,7 @@ void ModListTab::LoadMainPage()
 
 void ModListTab::Generate()
 {
+	std::unique_lock Guard(LoadedModsMutex);
 	ClearContent();
 
 	size_t ElementIndex = 0;
@@ -192,14 +212,14 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 	ContentBox->AddChild(Header);
 
 	std::vector<UIBox*> Rows;
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < Section.Mods.size() / ModsPerRow + 1; i++)
 	{
 		UIBox* Row = new UIBox(true);
 		ContentBox->AddChild(Row);
 		Rows.push_back(Row);
 	}
 
-	int ModsPerPage = int((Window::GetActiveWindow()->GetSize().X - 150 * Window::GetActiveWindow()->GetDPI()) / (200.0f * Window::GetActiveWindow()->GetDPI()));
+	std::cout << "Window size: " << Window::GetActiveWindow()->GetSize().ToString() << ", Mods per row: (should never ever be 0) " << ModsPerRow << std::endl;
 
 	for (size_t i = 0; i < Section.Mods.size(); i++)
 	{
@@ -212,7 +232,7 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
 
 		Images.push_back(Entry->imageBackground);
-		Rows[i / ModsPerPage]->AddChild(Entry);
+		Rows[i / ModsPerRow]->AddChild(Entry);
 	}
 }
 
@@ -265,14 +285,14 @@ void ModListTab::Update()
 	ModsScrollBox->SetMinSize(TabBackground->GetMinSize());
 	ModsScrollBox->SetMaxSize(TabBackground->GetMinSize());
 
-	if (ShouldReload && !IsLoadingList)
+	if (ShouldReload && !IsLoadingList && TabBackground->IsVisible)
 	{
 		IsLoadingList = true;
 		ShouldReload = false;
 		LoadMainPage();
 	}
 
-	if (LoadedNewImage)
+	if (LoadedNewImage && TabBackground->IsVisible)
 	{
 		LoadedNewImage = false;
 		UpdateImages();
@@ -281,5 +301,14 @@ void ModListTab::Update()
 
 void ModListTab::OnResized()
 {
-	ShouldReload = true;
+	if (ModsPerRow != GetModsPerRow())
+	{
+		ModsPerRow = GetModsPerRow();
+		ShouldReload = true;
+	}
+}
+
+int ModListTab::GetModsPerRow()
+{
+	return std::max(int((Window::GetActiveWindow()->GetSize().X - 150 * Window::GetActiveWindow()->GetDPI()) / (200.0f * Window::GetActiveWindow()->GetDPI())), 1);
 }

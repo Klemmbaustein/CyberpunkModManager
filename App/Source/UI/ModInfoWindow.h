@@ -13,6 +13,7 @@ class ModInfoWindow : public Popup
 	kui::UIBox* ActionsBox = nullptr;
 	std::vector<unsigned int> LoadedImages;
 	void GenerateActionButtons(kui::UIBox* Parent, const NxmAPI::ModInfo& Mod);
+	unsigned int PreviewWebp = 0;
 public:
 	kui::Vec2ui GetWindowResolution() override;
 	

@@ -8,6 +8,8 @@ element ModInfoHeader
 		border = 2px;
 		borderColor = highlightColor;
 
+		corners = 5px;
+
 		size = (340, 180)px;
 		padding = 5px;
 	}

@@ -8,6 +8,7 @@
 #include "Tabs/ModBrowserTab.h"
 #include "../BackgroundTask.h"
 #include "Game.h"
+#include <signal.h>
 
 static SetupWindow* CurrentSetup = nullptr;
 static thread_local std::string ApiKeyValue;

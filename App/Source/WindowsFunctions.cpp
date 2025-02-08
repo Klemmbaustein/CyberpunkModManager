@@ -1,6 +1,7 @@
 #include "WindowsFunctions.h"
 #include <iostream>
 #include <filesystem>
+#include <kui/KlemmUI.h>
 #if _WIN32
 #include <Windows.h>
 #include <wtsapi32.h>

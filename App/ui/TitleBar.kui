@@ -1,0 +1,62 @@
+element TitleBarButton
+{
+	var Icon;
+	var Hovered = 0.075;
+	var Pressed = 0.05;
+
+	child UIButton btn
+	{
+		size = (46, 30)px;
+		hoveredColor = Hovered;
+		pressedColor = Pressed;
+		normalColor = 0.1;
+
+		allAlign = centered;
+		child UIBackground
+		{
+			image = Icon;
+			size = 10px;
+		}
+	}
+}
+
+element TitleBarElement
+{
+	position = -1;
+	size = 2sr;
+	verticalAlign = reverse;
+	child UIBackground bg
+	{
+		width = 100%;
+		height = 30px;
+		color = 0.1;
+		verticalAlign = centered;
+
+		child UIBox
+		{
+			width = 50%;
+
+			child UIText
+			{
+				leftPadding = 75px;
+				text = "Cyberpunk 2077 mod manager";
+				size = 12px;
+			}
+		}
+
+		child UIBox
+		{
+			width = 50%;
+			horizontalAlign = reverse;
+
+			child TitleBarButton close
+			{
+				Hovered = (0.5, 0, 0);
+				Pressed = (0.25, 0, 0);
+				Icon = "res:icons/ChromeClose.png";
+			}
+			child TitleBarButton maximize {	Icon = "res:icons/ChromeMaximize.png" }
+			child TitleBarButton minimize { Icon = "res:icons/ChromeMinimize.png" }
+		}
+	}
+}

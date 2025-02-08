@@ -73,7 +73,7 @@ InstalledModsTab::InstalledModsTab()
 
 	auto ProfilesButton = new AppButton();
 	ProfilesButton->SetText("Profiles");
-	ProfilesButton->SetImage("res:icons/storage.png");
+	ProfilesButton->SetImage("res:icons/profile.png");
 	ProfilesButton->button->OnClicked = []() {
 		Popup::CreatePopup<ProfileWindow>();
 		};
@@ -92,6 +92,7 @@ InstalledModsTab::InstalledModsTab()
 	HeaderBox->AddChild(SearchField
 		->SetHintText("Search installed mods")
 		->SetTextSize(13_px)
+		->SetCorner(5_px)
 		->SetPadding(5_px)
 		->SetMinWidth(UISize::Parent(1))
 		->SetMaxWidth(UISize::Parent(1)));

@@ -14,6 +14,10 @@ protected:
 	void LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Title);
 	void ClearContent();
 	void ShowLoadingScreen();
+
+	kui::UIScrollBox* ModsScrollBox = nullptr;
+	kui::UIBox* HeaderBox = nullptr;
+	kui::UIBox* ContentBox = nullptr;
 public:
 	bool ShouldReload = false;
 
@@ -41,8 +45,8 @@ public:
 	virtual void Update() override;
 	virtual void OnResized() override;
 
-	kui::UIScrollBox* ModsScrollBox = nullptr;
-	kui::UIBox* HeaderBox = nullptr;
-	kui::UIBox* ContentBox = nullptr;
+private:
+	int GetModsPerRow();
+	int ModsPerRow = 0;
 
 };
