@@ -84,7 +84,7 @@ jobs:
 
     - name: Build Application
       run: |
-        cmake -S . -B Build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCI_BUILD=${{ github.run_number }}
+        cmake -S . -B Build -DCMAKE_BUILD_TYPE=Release -DCI_BUILD=${{ github.run_number }}
         cmake --build Build/ -j 8
         
     - name: Make release
