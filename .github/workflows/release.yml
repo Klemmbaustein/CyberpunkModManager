@@ -59,7 +59,7 @@ jobs:
       run: cd App && ./MakeRelease.ps1
 
     - name: Upload release artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
@@ -94,7 +94,7 @@ jobs:
         cp Build/ModManager Release/CyberpunkModManager
 
     - name: Upload release artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
