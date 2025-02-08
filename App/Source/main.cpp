@@ -79,7 +79,11 @@ int main(int argc, char** argv)
 		Windows::RegisterSelfAsUriHandler();
 	}
 
+#if _WIN32
 	TitleBar::IsVisible = SettingsTab::GetSetting("use_custom_title_bar", "1") == "1";
+#else
+	TitleBar::IsVisible = SettingsTab::GetSetting("use_custom_title_bar", "0") == "1";
+#endif
 
 	HandleArgs(argc, argv);
 	Profile::Init();

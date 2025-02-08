@@ -85,7 +85,11 @@ void SettingsTab::Generate()
 	AddBoolEntry("Check for app updates on startup", "check_updates", "1", SettingsBox);
 	AddBoolEntry("Show NSFW mods in the online mods browser", "show_nsfw_mods", "0", SettingsBox);
 	AddBoolEntry("Is nxm:// URL handler", "is_uri_handler", "1", SettingsBox);
+#if _WIN32
 	AddBoolEntry("Use custom window title bar", "use_custom_title_bar", "1", SettingsBox);
+#else
+	AddBoolEntry("Use custom window title bar", "use_custom_title_bar", "0", SettingsBox);
+#endif
 
 	auto SettingsSeparator = new Separator();
 	SettingsBox->AddChild(SettingsSeparator);
