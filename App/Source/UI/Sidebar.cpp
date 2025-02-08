@@ -1,10 +1,9 @@
 #include "Sidebar.h"
-#include "../Markup/SidebarElement.hpp"
-#include "../Markup/SidebarButton.hpp"
-#include "../Markup/SidebarTooltip.hpp"
+#include <Sidebar.kui.hpp>
 #include "Tabs/AppTab.h"
 #include <iostream>
-using namespace KlemmUI;
+#include <kui/KlemmUI.h>
+using namespace kui;
 
 namespace Sidebar
 {
@@ -22,11 +21,11 @@ void Sidebar::Load()
 	for (auto& i : AppTab::AllTabs)
 	{
 		auto Button = new SidebarButton();
-		Button->button->OnClickedFunctionIndex = [](int Ind) {
-			AppTab::SelectedTab = Ind;
+		Button->button->OnClicked = [Index]() {
+			AppTab::SelectedTab = Index;
 			};
-		Button->button->ButtonIndex = Index++;
-		Button->image->SetUseTexture(true, "app/icons/" + i->IconFile);
+		Index++;
+		Button->image->SetUseTexture(true, "res:icons/" + i->IconFile);
 		Element->bg->AddChild(Button);
 		Buttons.push_back(Button);
 	}
@@ -41,11 +40,11 @@ void Sidebar::Update()
 	for (SidebarButton* i : Buttons)
 	{
 		bool Selected = Index == AppTab::SelectedTab;
-		i->button->SetColor(Selected ? Vector3f(1, 0.3f, 0.4f) : Vector3f(0.6f, 0.1f, 0.1f));
-		i->button->SetHoveredColor(Selected ? Vector3f(1, 0.3f, 0.4f) : Vector3f(0.5f, 0.1f, 0.1f));
-		i->button->SetPressedColor(Selected ? Vector3f(1, 0.3f, 0.4f) : Vector3f(0.4f, 0.1f, 0.1f));
+		i->button->SetColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.6f, 0.1f, 0.1f));
+		i->button->SetHoveredColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.5f, 0.1f, 0.1f));
+		i->button->SetPressedColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.4f, 0.1f, 0.1f));
 
-		if (i->IsBeingHovered())
+		if (i->IsBeingHovered() && i->GetParentWindow()->HasFocus())
 		{
 			HoveredBox = i;
 			HoveredIndex = Index;
@@ -54,19 +53,18 @@ void Sidebar::Update()
 		Index++;
 	}
 
-	if (HoveredBox == nullptr && Tooltip)
+	if (!HoveredBox && Tooltip)
 	{
 		delete Tooltip;
 		Tooltip = nullptr;
 	}
 
-	if (HoveredBox)
+	if (HoveredBox && !Tooltip)
 	{
-		if (!Tooltip)
-		{
-			Tooltip = new SidebarTooltip();
-		}
-		Tooltip->SetPosition(Vector2f(Element->GetPosition().X + Element->GetUsedSize().X, HoveredBox->GetPosition().Y));
+		Tooltip = new SidebarTooltip();
+		Tooltip->SetPosition(Vec2f(Element->GetPosition().X + (70_px).GetScreen().X, HoveredBox->GetPosition().Y));
 		Tooltip->SetText(AppTab::AllTabs[HoveredIndex]->Name);
+		Tooltip->UpdateElement();
+		Tooltip->RedrawElement();
 	}
 }

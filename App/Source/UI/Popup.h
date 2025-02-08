@@ -1,9 +1,9 @@
 #pragma once
-#include <KlemmUI/Window.h>
+#include <kui/Window.h>
 #include <thread>
 #include <mutex>
 #include <atomic>
-#include <KlemmUI/UI/UITextField.h>
+#include <kui/UI/UITextField.h>
 
 class Popup
 {
@@ -15,17 +15,17 @@ protected:
 
 public:
 	bool CanClose = true;
-	KlemmUI::UIBackground* PopupBackground = nullptr;
+	kui::UIBackground* PopupBackground = nullptr;
 
 	virtual std::string GetWindowTitle() = 0;
 
-	KlemmUI::Window* PopupWindow = nullptr;
+	kui::Window* PopupWindow = nullptr;
 
 	std::thread* PopupThread = nullptr;
 	static std::mutex PopupMutex;
 	static std::vector<Popup*> Popups;
 
-	virtual Vector2ui GetWindowResolution();
+	virtual kui::Vec2ui GetWindowResolution();
 
 	std::atomic<bool> ShouldClose = false;
 

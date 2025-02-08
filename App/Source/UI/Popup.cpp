@@ -1,8 +1,9 @@
 #include "Popup.h"
 #include "UI.h"
+#include <kui/Platform.h>
 #include "../Error.h"
 
-using namespace KlemmUI;
+using namespace kui;
 
 std::mutex Popup::PopupMutex;
 std::vector<Popup*> Popup::Popups;
@@ -12,7 +13,7 @@ void Popup::PopupStart(Popup* p)
 	Error::RegisterErrorHandler();
 	p->PopupWindow = new Window(
 		p->GetWindowTitle(),
-		p->HasBorder() ? Window::WindowFlag::None : Window::WindowFlag::Borderless | Window::WindowFlag::AlwaysOnTop,
+		p->HasBorder() ? Window::WindowFlag::Popup | platform::win32::WindowFlag::DarkTitleBar : Window::WindowFlag::Borderless | Window::WindowFlag::AlwaysOnTop,
 		Window::POSITION_CENTERED,
 		p->GetWindowResolution()
 	);
@@ -46,9 +47,9 @@ Popup::Popup()
 {
 }
 
-Vector2ui Popup::GetWindowResolution()
+kui::Vec2ui Popup::GetWindowResolution()
 {
-	return Vector2ui(640, 480);
+	return kui::Vec2ui(640, 480);
 }
 
 bool Popup::HasBorder()

@@ -1,7 +1,7 @@
 #pragma once
 #include "Popup.h"
-#include <KlemmUI/UI/UIText.h>
-#include <KlemmUI/UI/UIBackground.h>
+#include <kui/UI/UIText.h>
+#include <kui/UI/UIBackground.h>
 #include <atomic>
 #include <mutex>
 
@@ -10,10 +10,10 @@ class LoadingBar : public Popup
 	std::string LoadingString;
 public:
 
-	KlemmUI::UIBackground* LoadingBackground = nullptr;
-	KlemmUI::UIBackground* LoadingBarBox = nullptr;
+	kui::UIBackground* LoadingBackground = nullptr;
+	kui::UIBackground* LoadingBarBox = nullptr;
 
-	KlemmUI::UIText* LoadingText = nullptr;
+	kui::UIText* LoadingText = nullptr;
 
 	std::mutex PopupMutex;
 
@@ -24,7 +24,7 @@ public:
 	void Update() override;
 	std::string GetWindowTitle() override;
 
-	Vector2ui GetWindowResolution() override;
+	kui::Vec2ui GetWindowResolution() override;
 
 	std::atomic<std::atomic<float>*> ProgressValue = nullptr;
 };

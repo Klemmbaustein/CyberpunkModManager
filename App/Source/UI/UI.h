@@ -1,10 +1,10 @@
 #pragma once
-#include <KlemmUI/UI/UIText.h>
+#include <kui/UI/UIText.h>
 
 namespace UI
 {
 	void Load();
 	void Unload();
 
-	extern thread_local KlemmUI::Font* Text;
+	extern thread_local kui::Font* Text;
 }

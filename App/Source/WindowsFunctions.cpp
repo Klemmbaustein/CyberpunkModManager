@@ -1,6 +1,7 @@
 #include "WindowsFunctions.h"
 #include <iostream>
 #include <filesystem>
+#include <kui/KlemmUI.h>
 #if _WIN32
 #include <Windows.h>
 #include <wtsapi32.h>
@@ -27,11 +28,11 @@ void Windows::SetWorkingDirectory()
 
 	PathString = PathString.substr(0, PathString.find_last_of(L"/\\"));
 	// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
-	if (std::filesystem::exists(PathString + L"/../../../App/app/shaders"))
+	if (std::filesystem::exists(PathString + L"/../../../App/app"))
 	{
 		PathString.append(L"/../../../App/");
 	}
-	else if (std::filesystem::exists(PathString + L"/../../App/app/shaders"))
+	else if (std::filesystem::exists(PathString + L"/../../App/app"))
 	{
 		PathString.append(L"/../../App/");
 	}
@@ -253,7 +254,7 @@ void Windows::SetWorkingDirectory()
 		// For CMake builds, the executable wont be in the root directory (like rootDir/build/App instead of rootDir/app)
 		PathString.append("/../");
 	}
-	std::cout << "App root directory: " << PathString << std::endl;
+
 	std::filesystem::current_path(PathString);
 }
 

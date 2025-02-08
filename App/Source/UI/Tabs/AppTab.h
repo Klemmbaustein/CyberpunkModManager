@@ -1,5 +1,5 @@
 #pragma once
-#include <KlemmUI/UI/UIBackground.h>
+#include <kui/UI/UIBackground.h>
 #include "../UI.h"
 
 class AppTab
@@ -21,7 +21,7 @@ public:
 	static void UpdateAll();
 	
 	static std::vector<AppTab*> AllTabs;
-	KlemmUI::UIBackground* TabBackground = nullptr;
+	kui::UIBackground* TabBackground = nullptr;
 
 	template<typename T>
 	static T* GetTabOfType()

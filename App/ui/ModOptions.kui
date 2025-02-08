@@ -1,13 +1,12 @@
 
 element ModOption
 {
-	var OptionName;
+	var OptionName = "Option name";
 
 	child UIButton button
 	{
 		padding = 6px;
-		borderType = border;
-		borderSize = 2px;
+		border = 2px;
 		borderColor = highlightColor;
 		minSize = (300, 30)px;
 		color = 0.075;

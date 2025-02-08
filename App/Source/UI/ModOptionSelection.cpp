@@ -1,17 +1,16 @@
 #include "ModOptionSelection.h"
-#include "../Markup/ModOption.hpp"
+#include <ModOptions.kui.hpp>
 #include "UI.h"
 #include "Tabs/InstalledModsTab.h"
 
-using namespace KlemmUI;
+using namespace kui;
 
 void ModOptionsSelection::GenerateOptions()
 {
 	PopupBackground->DeleteChildren();
 	PopupBackground->SetHorizontalAlign(UIBox::Align::Centered);
 
-	PopupBackground->AddChild((new UIText(15, 1, "Select mod version", UI::Text))
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+	PopupBackground->AddChild((new UIText(15_px, 1, "Select mod version", UI::Text))
 		->SetPadding(0.02f));
 
 	auto Options = TargetMod.GetVersions();
@@ -20,7 +19,7 @@ void ModOptionsSelection::GenerateOptions()
 	{
 		auto Option = new ModOption();
 		Option->SetOptionName(i);
-		Option->button->OnClickedFunction = [i, this]()
+		Option->button->OnClicked = [i, this]()
 			{
 				TargetMod.InstallVersion(i);
 				ShouldClose = true;
@@ -59,7 +58,7 @@ std::string ModOptionsSelection::GetWindowTitle()
 	return std::string();
 }
 
-Vector2ui ModOptionsSelection::GetWindowResolution()
+Vec2ui ModOptionsSelection::GetWindowResolution()
 {
-	return Vector2ui(400, 500);
+	return Vec2ui(400, 500);
 }

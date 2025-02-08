@@ -26,7 +26,6 @@ std::string GhAPI::DownloadLatestReleaseOf(std::string RepoName, std::string Nec
 		std::string url = elem.at("browser_download_url");
 
 		std::string UrlExtension = url.substr(url.find_last_of("/"));
-		std::cout << UrlExtension << std::endl;
 		UrlExtension = UrlExtension.substr(UrlExtension.find_first_of("."));
 
 		Net::GetFile(url, "app/temp/latest" + UrlExtension, false);

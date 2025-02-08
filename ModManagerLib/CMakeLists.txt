@@ -12,6 +12,8 @@ file(
     "${SRC_DIR}/**.cpp"
 )
 
+set(USE_LIBIDN2 OFF)
+set(CURL_USE_LIBPSL OFF)
 add_subdirectory("../Dependencies/pugixml/" "Dependencies/pugixml" EXCLUDE_FROM_ALL)
 add_subdirectory("../Dependencies/json/" "Dependencies/json" EXCLUDE_FROM_ALL)
 

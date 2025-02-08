@@ -1,7 +1,6 @@
 #include "FOMODInstall.h"
-#include "../Markup/SetupOption.hpp"
-#include "../Markup/ModHeader.hpp"
-#include "../Markup/SetupFooter.hpp"
+#include <ModSetup.kui.hpp>
+#include <ModEntry.kui.hpp>
 #include <iostream>
 #include <filesystem>
 #include <FileUtil.h>
@@ -10,7 +9,7 @@
 #include "../WindowsFunctions.h"
 #include "Tabs/InstalledModsTab.h"
 
-using namespace KlemmUI;
+using namespace kui;
 
 void FOMODInstall::NextInstallGroup(bool Force)
 {
@@ -50,7 +49,7 @@ void FOMODInstall::NextInstallGroup(bool Force)
 
 	if (CurrentStep->Visible.Evaluate(InstalledMod))
 	{
-		Background->GetScrollObject()->Percentage = 0;
+		Background->GetScrollObject()->Scrolled = 0;
 		GenerateUI();
 	}
 	else
@@ -69,19 +68,19 @@ void FOMODInstall::GenerateUI()
 	{
 		GenerateGroup(i, Index);
 	}
-	
+
 	auto Footer = new SetupFooter();
 	Background->AddChild(Footer);
-	Footer->nextButton->OnClickedFunction = [this]() {
+	Footer->nextButton->OnClicked = [this]() {
 		NextInstallGroup(false);
-		};
+	};
 }
 
 void FOMODInstall::UnloadTextures()
 {
 	for (auto& i : Textures)
 	{
-		Texture::UnloadTexture(i.ID);
+		image::UnloadImage(i.ID);
 	}
 	Textures.clear();
 }
@@ -119,38 +118,15 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 		PluginOption->SetDescription(StrUtil::ShortenIfTooLong(i.Description, 235));
 		if (i.Selected)
 		{
-			PluginOption->SetColor(Vector3f(0.4f, 0.05f, 0.05f));
+			PluginOption->SetColor(Vec3f(0.4f, 0.05f, 0.05f));
 		}
-		PluginOption->optionButton->ButtonIndex = ItemIndex;
-		PluginOption->optionButton->OnClickedFunctionIndex = [this](int Index)
-			{
-				int it = 0;
-				for (auto& i : CurrentStep->Groups)
-				{
-					for (auto& j : i.Plugins)
-					{
-						if (Index != it++)
-						{
-							continue;
-						}
-						if (i.Type == "SelectAll")
-						{
-							return;
-						}
+		PluginOption->optionButton->OnClicked = [this, &i]() {
+			i.Selected = !i.Selected;
+			GenerateUI();
+			return;
+		};
 
-						bool Value = j.Selected;
-						if (i.Type == "SelectExactlyOne" || i.Type == "SelectAtMostOne")
-						{
-							i.DeSelectAll();
-						}
-						j.Selected = !Value;
-						GenerateUI();
-						return;
-					}
-				}
-			};
-
-		Texture::TextureInfo ElementImage;
+		image::ImageInfo ElementImage;
 
 		if (Textures.size() > ItemIndex)
 		{
@@ -158,11 +134,11 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 		}
 		else
 		{
-			ElementImage = Texture::LoadTextureWithInfo(i.ImageFile);
+			ElementImage = image::LoadImageWithInfo(i.ImageFile);
 			Textures.push_back(ElementImage);
 		}
 
-		Vector2f Aspect = Vector2f(1, (float)ElementImage.Height / (float)ElementImage.Width);
+		Vec2f Aspect = Vec2f(1, (float)ElementImage.Height / (float)ElementImage.Width);
 
 		Aspect.Y *= 1.5f;
 
@@ -179,8 +155,7 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 			Aspect = Aspect / std::max(Aspect.X, Aspect.Y);
 		}
 
-		PluginOption->image->SetSizeMode(UIBox::SizeMode::PixelRelative);
-		PluginOption->image->SetMinSize(Vector2f(250, 175) * Aspect);
+		PluginOption->image->SetMinSize(SizeVec(Vec2f(250, 175) * Aspect, SizeMode::PixelRelative));
 		PluginOption->image->SetMaxSize(PluginOption->image->GetMinSize());
 
 		Boxes[PluginIndex / SlotsPerRow]->AddChild(PluginOption);
@@ -222,11 +197,10 @@ void FOMODInstall::InstallMod()
 
 void FOMODInstall::RegisterFOMODCallback()
 {
-	ModInfo::InstallFOMODCallback = [](ModInfo Info, std::string FromPath, std::string ToPath)
-		{
-			auto Install = Popup::CreatePopup<FOMODInstall>();
-			Install->LoadModPath(Info, FromPath, ToPath);
-		};
+	ModInfo::InstallFOMODCallback = [](ModInfo Info, std::string FromPath, std::string ToPath) {
+		auto Install = Popup::CreatePopup<FOMODInstall>();
+		Install->LoadModPath(Info, FromPath, ToPath);
+	};
 }
 
 void FOMODInstall::LoadModPath(ModInfo NewInfo, std::string NewModPath, std::string NewToPath)
@@ -242,14 +216,14 @@ void FOMODInstall::Init()
 {
 	Background = new UIScrollBox(false, 0, true);
 	PopupBackground->AddChild(Background
-		->SetMinSize(2)
-		->SetMaxSize(2));
+			->SetMinSize(2)
+			->SetMaxSize(2));
 }
 
 void FOMODInstall::Update()
 {
 	std::lock_guard g(ModPathMutex);
-	
+
 	if (!ModPath.empty())
 	{
 		InstalledMod = FOMOD::Parse(ModPath);
@@ -277,7 +251,7 @@ std::string FOMODInstall::GetWindowTitle()
 	return "Mod setup";
 }
 
-Vector2ui FOMODInstall::GetWindowResolution()
+Vec2ui FOMODInstall::GetWindowResolution()
 {
-	return Vector2ui(1100, 800);
+	return Vec2ui(1100, 800);
 }

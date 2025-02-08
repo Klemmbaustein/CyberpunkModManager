@@ -1,13 +1,13 @@
 #pragma once
 #include "ModListTab.h"
-#include <KlemmUI/UI/UITextField.h>
+#include <kui/UI/UITextField.h>
 
 class InstalledModsTab : public ModListTab
 {
 public:
 	InstalledModsTab();
 
-	KlemmUI::UITextField* SearchField = nullptr;
+	kui::UITextField* SearchField = nullptr;
 	std::string SearchFilter;
 
 	virtual void LoadSections() override;

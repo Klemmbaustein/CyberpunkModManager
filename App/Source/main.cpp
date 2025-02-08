@@ -1,11 +1,13 @@
-#include <KlemmUI/Window.h>
-#include <KlemmUI/Application.h>
+#include <kui/Window.h>
+#include <kui/App.h>
+#include <kui/Platform.h>
 
 #include "NexusModsAPI.h"
 #include "Net.h"
 
 #include "UI/Popup.h"
 #include "UI/Sidebar.h"
+#include "UI/TitleBar.h"
 #include "UI/SetupWindow.h"
 #include "UI/FOMODInstall.h"
 #include "UI/Tabs/AppTab.h"
@@ -19,9 +21,10 @@
 #include "InstallerUpdate.h"
 #include "Error.h"
 
-using namespace KlemmUI;
 
-static void OnResized(KlemmUI::Window*)
+using namespace kui;
+
+static void OnResized(kui::Window*)
 {
 	AppTab::ResizeAll();
 }
@@ -49,7 +52,9 @@ static void LoadUI()
 	new InstalledModsTab();
 	new ModBrowserTab();
 	new SettingsTab();
+	AppTab::UpdateAll();
 
+	TitleBar::Load();
 	Sidebar::Load();
 
 	if (SetupWindow::ShouldOpen())
@@ -63,10 +68,9 @@ int main(int argc, char** argv)
 	Error::RegisterErrorHandler();
 	Windows::SetWorkingDirectory();
 
-	Application::Error::SetErrorCallback([](std::string Message) {
+	app::error::SetErrorCallback([](std::string Message, bool) {
 		Windows::ErrorBox("Internal error:\n" + Message);
 	});
-	Application::Initialize("app/shaders");
 
 	Net::SetAPIKey(NxmAPI::GetAPIKey());
 
@@ -75,11 +79,25 @@ int main(int argc, char** argv)
 		Windows::RegisterSelfAsUriHandler();
 	}
 
+#if _WIN32
+	TitleBar::IsVisible = SettingsTab::GetSetting("use_custom_title_bar", "1") == "1";
+#else
+	TitleBar::IsVisible = SettingsTab::GetSetting("use_custom_title_bar", "0") == "1";
+#endif
+
 	HandleArgs(argc, argv);
 	Profile::Init();
 
-	Window AppWindow = Window("Cyberpunk 2077 mod manager", Window::WindowFlag::Resizable);
+	Window::WindowFlag Flags = Window::WindowFlag::Resizable | platform::win32::WindowFlag::DarkTitleBar;
+
+	if (TitleBar::IsVisible)
+	{
+		Flags = Flags | Window::WindowFlag::Borderless;
+	}
+
+	Window AppWindow = Window("Cyberpunk 2077 mod manager", Flags);
 	AppWindow.OnResizedCallback = &OnResized;
+	AppWindow.BorderColor = Vec3f(0.6f, 0.2f, 0.2f);
 
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")
 	{
@@ -94,6 +112,7 @@ int main(int argc, char** argv)
 	{
 		AppTab::UpdateAll();
 		Sidebar::Update();
+		TitleBar::Update();
 		Popup::UpdatePopups();
 		BackgroundTask::UpdateTasks();
 		DownloadHandler::CheckDownloadRequest();

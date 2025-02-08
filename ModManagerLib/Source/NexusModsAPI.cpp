@@ -237,7 +237,17 @@ void NxmAPI::SaveAPIKey(std::string Key)
 std::string NxmAPI::GetAPIKeyAccountName(std::string Key)
 {
 	Net::SetAPIKey(Key);
-	json FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json", true));
+	json FileJson;
+	try
+	{
+		FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json", true));
+	}
+	catch (json::exception e)
+	{
+		return "";
+	}
+	if (FileJson.is_null())
+		return "";
 	Net::SetAPIKey(GetAPIKey());
 	if (!FileJson.contains("name"))
 	{

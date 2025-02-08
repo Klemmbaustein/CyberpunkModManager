@@ -1,20 +1,22 @@
 #include "ModListTab.h"
 #include "../../Webp.h"
-#include <KlemmUI/Rendering/Texture.h>
+#include <kui/Image.h>
 #include "../ModInfoWindow.h"
 #include <filesystem>
 #include <Net.h>
 #include "FileUtil.h"
-#include "../../Markup/ModEntry.hpp"
-#include "../../Markup/ModHeader.hpp"
+#include <ModEntry.kui.hpp>
 #include "../../BackgroundTask.h"
 #include <StrUtil.h>
 #include <iostream>
 #include "../../WindowsFunctions.h"
-using namespace KlemmUI;
+using namespace kui;
 
 static std::mutex ImageLoadMutex;
-static std::mutex PageLoadMutex;
+static std::mutex LoadedModsMutex;
+static std::mutex ImageListMutex;
+
+std::map<std::string, Webp::WebpBuffer> Images;
 
 static void LoadModImageWebP(NxmAPI::ModInfo& Mod, std::string FilePath)
 {
@@ -24,9 +26,11 @@ static void LoadModImageWebP(NxmAPI::ModInfo& Mod, std::string FilePath)
 	}
 	auto Buffer = Webp::LoadBuffer(FilePath);
 	std::unique_lock Guard(ImageLoadMutex);
+	std::unique_lock ListGuard(ImageListMutex);
 	Mod.ImageBuffer = Buffer.Bytes;
 	Mod.ImageWidth = Buffer.Width;
 	Mod.ImageHeight = Buffer.Height;
+	Images.insert({FilePath, Buffer});
 }
 
 void ModListTab::LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Title)
@@ -34,7 +38,7 @@ void ModListTab::LoadSection(std::vector<NxmAPI::ModInfo> Mods, std::string Titl
 	LoadedMods.push_back(ModsSection{
 		.Title = Title,
 		.Mods = Mods
-	});
+		});
 }
 
 void ModListTab::ClearContent()
@@ -45,7 +49,7 @@ void ModListTab::ClearContent()
 	ContentBox->SetHorizontalAlign(UIBox::Align::Default);
 	for (unsigned int tex : LoadedTextures)
 	{
-		Texture::UnloadTexture(tex);
+		image::UnloadImage(tex);
 	}
 	LoadedTextures.clear();
 }
@@ -53,11 +57,10 @@ void ModListTab::ClearContent()
 void ModListTab::ShowLoadingScreen()
 {
 	ClearContent();
-	
+
 	ContentBox->SetVerticalAlign(UIBox::Align::Centered);
 	ContentBox->SetHorizontalAlign(UIBox::Align::Centered);
-	ContentBox->AddChild((new UIText(20, 1, "Loading...", UI::Text))
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
+	ContentBox->AddChild((new UIText(20_px, 1, "Loading...", UI::Text))
 		->SetPadding(0.8f));
 }
 
@@ -68,7 +71,7 @@ ModListTab::ModListTab(std::string Name)
 
 	HeaderBox = new UIBox(true);
 	ContentBox = new UIBox(false);
-	ContentBox->SetTryFill(true);
+	ContentBox->SetMinWidth(UISize::Parent(1));
 	TabBackground->AddChild(ModsScrollBox
 		->AddChild(HeaderBox)
 		->AddChild(ContentBox));
@@ -76,6 +79,7 @@ ModListTab::ModListTab(std::string Name)
 
 void ModListTab::OpenModFromIndex(int Index)
 {
+	std::unique_lock Guard(LoadedModsMutex);
 	int it = 0;
 	for (const auto& i : LoadedMods)
 	{
@@ -92,11 +96,22 @@ void ModListTab::OpenModFromIndex(int Index)
 
 void ModListTab::LoadImages()
 {
-	for (auto& i : LoadedMods)
+	std::vector<ModsSection> ModsCopy;
 	{
-		for (auto& j : i.Mods)
+		std::unique_lock Guard(LoadedModsMutex);
+		ModsCopy = LoadedMods;
+	}
+	for (size_t i = 0; i < ModsCopy.size(); i++)
+	{
+		std::cout << "Loading " << ModsCopy[i].Mods.size() << " images..." << std::endl;
+		for (size_t j = 0; j < ModsCopy[i].Mods.size(); j++)
 		{
-			LoadModImageWebP(j, GetModImage(j));
+			if (LoadedMods.size() != ModsCopy.size()
+				|| ModsCopy[i].Mods.size() != LoadedMods[i].Mods.size())
+			{
+				return;
+			}
+			LoadModImageWebP(LoadedMods[i].Mods[j], GetModImage(ModsCopy[i].Mods[j]));
 			LoadedNewImage = true;
 		}
 	}
@@ -106,6 +121,9 @@ void ModListTab::LoadImages()
 
 void ModListTab::LoadMainPage()
 {
+	ModsPerRow = GetModsPerRow();
+	std::unique_lock Guard(LoadedModsMutex);
+	std::unique_lock ImageGuard(ImageLoadMutex);
 	ShowLoadingScreen();
 	for (auto& i : LoadedMods)
 	{
@@ -122,24 +140,24 @@ void ModListTab::LoadMainPage()
 	LoadedMods.clear();
 	new BackgroundTask([this]()
 		{
-			std::lock_guard Guard(PageLoadMutex);
+			std::unique_lock Guard(LoadedModsMutex);
 			LoadedMods.clear();
 			LoadSections();
 		},
-		
 		[this]()
 		{
 			Generate();
 			new BackgroundTask([this]()
-			{
-				LoadImages();
-				IsLoadingList = false;
-			});
+				{
+					LoadImages();
+					IsLoadingList = false;
+				});
 		});
 }
 
 void ModListTab::Generate()
 {
+	std::unique_lock Guard(LoadedModsMutex);
 	ClearContent();
 
 	size_t ElementIndex = 0;
@@ -175,16 +193,16 @@ std::string ModListTab::GetModImage(NxmAPI::ModInfo Mod)
 	return ImageFile;
 }
 
-static Vector3f InfoTextColors[] =
+static Vec3f InfoTextColors[] =
 {
 	// Red
-	Vector3f(1, 0, 0.1f),
+	Vec3f(1, 0, 0.1f),
 	// Green
-	Vector3f(0.1f, 1, 0.0f),
+	Vec3f(0.1f, 1, 0.0f),
 	// Yellow
-	Vector3f(1, 1, 0.1f),
+	Vec3f(1, 1, 0.1f),
 	// Grey
-	Vector3f(0.65f),
+	Vec3f(0.65f),
 };
 
 void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
@@ -194,27 +212,27 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 	ContentBox->AddChild(Header);
 
 	std::vector<UIBox*> Rows;
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < Section.Mods.size() / ModsPerRow + 1; i++)
 	{
 		UIBox* Row = new UIBox(true);
 		ContentBox->AddChild(Row);
 		Rows.push_back(Row);
 	}
 
-	int ModsPerPage = int((Window::GetActiveWindow()->GetSize().X - 150 * Window::GetActiveWindow()->GetDPI()) / (200.0f * Window::GetActiveWindow()->GetDPI()));
+	std::cout << "Window size: " << Window::GetActiveWindow()->GetSize().ToString() << ", Mods per row: (should never ever be 0) " << ModsPerRow << std::endl;
 
 	for (size_t i = 0; i < Section.Mods.size(); i++)
 	{
 		auto Entry = new ModEntry();
-		Entry->SetName(StrUtil::ShortenIfTooLong(Section.Mods[i].Name, 40));
-		Entry->SetDescription(StrUtil::ShortenIfTooLong(Section.Mods[i].Summary, 165));
+		Entry->SetName(Section.Mods[i].Name);
+		Entry->SetDescription(StrUtil::Replace(Section.Mods[i].Summary, "&amp;", "&"));
 		Entry->SetInfo(Section.Mods[i].InfoString);
-		Entry->button->OnClickedFunction = std::bind(&ModListTab::OnClicked, this, (int)Index);
+		Entry->button->OnClicked = std::bind(&ModListTab::OnClicked, this, (int)Index);
 		Index++;
 		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
 
 		Images.push_back(Entry->imageBackground);
-		Rows[i / ModsPerPage]->AddChild(Entry);
+		Rows[i / ModsPerRow]->AddChild(Entry);
 	}
 }
 
@@ -249,7 +267,7 @@ void ModListTab::UpdateImages()
 				ImageBackground
 					->SetUseTexture(true, LoadedWebp)
 					->SetColor(1)
-					->SetMinSize(Vector2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
+					->SetMinSize(Vec2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
 				ImageBackground->DeleteChildren();
 			}
 
@@ -267,14 +285,14 @@ void ModListTab::Update()
 	ModsScrollBox->SetMinSize(TabBackground->GetMinSize());
 	ModsScrollBox->SetMaxSize(TabBackground->GetMinSize());
 
-	if (ShouldReload && !IsLoadingList)
+	if (ShouldReload && !IsLoadingList && TabBackground->IsVisible)
 	{
 		IsLoadingList = true;
 		ShouldReload = false;
 		LoadMainPage();
 	}
 
-	if (LoadedNewImage)
+	if (LoadedNewImage && TabBackground->IsVisible)
 	{
 		LoadedNewImage = false;
 		UpdateImages();
@@ -283,5 +301,14 @@ void ModListTab::Update()
 
 void ModListTab::OnResized()
 {
-	ShouldReload = true;
+	if (ModsPerRow != GetModsPerRow())
+	{
+		ModsPerRow = GetModsPerRow();
+		ShouldReload = true;
+	}
+}
+
+int ModListTab::GetModsPerRow()
+{
+	return std::max(int((Window::GetActiveWindow()->GetSize().X - 150 * Window::GetActiveWindow()->GetDPI()) / (200.0f * Window::GetActiveWindow()->GetDPI())), 1);
 }

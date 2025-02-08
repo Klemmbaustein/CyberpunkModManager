@@ -1,7 +1,7 @@
 #include "ModBrowserTab.h"
 #include "SettingsTab.h"
 
-#include "../../Markup/AppButton.hpp"
+#include <Common.kui.hpp>
 #include "../../WindowsFunctions.h"
 
 
@@ -12,8 +12,8 @@ ModBrowserTab::ModBrowserTab()
 
 	auto UpdateButton = new AppButton();
 	UpdateButton->SetText("Open NexusMods website");
-	UpdateButton->SetImage("app/icons/open.png");
-	UpdateButton->button->OnClickedFunction = []() {
+	UpdateButton->SetImage("res:icons/open.png");
+	UpdateButton->button->OnClicked = []() {
 
 #if _WIN32
 		Windows::Open("https://nexusmods.com/cyberpunk2077");
@@ -28,6 +28,9 @@ ModBrowserTab::ModBrowserTab()
 
 void ModBrowserTab::LoadSections()
 {
+	if (!NxmAPI::GetIsLoggedIn())
+		return;
+
 	NxmAPI::SetShowNSFWMods(SettingsTab::GetSetting("show_nsfw_mods", "0") == "1");
 	LoadSection(NxmAPI::GetMods("trending"), "Trending");
 	LoadSection(NxmAPI::GetMods("latest_updated"), "Last Updated");

@@ -8,11 +8,12 @@
 #include "Tabs/ModBrowserTab.h"
 #include "../BackgroundTask.h"
 #include "Game.h"
+#include <signal.h>
 
 static SetupWindow* CurrentSetup = nullptr;
 static thread_local std::string ApiKeyValue;
 
-using namespace KlemmUI;
+using namespace kui;
 
 void SetupWindow::Init()
 {
@@ -46,11 +47,9 @@ void SetupWindow::AddText(std::string NewText, UIBox* Parent)
 		Parent = Element->content;
 	}
 
-	Parent->AddChild((new UIText(11, 1, NewText, UI::Text))
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
-		->SetWrapEnabled(true, 3.8f, UIBox::SizeMode::ScreenRelative)
-		->SetPadding(10, 5, 10, 10)
-		->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative));
+	Parent->AddChild((new UIText(11_px, 1, NewText, UI::Text))
+		->SetWrapEnabled(true, 1.9f)
+		->SetPadding(10_px, 5_px, 10_px, 10_px));
 }
 
 void SetupWindow::GenerateAccountInfo()
@@ -74,7 +73,7 @@ static bool ClickedNext = false;
 void SetupWindow::GenerateAPIKeySetupPage()
 {
 	AddText("Please enter your NexusMods API key.");
-	AddText("You can your the key by going to nexusmods.com, then to 'Site preferences' -> 'API KEYS' -> 'Personal API Key'");
+	AddText("You can your the key by going to nexusmods.com, then to 'Site preferences' -> 'API Keys' -> 'Personal API Key'");
 
 	InputField = new UITextField(0, 0, UI::Text, [this]() {
 		ApiKeyValue = InputField->GetText();
@@ -83,12 +82,12 @@ void SetupWindow::GenerateAPIKeySetupPage()
 		});
 	Element->content->AddChild(InputField
 		->SetHintText("API key here")
-		->SetTextSize(1)
-		->SetPadding(50, 50, 10, 10)
-		->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative)
-		->SetMinSize(Vector2f(1.75f, 0)));
+		->SetTextSize(12_px)
+		->SetPadding(50_px, 50_px, 10_px, 10_px)
+		->SetMinSize(SizeVec(UISize::Parent(1), 0.15f))
+		->SetMaxSize(SizeVec(UISize::Parent(1), 1)));
 
-	Element->nextButton->OnClickedFunction = [this]()
+	Element->nextButton->OnClicked = [this]()
 		{
 			if (ClickedNext)
 			{

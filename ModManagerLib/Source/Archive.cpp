@@ -59,7 +59,7 @@ void Archive::ExtractZip(std::string ArchivePath, std::string OutPath, std::atom
 
 void Archive::Extract(std::string ZipPath, std::string OutPath, std::atomic<float>* Progress, float ProgressFraction)
 {
-	std::string Extension = ZipPath.substr(ZipPath.find_last_of("/"));
+	std::string Extension = ZipPath.substr(ZipPath.find_last_of("\\/"));
 	Extension = Extension.substr(Extension.find_last_of("."));
 	if (Extension == ".zip")
 	{

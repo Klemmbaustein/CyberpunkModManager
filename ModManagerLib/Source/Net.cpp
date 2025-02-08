@@ -125,7 +125,7 @@ void Net::GetFile(std::string Url, std::string OutPath, bool IncludeApiKey, std:
 
 void Net::SetAPIKey(std::string NewKey)
 {
-	ApiKeyHeader = ("apiKey:" + NewKey);
+	ApiKeyHeader = ("apikey: " + NewKey);
 	IsActive = true;
 }
 

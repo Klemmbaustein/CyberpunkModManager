@@ -1,12 +1,14 @@
 #include "UI.h"
-#include <KlemmUI/Window.h>
-using namespace KlemmUI;
+#include <kui/Window.h>
+#include <iostream>
+#include <filesystem>
+using namespace kui;
 
 thread_local Font* UI::Text = nullptr;
 
 void UI::Load()
 {
-	Text = new Font("app/Font.ttf");
+	Text = new Font("res:Font.ttf");
 	Window::GetActiveWindow()->Markup.SetDefaultFont(Text);
 }
 

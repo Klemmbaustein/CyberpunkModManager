@@ -2,8 +2,8 @@
 #include "FOMOD.h"
 #include "Popup.h"
 #include <mutex>
-#include <KlemmUI/UI/UIScrollBox.h>
-#include <KlemmUI/Rendering/Texture.h>
+#include <kui/UI/UIScrollBox.h>
+#include <kui/Image.h>
 #include <ModInfo.h>
 
 class FOMODInstall : public Popup
@@ -13,9 +13,9 @@ class FOMODInstall : public Popup
 	std::string ModPath;
 	std::string ToPath;
 	ModInfo Info;
-	std::vector<KlemmUI::Texture::TextureInfo> Textures;
+	std::vector<kui::image::ImageInfo> Textures;
 
-	KlemmUI::UIScrollBox* Background = nullptr;
+	kui::UIScrollBox* Background = nullptr;
 	void NextInstallGroup(bool Force);
 	void GenerateUI();
 	void UnloadTextures();
@@ -36,5 +36,5 @@ public:
 	void Update() override;
 	void Destroy() override;
 	std::string GetWindowTitle() override;
-	Vector2ui GetWindowResolution() override;
+	kui::Vec2ui GetWindowResolution() override;
 };

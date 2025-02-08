@@ -1,8 +1,8 @@
 #include "InstalledModsTab.h"
 #include "ModInfo.h"
 #include "../../WindowsFunctions.h"
+#include <Common.kui.hpp>
 #include "../../BackgroundTask.h"
-#include "../../Markup/AppButton.hpp"
 #include "../../DownloadHandler.h"
 #include "../LoadingBar.h"
 #include "../ProfileWindow.h"
@@ -10,7 +10,7 @@
 #include "Profile.h"
 #include <iostream>
 
-using namespace KlemmUI;
+using namespace kui;
 
 static void CheckModUpdates()
 {
@@ -35,47 +35,47 @@ InstalledModsTab::InstalledModsTab()
 	: ModListTab("Installed mods")
 {
 	IconFile = "storage.png";
-	
+
 	UIBox* TopBox = new UIBox(true);
 	HeaderBox->SetHorizontal(false);
 	HeaderBox->AddChild(TopBox);
-	HeaderBox->SetTryFill(true);
+	HeaderBox->SetMaxWidth(UISize::Parent(1));
+	HeaderBox->SetMinWidth(UISize::Parent(1));
 
 	auto UpdateButton = new AppButton();
 	UpdateButton->SetText("Check for mod updates");
-	UpdateButton->SetImage("app/icons/search_web.png");
-	UpdateButton->button->OnClickedFunction = [this]() {
-		new BackgroundTask(CheckModUpdates, [this]() {
-			ShouldReload = true;
+	UpdateButton->SetImage("res:icons/search_web.png");
+	UpdateButton->button->OnClicked = [this]() {
+		new BackgroundTask(CheckModUpdates, [this]()
+			{
+				ShouldReload = true;
 			});
 		};
 	TopBox->AddChild(UpdateButton);
 
 	auto LocalModButton = new AppButton();
 	LocalModButton->SetText("Install local mod");
-	LocalModButton->SetImage("app/icons/storage.png");
-	LocalModButton->button->OnClickedFunction = []()
-		{
-			std::string File = Windows::OpenFileDialog(false);
-			
-			if (File.empty())
-			{
-				return;
-			}
-			
-			std::string FileName = File.substr(File.find_last_of("/\\") + 1);
+	LocalModButton->SetImage("res:icons/storage.png");
+	LocalModButton->button->OnClicked = []() {
+		std::string File = Windows::OpenFileDialog(false);
 
-			FileName = FileName.substr(0, FileName.find_last_of("."));
-			DownloadHandler::InstallZip(File, FileName, "Mod installed from local files.");
+		if (File.empty())
+		{
+			return;
+		}
+
+		std::string FileName = File.substr(File.find_last_of("/\\") + 1);
+
+		FileName = FileName.substr(0, FileName.find_last_of("."));
+		DownloadHandler::InstallZip(File, FileName, "Mod installed from local files.");
 		};
 	TopBox->AddChild(LocalModButton);
 
 	auto ProfilesButton = new AppButton();
 	ProfilesButton->SetText("Profiles");
-	ProfilesButton->SetImage("app/icons/storage.png");
-	ProfilesButton->button->OnClickedFunction = []()
-		{
-			Popup::CreatePopup<ProfileWindow>();
+	ProfilesButton->SetImage("res:icons/profile.png");
+	ProfilesButton->button->OnClicked = []() {
+		Popup::CreatePopup<ProfileWindow>();
 		};
 	TopBox->AddChild(ProfilesButton);
 
@@ -91,11 +91,11 @@ InstalledModsTab::InstalledModsTab()
 
 	HeaderBox->AddChild(SearchField
 		->SetHintText("Search installed mods")
-		->SetTextSize(11)
-		->SetTextSizeMode(UIBox::SizeMode::PixelRelative)
-		->SetPadding(5)
-		->SetPaddingSizeMode(UIBox::SizeMode::PixelRelative)
-		->SetTryFill(true));
+		->SetTextSize(13_px)
+		->SetCorner(5_px)
+		->SetPadding(5_px)
+		->SetMinWidth(UISize::Parent(1))
+		->SetMaxWidth(UISize::Parent(1)));
 
 	LoadMainPage();
 }
@@ -108,8 +108,7 @@ void InstalledModsTab::LoadSections()
 
 	for (auto& i : Installed)
 	{
-		auto NewMod = NxmAPI::ModInfo
-		{
+		auto NewMod = NxmAPI::ModInfo{
 			.Name = i.Name,
 			.Summary = i.Description,
 			.InfoString = i.Enabled ? "Enabled" : "Disabled",
@@ -119,8 +118,7 @@ void InstalledModsTab::LoadSections()
 
 		NewMod.ImageUrl = GetModImage(NewMod);
 
-		if (!SearchFilter.empty()
-			&& StrUtil::Lower(i.Name).find(StrUtil::Lower(SearchFilter)) == std::string::npos
+		if (!SearchFilter.empty() && StrUtil::Lower(i.Name).find(StrUtil::Lower(SearchFilter)) == std::string::npos
 			&& StrUtil::Lower(i.Description).find(StrUtil::Lower(SearchFilter)) == std::string::npos)
 		{
 			continue;
@@ -129,7 +127,7 @@ void InstalledModsTab::LoadSections()
 		if (i.RequiresUpdate)
 		{
 			NewMod.InfoString = "Enabled - Requires update",
-			NewMod.InfoColor = NxmAPI::ModInfo::Yellow;
+				NewMod.InfoColor = NxmAPI::ModInfo::Yellow;
 		}
 		NexusInstalledMods.push_back(NewMod);
 	}

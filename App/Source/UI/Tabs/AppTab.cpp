@@ -1,6 +1,7 @@
 #include "AppTab.h"
-#include <KlemmUI/Window.h>
-using namespace KlemmUI;
+#include <kui/Window.h>
+#include "../TitleBar.h"
+using namespace kui;
 
 std::vector<AppTab*> AppTab::AllTabs;
 size_t AppTab::SelectedTab = 0;
@@ -36,14 +37,14 @@ void AppTab::ResizeAll()
 
 void AppTab::UpdateAll()
 {
-	Vector2f SiteBarSize = UIBox::PixelSizeToScreenSize(Vector2f(80, 0), Window::GetActiveWindow());
+	Vec2f SideBarSize = Vec2f((70_px).GetScreen().X, (TitleBar::IsVisible ? 30_px : 0_px).GetScreen().Y);
 	size_t TabIndex = 0;
 	for (AppTab* Tab : AllTabs)
 	{
 		Tab->TabBackground->IsVisible = SelectedTab == TabIndex++;
-		Tab->TabBackground->SetPosition(Vector2f(-1) + SiteBarSize);
-		Tab->TabBackground->SetMinSize(Vector2f(2) - SiteBarSize);
-		Tab->TabBackground->SetMaxSize(Vector2f(2) - SiteBarSize);
+		Tab->TabBackground->SetPosition(Vec2f(-1) + Vec2f(SideBarSize.X, 0));
+		Tab->TabBackground->SetMinSize(Vec2f(2) - SideBarSize);
+		Tab->TabBackground->SetMaxSize(Vec2f(2) - SideBarSize);
 		Tab->Update();
 	}
 }

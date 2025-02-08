@@ -1,11 +1,10 @@
 
 element SidebarElement
 {
-	minSize = (0, 2);
 	child UIBackground bg
 	{
-		tryFill = true;
-		minSize = 80px;
+		height = 2sr;
+		width = 70px;
 		orientation = vertical;
 		color = 0.1;
 	}
@@ -17,26 +16,25 @@ element SidebarButton
 	child UIButton button
 	{
 		color = highlightColor;
-		size = 70px;
+		size = 60px;
 		child UIBackground image
 		{
-			size = 70px;
+			size = 60px;
 			color = 0;
 		}
 
-		borderType = rounded;
-		borderSize = 5px;
+		corners = 5px;
 	}
 }
 
 element SidebarTooltip
 {
-	var Text;
+	var Text = "Tooltip";
 	child UIBackground
 	{
 		color = 0;
-		opacity = 0.9;
-		size = (200, 70)px;
+		opacity = 1;
+		size = (200, 60)px;
 
 		verticalAlign = centered;
 

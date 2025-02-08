@@ -1,6 +1,6 @@
 #pragma once
 #include "ModListTab.h"
-#include <KlemmUI/UI/UIScrollBox.h>
+#include <kui/UI/UIScrollBox.h>
 #include "NexusModsAPI.h"
 
 class ModBrowserTab : public ModListTab
