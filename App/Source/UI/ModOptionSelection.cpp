@@ -28,6 +28,7 @@ void ModOptionsSelection::GenerateOptions()
 			};
 		PopupBackground->AddChild(Option);
 	}
+	PopupBackground->RedrawElement();
 }
 
 void ModOptionsSelection::LoadMod(ModInfo Mod)
@@ -55,7 +56,7 @@ void ModOptionsSelection::Update()
 
 std::string ModOptionsSelection::GetWindowTitle()
 {
-	return std::string();
+	return "Select mod version";
 }
 
 Vec2ui ModOptionsSelection::GetWindowResolution()

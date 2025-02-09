@@ -47,11 +47,6 @@ void ModListTab::ClearContent()
 	ContentBox->DeleteChildren();
 	ContentBox->SetVerticalAlign(UIBox::Align::Reverse);
 	ContentBox->SetHorizontalAlign(UIBox::Align::Default);
-	for (unsigned int tex : LoadedTextures)
-	{
-		image::UnloadImage(tex);
-	}
-	LoadedTextures.clear();
 }
 
 void ModListTab::ShowLoadingScreen()
@@ -137,6 +132,12 @@ void ModListTab::LoadMainPage()
 		}
 	}
 
+	for (unsigned int tex : LoadedTextures)
+	{
+		image::UnloadImage(tex);
+	}
+	LoadedTextures.clear();
+
 	LoadedMods.clear();
 	new BackgroundTask([this]()
 		{
@@ -211,28 +212,15 @@ void ModListTab::GenerateSection(ModsSection Section, size_t& Index)
 	Header->SetName(Section.Title);
 	ContentBox->AddChild(Header);
 
-	std::vector<UIBox*> Rows;
-	for (int i = 0; i < Section.Mods.size() / ModsPerRow + 1; i++)
+	switch (CurrentViewMode)
 	{
-		UIBox* Row = new UIBox(true);
-		ContentBox->AddChild(Row);
-		Rows.push_back(Row);
-	}
-
-	std::cout << "Window size: " << Window::GetActiveWindow()->GetSize().ToString() << ", Mods per row: (should never ever be 0) " << ModsPerRow << std::endl;
-
-	for (size_t i = 0; i < Section.Mods.size(); i++)
-	{
-		auto Entry = new ModEntry();
-		Entry->SetName(Section.Mods[i].Name);
-		Entry->SetDescription(StrUtil::Replace(Section.Mods[i].Summary, "&amp;", "&"));
-		Entry->SetInfo(Section.Mods[i].InfoString);
-		Entry->button->OnClicked = std::bind(&ModListTab::OnClicked, this, (int)Index);
-		Index++;
-		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
-
-		Images.push_back(Entry->imageBackground);
-		Rows[i / ModsPerRow]->AddChild(Entry);
+	case ModListTab::ViewMode::List:
+		GenerateSectionList(Section, Index);
+		break;
+	case ModListTab::ViewMode::Tiles:
+	default:
+		GenerateSectionTiles(Section, Index);
+		break;
 	}
 }
 
@@ -262,10 +250,20 @@ void ModListTab::UpdateImages()
 					});
 				LoadedTextures.push_back(LoadedWebp);
 				j.ImageBuffer = nullptr;
+				j.ModImageId = LoadedWebp;
 				UIBackground* ImageBackground = Images[ImageIndex];
 
 				ImageBackground
 					->SetUseTexture(true, LoadedWebp)
+					->SetColor(1)
+					->SetMinSize(Vec2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
+				ImageBackground->DeleteChildren();
+			}
+			else if (j.ModImageId && !Images[ImageIndex]->HasTexture())
+			{
+				UIBackground* ImageBackground = Images[ImageIndex];
+				ImageBackground
+					->SetUseTexture(true, j.ModImageId)
 					->SetColor(1)
 					->SetMinSize(Vec2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
 				ImageBackground->DeleteChildren();
@@ -285,6 +283,18 @@ void ModListTab::Update()
 	ModsScrollBox->SetMinSize(TabBackground->GetMinSize());
 	ModsScrollBox->SetMaxSize(TabBackground->GetMinSize());
 
+	auto Hovered = Window::GetActiveWindow()->UI.HoveredBox;
+
+	if (SelectedMods.size()
+		&& Window::GetActiveWindow()->Input.IsLMBClicked
+		&& Hovered
+		&& !Hovered->IsChildOf(ModsScrollBox))
+	{
+		SelectedMods.clear();
+		ShouldUpdateList = true;
+		FirstSelected = SIZE_MAX;
+	}
+
 	if (ShouldReload && !IsLoadingList && TabBackground->IsVisible)
 	{
 		IsLoadingList = true;
@@ -297,14 +307,164 @@ void ModListTab::Update()
 		LoadedNewImage = false;
 		UpdateImages();
 	}
+
+	if (ShouldUpdateList && !IsLoadingList && TabBackground->IsVisible)
+	{
+		Generate();
+		UpdateImages();
+		ShouldUpdateList = false;
+	}
 }
 
 void ModListTab::OnResized()
 {
-	if (ModsPerRow != GetModsPerRow())
+	if (ModsPerRow != GetModsPerRow() || CurrentViewMode == ViewMode::List)
 	{
 		ModsPerRow = GetModsPerRow();
-		ShouldReload = true;
+		ShouldUpdateList = true;
+	}
+}
+
+bool ModListTab::HandleSelect(bool IsSelected, size_t Index, ModsSection Section)
+{
+	if (CanSelectMods
+		&& (Window::GetActiveWindow()->Input.IsKeyDown(Key::LCTRL)
+		|| Window::GetActiveWindow()->Input.IsKeyDown(Key::RCTRL)))
+	{
+		auto& Mod = Section.Mods[Index];
+
+		if (SelectedMods.contains(Mod.Name))
+			SelectedMods.erase(Mod.Name);
+		else
+			SelectedMods.insert(Mod.Name);
+		FirstSelected = Index;
+		ShouldUpdateList = true;
+		return false;
+	}
+	else if (CanSelectMods
+		&& (Window::GetActiveWindow()->Input.IsKeyDown(Key::LSHIFT)
+		|| Window::GetActiveWindow()->Input.IsKeyDown(Key::RSHIFT)))
+	{
+		size_t StartIndex = FirstSelected;
+
+		if (StartIndex == SIZE_MAX)
+		{
+			StartIndex = Index;
+		}
+
+		if (StartIndex > Index)
+		{
+			std::swap(StartIndex, Index);
+		}
+
+		for (size_t i = StartIndex; i <= Index; i++)
+		{
+			if (IsSelected)
+				SelectedMods.erase(Section.Mods[i].Name);
+			else
+				SelectedMods.insert(Section.Mods[i].Name);
+		}
+		FirstSelected = Index;
+		ShouldUpdateList = true;
+		return false;
+	}
+	return true;
+}
+
+void ModListTab::SelectMod(std::string Name)
+{
+	if (SelectedMods.contains(Name))
+		SelectedMods.erase(Name);
+	else
+		SelectedMods.insert(Name);
+	ShouldUpdateList = true;
+}
+
+void ModListTab::GenerateSectionTiles(ModsSection Section, size_t& Index)
+{
+	std::vector<UIBox*> Rows;
+	for (int i = 0; i < Section.Mods.size() / ModsPerRow + 1; i++)
+	{
+		UIBox* Row = new UIBox(true);
+		ContentBox->AddChild(Row);
+		Rows.push_back(Row);
+	}
+
+	std::cout << "Window size: " << Window::GetActiveWindow()->GetSize().ToString() << ", Mods per row: (should never ever be 0) " << ModsPerRow << std::endl;
+
+	for (size_t i = 0; i < Section.Mods.size(); i++)
+	{
+		bool IsSelected = SelectedMods.contains(Section.Mods[i].Name);
+
+		auto Entry = new ModEntry();
+		Entry->SetName(Section.Mods[i].Name);
+
+		std::string InfoString = Section.Mods[i].InfoString;
+
+		if (IsSelected)
+		{
+			InfoString.append(" (Selected)");
+			Entry->SetColor(Vec3f(0.2f, 0.1f, 0.1f));
+			Entry->SetCheckedImage("res:icons/mod_checkbox_1.png");
+		}
+
+		if (!CanSelectMods)
+		{
+			Entry->checkButton->IsVisible = false;
+		}
+
+		Entry->SetDescription(StrUtil::Replace(Section.Mods[i].Summary, "&amp;", "&"));
+		Entry->SetInfo(InfoString);
+
+		Entry->button->OnClicked = [this, IsSelected, Section, Index = Index]()
+			{
+				if (HandleSelect(IsSelected, Index, Section))
+					ModListTab::OnClicked(Index);
+			};
+
+		Entry->checkButton->OnClicked = std::bind(&ModListTab::SelectMod, this, Section.Mods[i].Name);
+
+		Index++;
+		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
+
+		Images.push_back(Entry->imageBackground);
+		Rows[i / ModsPerRow]->AddChild(Entry);
+	}
+}
+
+void ModListTab::GenerateSectionList(ModsSection Section, size_t& Index)
+{
+	for (size_t i = 0; i < Section.Mods.size(); i++)
+	{
+		bool IsSelected = SelectedMods.contains(Section.Mods[i].Name);
+
+		auto Entry = new ModListEntry();
+		std::string InfoString = Section.Mods[i].InfoString;
+
+		if (IsSelected)
+		{
+			InfoString.append(" (Selected)");
+			Entry->SetColor(Vec3f(0.2f, 0.1f, 0.1f));
+			Entry->SetCheckedImage("res:icons/mod_checkbox_1.png");
+		}
+		
+		Entry->SetName(Section.Mods[i].Name);
+		Entry->SetDescription(StrUtil::Replace(Section.Mods[i].Summary, "&amp;", "&"));
+		Entry->SetInfo(Section.Mods[i].InfoString);
+
+		Entry->button->OnClicked = [this, IsSelected, Section, Index = Index]()
+			{
+				if (HandleSelect(IsSelected, Index, Section))
+					ModListTab::OnClicked(Index);
+			};
+		Entry->checkButton->OnClicked = std::bind(&ModListTab::SelectMod, this, Section.Mods[i].Name);
+
+		Entry->SetWidth(UISize::Pixels(Window::GetActiveWindow()->GetSize().X - 450));
+		Index++;
+		Entry->infoText->SetColor(InfoTextColors[Section.Mods[i].InfoColor]);
+
+		Images.push_back(Entry->imageBackground);
+		ContentBox->AddChild(Entry);
 	}
 }
 

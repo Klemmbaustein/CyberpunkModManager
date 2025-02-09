@@ -22,7 +22,9 @@ namespace NxmAPI
 			Grey,
 		};
 		ModInfoColor InfoColor = Grey;
+		bool Enabled = false;
 		uint8_t* ImageBuffer = nullptr;
+		unsigned int ModImageId = 0;
 		int ImageWidth = 0, ImageHeight = 0;
 		int ModID = 0;
 		int Downloads = 0;

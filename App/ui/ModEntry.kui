@@ -27,10 +27,12 @@ element ModEntry
 	var Name;
 	var Description;
 	var Info;
+	var Color = 0.1;
+	var CheckedImage = "res:icons/mod_checkbox_0.png";
 
 	child UIButton button
 	{
-		color = 0.1;
+		color = Color;
 		border = 2px;
 		corners = 5px;
 		borderColor = highlightColor;
@@ -44,7 +46,7 @@ element ModEntry
 			size = (196, 112)px;
 			padding = 2px;
 			allAlign = centered;
-			corners = 5px;
+			corners = 2px;
 			bottomLeftCorner = false;
 			bottomRightCorner = false;
 
@@ -85,17 +87,116 @@ element ModEntry
 			padding = 2px;
 			color = 0.05;
 			verticalAlign = centered;
-			corners = 5px;
+			corners = 2px;
 			topLeftCorner = false;
 			topRightCorner = false;
+			child UIBox
+			{
+				child UIText infoText
+				{
+					leftPadding = 4px;
+					text = Info;
+					size = 11px;
+					color = 0.7;
+					wrap = 185px;
+				}
+				width = 170px;
+			}
+			child UIButton checkButton
+			{
+				image = CheckedImage;
+				size = 16px;
+			}
+		}
+	}
+}
+
+element ModListEntry
+{
+	var Name = "Mod name";
+	var Description = "Mod description";
+	var Info = "Enabled probably";
+	var Width = 500px;
+	var Color = 0.1;
+	var CheckedImage = "res:icons/mod_checkbox_0.png";
+
+	width = 100%;
+
+	child UIButton button
+	{
+		color = Color;
+		border = 2px;
+		corners = 5px;
+		width = 100%;
+		borderColor = highlightColor;
+		padding = 4px;
+		rightPadding = 16px;
+		verticalAlign = centered;
+
+		child UIBackground imageBackground
+		{
+			color = 0.05;
+			size = (116, 70)px;
+			padding = 2px;
+			allAlign = centered;
+			corners = 2px;
+			bottomLeftCorner = false;
+			bottomRightCorner = false;
+
+			child UIText imageText
+			{
+				text = "Loading";
+				size = 15px;
+				color = 1;
+			}
+		}
+
+		child UIButton checkButton
+		{
+			image = CheckedImage;
+			size = 20px;
+		}
+
+		child UIBox
+		{
+			width = 200px;
+			child UIText
+			{
+				padding = 8px;
+				rightPadding = 32px;
+				text = Name;
+				size = 12px;
+				wrap = 190px;
+				maxWraps = 1;
+			}
+		}
+
+		child UIBox
+		{
+			orientation = vertical;
+			verticalAlign = centered;
+			height = 60px;
+			width = Width;
+			padding = 8px;
+
 			child UIText infoText
 			{
-				leftPadding = 4px;
+				upPadding = 10px;
 				text = Info;
 				size = 11px;
 				color = 0.7;
-				wrap = 370px;
+				wrap = Width;
 			}
+
+			child UIText
+			{
+				text = Description;
+				size = 12px;
+				color = 0.8;
+				wrap = Width;
+				maxWraps = 1;
+			}
+
 		}
 	}
 }

@@ -20,6 +20,19 @@ protected:
 	kui::UIBox* ContentBox = nullptr;
 public:
 	bool ShouldReload = false;
+	bool ShouldUpdateList = false;
+
+	enum class ViewMode
+	{
+		Tiles,
+		List,
+	};
+
+	bool CanSelectMods = false;
+
+	std::set<std::string> SelectedMods;
+
+	ViewMode CurrentViewMode = ViewMode::Tiles;
 
 	ModListTab(std::string Name);
 	void OpenModFromIndex(int Index);
@@ -46,6 +59,13 @@ public:
 	virtual void OnResized() override;
 
 private:
+	size_t FirstSelected = SIZE_MAX;
+	bool HandleSelect(bool IsSelected, size_t Index, ModsSection Section);
+	void SelectMod(std::string Name);
+
+	void GenerateSectionTiles(ModsSection Section, size_t& Index);
+	void GenerateSectionList(ModsSection Section, size_t& Index);
+
 	int GetModsPerRow();
 	int ModsPerRow = 0;
 
