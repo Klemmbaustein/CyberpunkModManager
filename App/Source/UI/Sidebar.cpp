@@ -9,6 +9,7 @@ namespace Sidebar
 {
 	SidebarElement* Element = nullptr;
 	SidebarTooltip* Tooltip = nullptr;
+	UIBox* LastHoveredBox = nullptr;
 	std::vector<SidebarButton*> Buttons;
 }
 
@@ -56,15 +57,20 @@ void Sidebar::Update()
 	if (!HoveredBox && Tooltip)
 	{
 		delete Tooltip;
+		LastHoveredBox = nullptr;
 		Tooltip = nullptr;
 	}
 
-	if (HoveredBox && !Tooltip)
+	if ((HoveredBox && !Tooltip) || LastHoveredBox != HoveredBox)
 	{
+		if (Tooltip)
+			delete Tooltip;
+
 		Tooltip = new SidebarTooltip();
 		Tooltip->SetPosition(Vec2f(Element->GetPosition().X + (70_px).GetScreen().X, HoveredBox->GetPosition().Y));
 		Tooltip->SetText(AppTab::AllTabs[HoveredIndex]->Name);
 		Tooltip->UpdateElement();
 		Tooltip->RedrawElement();
+		LastHoveredBox = HoveredBox;
 	}
 }

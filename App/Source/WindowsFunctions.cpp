@@ -272,35 +272,21 @@ void Windows::RegisterSelfAsUriHandler()
 	system(("xdg-mime default CyberpunkModManager.desktop x-scheme-handler/nxm"));
 }
 
+constexpr char* APP_NAME = "Cyberpunk 2077 mod manager";
+
 void Windows::ErrorBox(std::string Content)
 {
-	system(("zenity --error --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
+	kui::app::MessageBox(Content, APP_NAME, kui::app::MessageBoxType::Error);
 }
 
 bool Windows::YesNoBox(std::string Content)
 {
-	return !system(("zenity --question --text \"" + StrUtil::Replace(Content, "\"", "\\\"") + "\"").c_str());
+	return kui::app::YesNoBox(Content, APP_NAME);
 }
 
 std::string Windows::OpenFileDialog(bool PickFolders)
 {
-	char filename[4096];
-
-	std::string Command = "zenity --file-selection";
-
-	if (PickFolders)
-	{
-		Command.append(" --directory");
-	}
-
-	FILE* f = popen(Command.c_str(), "r");
-	char* buf = fgets(filename, 4096, f);
-	if (!buf)
-	{
-		return "";
-	}
-	pclose(f);
-	return StrUtil::Replace(filename, "\n", "");
+	return kui::app::SelectFileDialog(PickFolders);
 }
 
 bool Windows::IsProcessRunning(std::string Name)

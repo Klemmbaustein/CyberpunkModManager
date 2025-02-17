@@ -22,7 +22,9 @@ void TitleBar::Load()
 
 	Elem->maximize->btn->OnClicked = []()
 		{
-			kui::Window::GetActiveWindow()->SetMaximized(!kui::Window::GetActiveWindow()->GetWindowFullScreen());
+			bool NewMaximized = !Window::GetActiveWindow()->GetWindowFullScreen();
+			Elem->maximize->SetIcon(NewMaximized ? "res:icons/ChromeRestore.png" : "res:icons/ChromeMaximize.png");
+			kui::Window::GetActiveWindow()->SetMaximized(NewMaximized);
 		};
 
 	Elem->minimize->btn->OnClicked = []()
