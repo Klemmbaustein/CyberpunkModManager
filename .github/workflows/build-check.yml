@@ -36,6 +36,7 @@ jobs:
           sudo apt autoremove --purge snapd
           sudo apt-get install libcurl4-openssl-dev
           sudo apt-get install libglew-dev
+          sudo apt-get install libxext-dev libxrandr-dev libwayland-client0 libdecor-0-dev libwayland-egl1 libwayland-dev libwayland-cursor0
 
     - name: Build Application
       run: |
