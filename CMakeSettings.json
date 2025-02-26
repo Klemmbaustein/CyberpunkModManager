@@ -23,17 +23,6 @@
 	  "inheritEnvironments": [ "msvc_x64_x64" ]
 	},
 	{
-	  "name": "x64-Clang-Release",
-	  "generator": "Ninja",
-	  "configurationType": "RelWithDebInfo",
-	  "buildRoot": "${projectDir}\\out\\build\\${name}",
-	  "installRoot": "${projectDir}\\out\\install\\${name}",
-	  "cmakeCommandArgs": "",
-	  "buildCommandArgs": "",
-	  "ctestCommandArgs": "",
-	  "inheritEnvironments": [ "clang_cl_x64_x64" ]
-	},
-	{
 	  "name": "WSL-GCC-Debug",
 	  "generator": "Ninja",
 	  "configurationType": "Debug",
@@ -47,9 +36,9 @@
 	  "wslPath": "${defaultWSLPath}"
 	},
 	{
-	  "name": "WSL-GCC-Debug-2",
+	  "name": "WSL-GCC-Release",
 	  "generator": "Ninja",
-	  "configurationType": "Debug",
+	  "configurationType": "RelWithDebInfo",
 	  "buildRoot": "${projectDir}\\out\\build\\${name}",
 	  "installRoot": "${projectDir}\\out\\install\\${name}",
 	  "cmakeExecutable": "cmake",
@@ -58,7 +47,6 @@
 	  "ctestCommandArgs": "",
 	  "inheritEnvironments": [ "linux_x64" ],
 	  "wslPath": "${defaultWSLPath}",
-	  "addressSanitizerEnabled": true,
 	  "variables": []
 	}
   ]

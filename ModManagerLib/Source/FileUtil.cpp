@@ -2,6 +2,7 @@
 #include <fstream>
 #include <filesystem>
 #include <iostream>
+#include <sstream>
 
 std::string FileUtil::ReadFile(std::string FilePath)
 {
@@ -10,10 +11,10 @@ std::string FileUtil::ReadFile(std::string FilePath)
 		return "";
 	}
 	std::ifstream InStream = std::ifstream(FilePath);
-	std::string ContentString((std::istreambuf_iterator<char>(InStream)),
-		(std::istreambuf_iterator<char>()));
+	std::stringstream stream;
+	stream << InStream.rdbuf();
 	InStream.close();
-	return ContentString;
+	return stream.str();
 }
 
 std::vector<std::string> FileUtil::GetAllFilesInFolder(std::string FolderPath, std::string RelativePath)

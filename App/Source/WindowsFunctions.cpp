@@ -241,11 +241,16 @@ void Windows::SetWorkingDirectory()
 	std::string PathString = GetProcessName(getpid());
 
 	PathString = PathString.substr(0, PathString.find_last_of("/\\"));
-	if (std::filesystem::exists(PathString + "/../../App/app/shaders"))
+	std::cout << PathString << std::endl;
+	if (std::filesystem::exists(PathString + "/../../../App/app"))
+	{
+		PathString.append("/../../../App/");
+	}
+	if (std::filesystem::exists(PathString + "/../../App/app/app"))
 	{
 		PathString.append("/../../App/");
 	}
-	else if (std::filesystem::exists(PathString + "/../App/app/shaders"))
+	else if (std::filesystem::exists(PathString + "/../App/app/app"))
 	{
 		PathString.append("/../App/");
 	}
@@ -272,7 +277,7 @@ void Windows::RegisterSelfAsUriHandler()
 	system(("xdg-mime default CyberpunkModManager.desktop x-scheme-handler/nxm"));
 }
 
-constexpr char* APP_NAME = "Cyberpunk 2077 mod manager";
+const char* APP_NAME = "Cyberpunk 2077 mod manager";
 
 void Windows::ErrorBox(std::string Content)
 {
