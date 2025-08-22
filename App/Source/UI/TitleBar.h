@@ -7,4 +7,5 @@ namespace TitleBar
 	void Update();
 
 	extern bool IsVisible;
+	extern bool IsMaximized;
 }

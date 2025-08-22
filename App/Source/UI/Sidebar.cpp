@@ -66,11 +66,13 @@ void Sidebar::Update()
 		if (Tooltip)
 			delete Tooltip;
 
-		Tooltip = new SidebarTooltip();
-		Tooltip->SetPosition(Vec2f(Element->GetPosition().X + (70_px).GetScreen().X, HoveredBox->GetPosition().Y));
-		Tooltip->SetText(AppTab::AllTabs[HoveredIndex]->Name);
-		Tooltip->UpdateElement();
-		Tooltip->RedrawElement();
+		if (HoveredBox)
+		{
+			Tooltip = new SidebarTooltip();
+			Tooltip->SetPosition(Vec2f(Element->GetPosition().X + (70_px).GetScreen().X, HoveredBox->GetPosition().Y));
+			Tooltip->SetText(AppTab::AllTabs[HoveredIndex]->Name);
+			Tooltip->GetParentWindow()->UI.RedrawUI();
+		}
 		LastHoveredBox = HoveredBox;
 	}
 }

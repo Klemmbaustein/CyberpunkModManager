@@ -38,6 +38,7 @@ void ModInfoWindow::LoadInfo()
 	std::string Displayed = StrUtil::Replace(Mod.Description, "&lt;", "<");
 	Displayed = StrUtil::Replace(Displayed, "&gt;", ">");
 	Displayed = StrUtil::Replace(Displayed, "&#92;", "\\");
+	Displayed = StrUtil::Replace(Displayed, "&amp;", "&");
 	Displayed = StrUtil::Replace(Displayed, "\xE2\x9C\x93", "-");
 	Displayed = StrUtil::Replace(Displayed, "\xE2\x80\x94", "-");
 	Displayed = StrUtil::Replace(Displayed, "\xE2\x96\xB8", ">");
@@ -46,6 +47,7 @@ void ModInfoWindow::LoadInfo()
 	PopupWindow->SetTitle("Mod info: " + Mod.Name);
 
 	PopupBackground->AddChild((new UIScrollBox(false, 0, true))
+		->SetScrollSpeed(20)
 		->SetMinSize(2)
 		->SetMaxSize(2)
 		->AddChild(InfoElement));

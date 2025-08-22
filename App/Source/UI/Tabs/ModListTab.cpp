@@ -241,7 +241,7 @@ void ModListTab::UpdateImages()
 				}
 				break;
 			}
-			if (j.ImageBuffer && !Images[ImageIndex]->HasTexture())
+			if (j.ImageBuffer && !Images[ImageIndex]->HasImage())
 			{
 				unsigned int LoadedWebp = Webp::Load(Webp::WebpBuffer{
 					.Bytes = j.ImageBuffer,
@@ -259,7 +259,7 @@ void ModListTab::UpdateImages()
 					->SetMinSize(Vec2f(120.0f * ((float)j.ImageWidth / (float)j.ImageHeight), 120.0f));
 				ImageBackground->DeleteChildren();
 			}
-			else if (j.ModImageId && !Images[ImageIndex]->HasTexture())
+			else if (j.ModImageId && !Images[ImageIndex]->HasImage())
 			{
 				UIBackground* ImageBackground = Images[ImageIndex];
 				ImageBackground

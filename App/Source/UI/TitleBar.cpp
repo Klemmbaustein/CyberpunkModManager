@@ -5,6 +5,7 @@
 using namespace kui;
 
 bool TitleBar::IsVisible = true;
+bool TitleBar::IsMaximized = false;
 
 namespace TitleBar
 {
@@ -23,7 +24,6 @@ void TitleBar::Load()
 	Elem->maximize->btn->OnClicked = []()
 		{
 			bool NewMaximized = !Window::GetActiveWindow()->GetWindowFullScreen();
-			Elem->maximize->SetIcon(NewMaximized ? "res:icons/ChromeRestore.png" : "res:icons/ChromeMaximize.png");
 			kui::Window::GetActiveWindow()->SetMaximized(NewMaximized);
 		};
 
@@ -41,9 +41,19 @@ void TitleBar::Load()
 
 void TitleBar::Update()
 {
+	Window* Current = Window::GetActiveWindow();
+
+	bool NewIsMaximized = Current->GetWindowFullScreen();
+
+	if (NewIsMaximized != IsMaximized)
+	{
+		IsMaximized = NewIsMaximized;
+		Elem->maximize->SetIcon(NewIsMaximized ? "res:icons/ChromeRestore.png" : "res:icons/ChromeMaximize.png");
+		Elem->RedrawElement();
+	}
+
 	if (Elem->IsVisible != TitleBar::IsVisible)
 	{
-		Window* Current = Window::GetActiveWindow();
 		Window::WindowFlag Flags = Current->GetWindowFlags();
 
 		Flags = Window::WindowFlag(int(Flags) & ~int(Window::WindowFlag::Borderless));
