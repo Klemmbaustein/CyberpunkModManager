@@ -1,6 +1,7 @@
 #include "TitleBar.h"
 #include <kui/KlemmUI.h>
 #include <TitleBar.kui.hpp>
+#include <iostream>
 
 using namespace kui;
 
@@ -66,5 +67,10 @@ void TitleBar::Update()
 		Current->SetWindowFlags(Flags);
 
 		Elem->IsVisible = TitleBar::IsVisible;
+	}
+
+	if (TitleBar::IsVisible)
+	{
+		Elem->title->SetColor(Current->HasFocus() ? Vec3f(1) : Vec3f(0.75f));
 	}
 }

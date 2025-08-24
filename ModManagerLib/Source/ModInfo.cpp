@@ -131,7 +131,7 @@ void ModInfo::Save()
 
 void ModInfo::Enable()
 {
-	if (!std::filesystem::exists(Game::GetGameLocation()))
+	if (!Game::HasGameLocation() || !std::filesystem::exists(Game::GetGameLocation()))
 	{
 		return;
 	}
@@ -163,7 +163,7 @@ void ModInfo::Enable()
 
 void ModInfo::Unload()
 {
-	if (!Enabled)
+	if (!Game::HasGameLocation() || !Enabled)
 	{
 		return;
 	}
@@ -193,7 +193,7 @@ void ModInfo::Unload()
 
 void ModInfo::Load()
 {
-	if (!Enabled)
+	if (!Game::HasGameLocation() || !Enabled)
 	{
 		return;
 	}
@@ -217,7 +217,7 @@ void ModInfo::Load()
 
 void ModInfo::Disable()
 {
-	if (!Enabled)
+	if (!Game::HasGameLocation() || !Enabled)
 	{
 		return;
 	}

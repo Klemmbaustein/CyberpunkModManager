@@ -13,6 +13,7 @@ element SidebarElement
 element SidebarButton
 {
 	padding = 5px;
+	downPadding = 0;
 	child UIButton button
 	{
 		color = highlightColor;
@@ -30,11 +31,16 @@ element SidebarButton
 element SidebarTooltip
 {
 	var Text = "Tooltip";
-	child UIBackground
+	child UIBlurBackground
 	{
 		color = 0;
-		opacity = 1;
+		opacity = 0.2;
 		size = (200, 60)px;
+		border = 1px;
+		borderColor = 0.0;
+		corners = 5px;
+		topLeftCorner = false;
+		bottomLeftCorner = false;
 
 		verticalAlign = centered;
 

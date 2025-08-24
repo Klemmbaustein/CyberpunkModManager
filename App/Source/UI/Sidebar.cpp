@@ -45,7 +45,7 @@ void Sidebar::Update()
 		i->button->SetHoveredColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.5f, 0.1f, 0.1f));
 		i->button->SetPressedColor(Selected ? Vec3f(1, 0.3f, 0.4f) : Vec3f(0.4f, 0.1f, 0.1f));
 
-		if (i->IsBeingHovered() && i->GetParentWindow()->HasFocus())
+		if (i->IsBeingHovered())
 		{
 			HoveredBox = i;
 			HoveredIndex = Index;

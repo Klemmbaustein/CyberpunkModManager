@@ -45,7 +45,7 @@ void Windows::SetWorkingDirectory()
 
 void Windows::Open(std::string Path)
 {
-	ShellExecuteA(0, 0, Path.c_str(), 0, 0, SW_HIDE);
+	ShellExecuteA(0, "open", Path.c_str(), 0, 0, SW_SHOWDEFAULT);
 }
 
 bool Windows::IsProcessRunning(std::string Name)
@@ -333,7 +333,7 @@ std::string Windows::GetCurrentProcessName()
 
 void Windows::Open(std::string Path)
 {
-	system(Path.c_str());
+	system(("xdg-open '" + Path + "' &").c_str());
 }
 
 #endif

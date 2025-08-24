@@ -68,6 +68,7 @@ ModListTab::ModListTab(std::string Name)
 	ContentBox = new UIBox(false);
 	ContentBox->SetMinWidth(UISize::Parent(1));
 	TabBackground->AddChild(ModsScrollBox
+		->SetScrollSpeed(30)
 		->AddChild(HeaderBox)
 		->AddChild(ContentBox));
 }
@@ -166,6 +167,11 @@ void ModListTab::Generate()
 	{
 		GenerateSection(i, ElementIndex);
 	}
+	OnGenerated();
+}
+
+void ModListTab::OnGenerated()
+{
 }
 
 void ModListTab::OnClicked(int Index)
@@ -390,8 +396,6 @@ void ModListTab::GenerateSectionTiles(ModsSection Section, size_t& Index)
 		Rows.push_back(Row);
 	}
 
-	std::cout << "Window size: " << Window::GetActiveWindow()->GetSize().ToString() << ", Mods per row: (should never ever be 0) " << ModsPerRow << std::endl;
-
 	for (size_t i = 0; i < Section.Mods.size(); i++)
 	{
 		bool IsSelected = SelectedMods.contains(Section.Mods[i].Name);
@@ -447,7 +451,7 @@ void ModListTab::GenerateSectionList(ModsSection Section, size_t& Index)
 			Entry->SetColor(Vec3f(0.2f, 0.1f, 0.1f));
 			Entry->SetCheckedImage("res:icons/mod_checkbox_1.png");
 		}
-		
+
 		Entry->SetName(Section.Mods[i].Name);
 		Entry->SetDescription(StrUtil::Replace(Section.Mods[i].Summary, "&amp;", "&"));
 		Entry->SetInfo(Section.Mods[i].InfoString);

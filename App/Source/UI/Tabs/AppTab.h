@@ -19,7 +19,7 @@ public:
 
 	static void ResizeAll();
 	static void UpdateAll();
-	
+
 	static std::vector<AppTab*> AllTabs;
 	kui::UIBackground* TabBackground = nullptr;
 

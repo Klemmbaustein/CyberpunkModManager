@@ -1,4 +1,5 @@
 const highlightColor = (0.6, 0.1, 0.1);
+const brightHighlightColor = (1, 0.3, 0.4);
 
 element CheckBox
 {
@@ -45,6 +46,7 @@ element AppButton
 		{
 			text = Text;
 			size = 12px;
+			leftPadding = 0;
 			padding = 5px;
 		}
 	}

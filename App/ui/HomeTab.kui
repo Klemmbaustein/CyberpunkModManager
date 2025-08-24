@@ -1,0 +1,204 @@
+element GameSection
+{
+	var HeaderText = "Cyberpunk 2077";
+	var StatusText = "Installed - C:/Some Path/";
+	var ModsText = "";
+
+	child UIBackground
+	{
+		color = 0.1;
+		border = 2px;
+		corners = 5px;
+		borderColor = highlightColor;
+		orientation = vertical;
+		width = 600px;
+
+		padding = 10px;
+
+		child UIText
+		{
+			size = 16px;
+			color = brightHighlightColor;
+			text = HeaderText;
+			padding = 10px;
+			wrap = 580px;
+		}
+
+		child UIText
+		{
+			padding = 10px;
+			upPadding = 0;
+			size = 12px;
+			color = 0.8;
+			text = StatusText;
+			wrap = 580px;
+		}
+
+		child UIBox
+		{
+			verticalAlign = centered;
+			padding = 5px;
+			upPadding = 0;
+
+			child AppButton browse
+			{
+				Image = "res:icons/open_folder.png";
+				Text = "Browse";
+			}
+
+			child AppButton searchPc
+			{
+				Image = "res:icons/search.png";
+				Text = "Search PC for game files";
+			}
+
+			child AppButton setLocation
+			{
+				Image = "res:icons/folder.png";
+				Text = "Set location manually";
+			}
+		}
+
+		child UIText
+		{
+			padding = 10px;
+			size = 12px;
+			color = 0.8;
+			text = ModsText;
+		}
+
+		child UIBox
+		{
+			verticalAlign = centered;
+			padding = 5px;
+			upPadding = 0;
+
+			child AppButton installedMods
+			{
+				Image = "res:icons/storage.png";
+				Text = "Installed mods";
+			}
+
+			child AppButton onlineMods
+			{
+				Image = "res:icons/search_web.png";
+				Text = "Online mods";
+			}
+		}
+	}
+}
+
+element ProfileSection
+{
+	var StatusText = "Logged out";
+
+	child UIBackground
+	{
+		color = 0.1;
+		border = 2px;
+		corners = 5px;
+		borderColor = highlightColor;
+		orientation = vertical;
+		width = 600px;
+
+		padding = 10px;
+
+		child UIText
+		{
+			size = 16px;
+			color = brightHighlightColor;
+			text = "NexusMods";
+			padding = 10px;
+		}
+
+		child UIText
+		{
+			padding = 10px;
+			upPadding = 0;
+			size = 12px;
+			color = 0.8;
+			text = StatusText;
+			wrap = 580px;
+		}
+
+		child UIBox buttons
+		{
+			width = 100%;
+			verticalAlign = centered;
+			padding = 5px;
+			upPadding = 0;
+		}
+	}
+}
+
+element ProfileLoggedInButtons
+{
+	verticalAlign = centered;
+
+	child AppButton logout
+	{
+		Image = "res:icons/sign_out.png";
+		Text = "Log out";
+	}
+}
+element ProfileLoggedOutButtons
+{
+	child AppButton login
+	{
+		Image = "res:icons/profile.png";
+		Text = "Log in";
+	}
+}
+
+element LoginForm
+{
+	orientation = vertical;
+
+	width = 100%;
+	padding = 10px;
+
+	child UIText
+	{
+		text = "Please enter your NexusMods API key.\nYou can get your key by going to nexusmods.com, then to 'Site preferences' -> 'API Keys' -> 'Personal API Key'";
+		size = 12px;
+		wrap = 500px;
+		downPadding = 10px;
+	}
+
+	child UITextField apiKeyField
+	{
+		width = 100%;
+		color = 0;
+		height = 40px;
+		textSize = 12px;
+		hintText = "Api key here";
+		downPadding = 20px;
+		corners = 5px;
+	}
+
+	child UIBox
+	{
+		child AppButton loginButton
+		{
+			Text = "Log in";
+			padding = 0;
+			rightPadding = 10px;
+			Image = "res:icons/enabled.png";
+		}
+
+		child AppButton pageButton
+		{
+			Text = "Open NexusMods website";
+			padding = 0;
+			rightPadding = 10px;
+			Image = "res:icons/open.png";
+		}
+
+		child AppButton cancelButton
+		{
+			Text = "Cancel";
+			padding = 0;
+			Image = "res:icons/disabled.png";
+		}
+	}
+}

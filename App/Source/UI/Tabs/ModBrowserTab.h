@@ -8,4 +8,5 @@ class ModBrowserTab : public ModListTab
 public:
 	ModBrowserTab();
 	void LoadSections() override;
+	void OnGenerated() override;
 };

@@ -8,9 +8,9 @@
 #include "UI/Popup.h"
 #include "UI/Sidebar.h"
 #include "UI/TitleBar.h"
-#include "UI/SetupWindow.h"
 #include "UI/FOMODInstall.h"
 #include "UI/Tabs/AppTab.h"
+#include "UI/Tabs/HomeTab.h"
 #include "UI/Tabs/ModBrowserTab.h"
 #include "UI/Tabs/InstalledModsTab.h"
 #include "UI/Tabs/SettingsTab.h"
@@ -49,6 +49,7 @@ static void LoadUI()
 {
 	UI::Load();
 
+	new HomeTab();
 	new InstalledModsTab();
 	new ModBrowserTab();
 	new SettingsTab();
@@ -56,11 +57,6 @@ static void LoadUI()
 
 	TitleBar::Load();
 	Sidebar::Load();
-
-	if (SetupWindow::ShouldOpen())
-	{
-		Popup::CreatePopup<SetupWindow>();
-	}
 }
 
 int main(int argc, char** argv)
@@ -98,6 +94,7 @@ int main(int argc, char** argv)
 	Window AppWindow = Window("Cyberpunk 2077 mod manager", Flags);
 	AppWindow.OnResizedCallback = &OnResized;
 	AppWindow.BorderColor = Vec3f(0.6f, 0.2f, 0.2f);
+	AppWindow.SetMinSize(Vec2ui(700, 400));
 
 	if (SettingsTab::GetSetting("check_updates", "1") == "1")
 	{

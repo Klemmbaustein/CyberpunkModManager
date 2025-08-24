@@ -9,6 +9,7 @@ struct Profile
 	static Profile Current;
 	std::string Path;
 	std::string DisplayName;
+	bool Exists = true;
 	void MakeActive() const;
 
 	uint32_t GetModsCount() const;

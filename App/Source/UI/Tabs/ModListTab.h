@@ -41,6 +41,7 @@ public:
 	void LoadMainPage();
 	void Generate();
 
+	virtual void OnGenerated();
 	virtual void OnClicked(int Index);
 
 	struct ModsSection

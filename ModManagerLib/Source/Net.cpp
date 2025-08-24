@@ -118,7 +118,7 @@ void Net::GetFile(std::string Url, std::string OutPath, bool IncludeApiKey, std:
 	{
 		HeadersToSend.push_back(ApiKeyHeader);
 	}
-	
+
 	DownloadInternal(Url, HeadersToSend, (void*)&FileWrite, &OutStream);
 	OutStream.close();
 }

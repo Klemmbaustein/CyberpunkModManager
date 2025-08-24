@@ -54,7 +54,6 @@ void LoadingBar::Update()
 	{
 		float Progress = fmod(PopupWindow->Time, 2.6f);
 
-
 		float Start = std::max(Progress - 0.8f, 0.0f);
 		float End = std::min(std::max(Progress - 0.4f, 0.0f), 1.8f);
 

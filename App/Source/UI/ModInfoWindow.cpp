@@ -57,11 +57,7 @@ static void OpenModInBrowser(const NxmAPI::ModInfo& Mod, std::string Tab = "")
 {
 	std::string Link = "https://nexusmods.com/cyberpunk2077/mods/" + std::to_string(Mod.ModID) + Tab;
 
-#if _WIN32
 	Windows::Open(Link);
-#else
-	Windows::Open("xdg-open \"" + Link + "\" &");
-#endif
 }
 
 void ModInfoWindow::GenerateActionButtons(kui::UIBox* Parent, const NxmAPI::ModInfo& Mod)

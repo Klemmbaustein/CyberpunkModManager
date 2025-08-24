@@ -61,5 +61,11 @@ namespace NxmAPI
 
 	void SaveAPIKey(std::string Key);
 
+	class ApiError
+	{
+		std::string Message;
+	};
+
 	std::string GetAPIKeyAccountName(std::string Key);
+	std::string GetAPIKeyAccountLink(std::string Key);
 }

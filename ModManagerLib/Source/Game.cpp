@@ -109,6 +109,20 @@ std::string Game::GetGameLocation()
 	return GameLocation;
 }
 
+bool Game::HasGameLocation()
+{
+	if (!GameLocation.empty() && std::filesystem::exists(GameLocation))
+	{
+		return true;
+	}
+	if (std::filesystem::exists(GameDirFile))
+	{
+		GameLocation = FileUtil::ReadFile(GameDirFile);
+	}
+
+	return std::filesystem::exists(GameLocation);
+}
+
 void Game::SetGameLocation(std::string NewPath)
 {
 	GameLocation = NewPath;

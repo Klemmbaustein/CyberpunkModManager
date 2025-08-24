@@ -6,7 +6,7 @@
 #include <fstream>
 const std::string ProfileRootPath = "app/profiles/";
 const std::string ActiveProfileFile = "app/saved/profile.txt";
-Profile Profile::Current; 
+Profile Profile::Current;
 
 static void SaveCurrentProfile()
 {
@@ -18,7 +18,6 @@ static void SaveCurrentProfile()
 void Profile::Init()
 {
 	std::string LastProfile = FileUtil::ReadFile(ActiveProfileFile);
-
 
 	if (LastProfile.empty())
 	{
@@ -91,14 +90,14 @@ void Profile::MakeActive() const
 uint32_t Profile::GetModsCount() const
 {
 	std::string FilesPath = Path + "/mod_files";
-	
+
 	if (!std::filesystem::is_directory(FilesPath))
 	{
 		return 0;
 	}
 
 	uint32_t Found = 0;
-	
+
 	for (const auto& File : std::filesystem::directory_iterator(FilesPath))
 	{
 		Found++;

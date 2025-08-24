@@ -36,11 +36,12 @@ element TitleBarElement
 		{
 			width = 50%;
 
-			child UIText
+			child UIText title
 			{
 				leftPadding = 75px;
 				text = "Cyberpunk 2077 mod manager";
 				size = 12px;
+				color = 1;
 			}
 		}
 

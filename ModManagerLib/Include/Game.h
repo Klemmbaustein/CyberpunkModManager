@@ -4,6 +4,7 @@
 namespace Game
 {
 	std::string SearchForGOGGame();
+	bool HasGameLocation();
 
 	std::string SearchForGame();
 

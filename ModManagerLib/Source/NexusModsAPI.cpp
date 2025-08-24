@@ -211,7 +211,6 @@ static const std::string KeyJsonFile = "app/saved/apikey.json";
 
 std::string NxmAPI::GetAPIKey()
 {
-
 	if (!std::filesystem::exists(KeyJsonFile))
 	{
 		return "";
@@ -234,7 +233,7 @@ void NxmAPI::SaveAPIKey(std::string Key)
 	Out.close();
 }
 
-std::string NxmAPI::GetAPIKeyAccountName(std::string Key)
+static json GetAccountInfo(std::string Key)
 {
 	Net::SetAPIKey(Key);
 	json FileJson;
@@ -242,16 +241,32 @@ std::string NxmAPI::GetAPIKeyAccountName(std::string Key)
 	{
 		FileJson = json::parse(Net::Get("https://api.nexusmods.com/v1/users/validate.json", true));
 	}
-	catch (json::exception e)
+	catch (json::exception& e)
 	{
-		return "";
+		return json::object();
 	}
 	if (FileJson.is_null())
-		return "";
-	Net::SetAPIKey(GetAPIKey());
+		return json::object();
+	Net::SetAPIKey(NxmAPI::GetAPIKey());
+	return FileJson;
+}
+
+std::string NxmAPI::GetAPIKeyAccountName(std::string Key)
+{
+	json FileJson = GetAccountInfo(Key);
 	if (!FileJson.contains("name"))
 	{
 		return "";
 	}
 	return FileJson.at("name");
+}
+
+std::string NxmAPI::GetAPIKeyAccountLink(std::string Key)
+{
+	json FileJson = GetAccountInfo(Key);
+	if (!FileJson.contains("profile_url"))
+	{
+		return "";
+	}
+	return FileJson.at("profile_url");
 }

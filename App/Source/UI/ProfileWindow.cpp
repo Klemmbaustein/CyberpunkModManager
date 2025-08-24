@@ -7,6 +7,7 @@
 #include "LoadingBar.h"
 #include <iostream>
 #include <kui/UI/UITextField.h>
+#include "Tabs/HomeTab.h"
 
 static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 {
@@ -21,6 +22,7 @@ static void ProfileEnable(Profile Target, ProfileWindow* TargetWindow)
 	}
 	Target.MakeActive();
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+	AppTab::GetTabOfType<HomeTab>()->ShouldReload = true;
 	TargetWindow->GenerateList();
 
 	if (LoadingBarRequired)
@@ -64,6 +66,7 @@ static void ProfileDelete(Profile Target, ProfileWindow* TargetWindow)
 	}
 
 	AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+	AppTab::GetTabOfType<HomeTab>()->ShouldReload = true;
 	TargetWindow->GenerateList();
 }
 
@@ -73,7 +76,7 @@ static bool IsValidProfileName(const std::string& Name)
 	{
 		return false;
 	}
-	
+
 	char InvalidChars[] = {
 		':',
 		'?',
@@ -162,7 +165,9 @@ void ProfileWindow::GenerateList()
 		NameTextField
 			->SetText(pf.DisplayName)
 			->SetTextSize(13_px)
-			->SetOpacity(0)
+			->SetInnerPadding(3_px)
+			->SetBorder(1_px, 0.8f)
+			->SetCorner(5_px)
 			->SetMinSize(Vec2f(1, 0));
 
 		Entry->nameBox->AddChild(NameTextField);
@@ -194,6 +199,7 @@ void ProfileWindow::Init()
 		Profile::NewProfile("New profile").MakeActive();
 
 		AppTab::GetTabOfType<InstalledModsTab>()->ShouldReload = true;
+		AppTab::GetTabOfType<HomeTab>()->ShouldReload = true;
 		GenerateList();
 		};
 
