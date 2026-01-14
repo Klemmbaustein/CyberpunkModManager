@@ -56,8 +56,14 @@ element TitleBarElement
 				Pressed = (0.25, 0, 0);
 				Icon = "res:icons/ChromeClose.png";
 			}
-			child TitleBarButton maximize {	Icon = "res:icons/ChromeMaximize.png" }
-			child TitleBarButton minimize { Icon = "res:icons/ChromeMinimize.png" }
+			child TitleBarButton maximize
+			{
+				Icon = "res:icons/ChromeMaximize.png"
+			}
+			child TitleBarButton minimize
+			{
+				Icon = "res:icons/ChromeMinimize.png"
+			}
 		}
 	}
 }
