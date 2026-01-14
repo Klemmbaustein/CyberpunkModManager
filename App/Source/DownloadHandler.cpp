@@ -32,6 +32,7 @@ static void DownloadModAsync()
 
 	LoadBar->SetLoadingString("Downloading mod: " + Mod.Name);
 
+	std::filesystem::create_directories("app/temp/");
 
 	std::string ArchiveName = "app/temp/" + ModDownloadUrl.substr(ModDownloadUrl.find_last_of("/") + 1);
 	ArchiveName = ArchiveName.substr(0, ArchiveName.find_first_of("?"));
@@ -105,6 +106,7 @@ void DownloadHandler::InstallZip(std::string ZipPath, std::string Name, std::str
 	std::string ModPath = Profile::Current.Path + "/mod_files/" + Name + "/";
 	Archive::Extract(ZipPath, ModPath, nullptr, 0);
 
+	std::filesystem::create_directories(Profile::Current.Path + "/mod_files/");
 	std::filesystem::create_directories(Profile::Current.Path + "/images/");
 
 	auto ModFiles = FileUtil::GetAllFilesInFolder(ModPath);

@@ -48,7 +48,7 @@ ModInfo ModInfo::ParseFile(std::string FilePath)
 
 		return Info;
 	}
-	catch (json::exception e)
+	catch (json::exception& e)
 	{
 		return ModInfo();
 	}
@@ -155,7 +155,7 @@ void ModInfo::Enable()
 		Enabled = true;
 		Save();
 	}
-	catch (std::exception e)
+	catch (std::exception& e)
 	{
 		Windows::ErrorBox(e.what());
 	}

@@ -334,8 +334,7 @@ void ModListTab::OnResized()
 bool ModListTab::HandleSelect(bool IsSelected, size_t Index, ModsSection Section)
 {
 	if (CanSelectMods
-		&& (Window::GetActiveWindow()->Input.IsKeyDown(Key::LCTRL)
-		|| Window::GetActiveWindow()->Input.IsKeyDown(Key::RCTRL)))
+		&& (Window::GetActiveWindow()->Input.IsKeyDown(Key::CTRL)))
 	{
 		auto& Mod = Section.Mods[Index];
 
@@ -348,8 +347,7 @@ bool ModListTab::HandleSelect(bool IsSelected, size_t Index, ModsSection Section
 		return false;
 	}
 	else if (CanSelectMods
-		&& (Window::GetActiveWindow()->Input.IsKeyDown(Key::LSHIFT)
-		|| Window::GetActiveWindow()->Input.IsKeyDown(Key::RSHIFT)))
+		&& (Window::GetActiveWindow()->Input.IsKeyDown(Key::SHIFT)))
 	{
 		size_t StartIndex = FirstSelected;
 
