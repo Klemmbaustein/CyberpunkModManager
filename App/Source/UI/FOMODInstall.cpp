@@ -85,7 +85,7 @@ void FOMODInstall::UnloadTextures()
 	Textures.clear();
 }
 
-void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
+void FOMODInstall::GenerateGroup(FOMOD::InstallGroup& Group, int& ItemIndex)
 {
 	auto Section = new ModHeader();
 
@@ -107,7 +107,7 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 		Section->AddChild(i);
 	}
 
-	size_t SlotsPerRow = std::max(int(Window::GetActiveWindow()->GetSize().X / 250 * Window::GetActiveWindow()->GetDPI()), 1);
+	size_t SlotsPerRow = std::max(int(Window::GetActiveWindow()->GetSize().X / 200 * Window::GetActiveWindow()->GetDPI()), 1);
 
 	size_t PluginIndex = 0;
 
@@ -132,10 +132,14 @@ void FOMODInstall::GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex)
 		{
 			ElementImage = Textures[ItemIndex];
 		}
-		else
+		else if (std::filesystem::is_regular_file(i.ImageFile))
 		{
 			ElementImage = image::LoadImageWithInfo(i.ImageFile);
 			Textures.push_back(ElementImage);
+		}
+		else
+		{
+			ElementImage = image::ImageInfo(0, 0, 0);
 		}
 
 		Vec2f Aspect = Vec2f(1, (float)ElementImage.Height / (float)ElementImage.Width);

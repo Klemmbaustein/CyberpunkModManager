@@ -19,7 +19,7 @@ class FOMODInstall : public Popup
 	void NextInstallGroup(bool Force);
 	void GenerateUI();
 	void UnloadTextures();
-	void GenerateGroup(FOMOD::InstallGroup Group, int& ItemIndex);
+	void GenerateGroup(FOMOD::InstallGroup& Group, int& ItemIndex);
 
 	void InstallMod();
 

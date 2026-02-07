@@ -12,12 +12,12 @@ element SetupOption
 		borderColor = highlightColor;
 		orientation = vertical;
 		color = Color;
-		minSize = (250, 450)px;
-		
+		minSize = (200, 350)px;
+
 		child UIBackground
 		{
 			color = 0.05;
-			size = (250, 175)px;
+			size = (200, 150)px;
 			allAlign = centered;
 			child UIBackground image
 			{
@@ -28,7 +28,7 @@ element SetupOption
 		{
 			text = Name;
 			size = 12px;
-			wrap = 490px;
+			wrap = 180px;
 
 			padding = 3px;
 		}
@@ -36,8 +36,9 @@ element SetupOption
 		child UIText
 		{
 			text = Description;
-			size = 10px;
-			wrap = 490px;
+			size = 11px;
+			wrap = 180px;
+			maxWraps = 8;
 			color = 0.8;
 			padding = 3px;
 		}

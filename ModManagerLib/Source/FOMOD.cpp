@@ -35,7 +35,7 @@ FOMOD FOMOD::Parse(std::string FolderPath)
 
 		FlagCondition Cond;
 		Cond.Operation = i.child("dependencies").attribute("operator").as_string();
-		
+
 		for (const auto& dep : i.child("dependencies").children())
 		{
 			Cond.Flags.push_back(FlagValue{
